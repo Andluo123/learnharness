@@ -606,12 +606,12 @@ export function KeysSection({
 				{label === "dictation" && <>
 					<DictationLanguageSetting />
 					<p data-testid="dictation-setup-hint" className="px-1 text-[11px] leading-relaxed text-muted-foreground/70">
-						Create a <a
+						{t("deepgramHintBefore")} <a
 							href="https://console.deepgram.com/"
 							target="_blank"
 							rel="noreferrer"
 							className="underline underline-offset-2 hover:text-foreground"
-						>{t("deepgramKey")}</a> with the Member role or higher, then add it above.
+						>{t("deepgramKey")}</a>{t("deepgramHintAfter")}
 					</p>
 				</>}
 			</SettingsGroup>)}

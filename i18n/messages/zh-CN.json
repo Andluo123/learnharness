@@ -211,7 +211,9 @@
 	},
 	"practice": {
 		"problem": "题目",
-		"workHerePlaceholder": "在此作答，把思路说出来。"
+		"workHerePlaceholder": "在此作答，把思路说出来。",
+		"compactingSession": "正在压缩会话…",
+		"enterSubmits": "↵ 提交 · ⇧↵ 换行"
 	},
 	"chains": {
 		"addFolder": "新建文件夹",
@@ -321,14 +323,16 @@
 		"outcome": "结果",
 		"hintRung": "提示层级",
 		"missClass": "错误类型",
-		"retest": "重测"
+		"retest": "重测",
+		"yourThinking": "你的思考"
 	},
 	"pluginQuestionDock": {
 		"preparingQuestion": "正在准备题目…",
 		"questionUnavailable": "题目不可用",
 		"yourThinking": "你的思考",
 		"submitAnswer": "提交答案",
-		"dismissQuestion": "忽略此题"
+		"dismissQuestion": "忽略此题",
+		"enterSubmits": "↵ 提交 · ⇧↵ 换行"
 	},
 	"questionDock": {
 		"checkUnderstanding": "检验你的理解",
@@ -528,7 +532,12 @@
 		"catalogFailed": "模型目录加载失败。请检查网络连接后重试。",
 		"retry": "重试",
 		"cacheDefault": "缓存：默认",
-		"addFolder": "添加文件夹"
+		"addFolder": "添加文件夹",
+		"graphToolsHint": "让教师在会话之间查阅你的知识图谱",
+		"graphDisabled": "知识图谱已禁用",
+		"includeReasoningHint": "使用已保存的输出 token 用量，为匹配的 OpenAI Responses 模型计入重放的推理内容。关闭时使用原先基于文本的估算。",
+		"noSearchEngine": "尚未配置搜索引擎 —— 请设置 Tavily、Brave、Exa、Firecrawl 或 Ollama 搜索 API 密钥",
+		"searchEngineActive": "搜索引擎：{engine}"
 	},
 	"settingsKeys": {
 		"pasteKey": "粘贴密钥…",
@@ -561,7 +570,9 @@
 		"retry": "重试",
 		"deepgramKey": "Deepgram API 密钥",
 		"allowReuse": "允许为此 URL 复用当前有效的已有密钥",
-		"reloadConfig": "重新加载配置"
+		"reloadConfig": "重新加载配置",
+		"deepgramHintBefore": "创建一个",
+		"deepgramHintAfter": "（需 Member 或更高权限），然后在上方填入。"
 	},
 	"settingsAppearance": {
 		"typography": "排版",
@@ -623,7 +634,10 @@
 				"name": "界面展示",
 				"description": "一个临时性的画廊，展示公开的宿主界面控件、本地回调与原生会话界面。"
 			}
-		}
+		},
+		"noCorePlugins": "暂无核心插件。",
+		"noCommunityPlugins": "尚未安装社区插件。",
+		"loadingPlugins": "正在加载插件…"
 	},
 	"settingsUpdate": {
 		"checking": "正在检查更新…",
@@ -698,7 +712,8 @@
 		"searchProviders": "搜索提供商…",
 		"noProvidersMatch": "没有匹配的提供商。",
 		"searchFonts": "搜索字体…",
-		"loadingFonts": "正在加载字体…"
+		"loadingFonts": "正在加载字体…",
+		"noThinkingLevels": "没有可用的思考等级。"
 	},
 	"settingsClaudeCode": {
 		"installHint": "安装并登录 Claude Code",
@@ -722,7 +737,8 @@
 		"select": "选择…",
 		"continue": "继续",
 		"retry": "重试",
-		"signInAgain": "重新登录"
+		"signInAgain": "重新登录",
+		"cancel": "取消"
 	},
 	"settingsChatgpt": {
 		"chatgpt": "ChatGPT",
@@ -743,7 +759,9 @@
 		"addAccounts": "添加账户",
 		"signInAgain": "重新登录",
 		"enableBackground": "启用后台使用",
-		"desktopOnly": "ChatGPT 登录仅桌面应用可用。此处仍可使用 API 密钥连接。"
+		"desktopOnly": "ChatGPT 登录仅桌面应用可用。此处仍可使用 API 密钥连接。",
+		"manageEllipsis": "管理…",
+		"connect": "连接"
 	},
 	"phase": {
 		"probe": "探测中",
@@ -793,9 +811,29 @@
 		"nextBranch": "下一个分支"
 	},
 	"pluginProblemSubmitted": {
-		"problemUnavailable": "题目不可用"
+		"problemUnavailable": "题目不可用",
+		"yourThinking": "你的思考"
 	},
 	"settingsCacheRetention": {
-		"cacheRetention": "缓存保留"
+		"cacheRetention": "缓存保留",
+		"intro": "控制发送给 Pi 的缓存保留偏好。是否支持及保留时长取决于服务提供商与模型。这并不保证缓存命中。",
+		"optionDefaultLabel": "Pi 默认",
+		"optionDefaultDescription": "不设置该选项，采用 Pi 的默认行为与环境变量覆盖。",
+		"optionNoneLabel": "不请求缓存",
+		"optionNoneDescription": "传递 Pi 原生的 none 偏好。服务提供商仍可能自动缓存。",
+		"optionShortLabel": "短期保留",
+		"optionShortDescription": "传递 Pi 原生的 short 偏好。保留时长取决于提供商与模型。",
+		"optionLongLabel": "长期保留",
+		"optionLongDescription": "传递 Pi 原生的 long 偏好。缓存写入成本可能更高。",
+		"compactSummary": "缓存：{mode}",
+		"compact": {
+			"default": "默认",
+			"notrequested": "未请求",
+			"short": "短期",
+			"long": "长期"
+		}
+	},
+	"pluginQuestionSlots": {
+		"yourThinking": "你的思考"
 	}
 }

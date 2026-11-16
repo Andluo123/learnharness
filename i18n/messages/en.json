@@ -211,7 +211,9 @@
 	},
 	"practice": {
 		"problem": "Problem",
-		"workHerePlaceholder": "Work here, think out loud."
+		"workHerePlaceholder": "Work here, think out loud.",
+		"compactingSession": "compacting session…",
+		"enterSubmits": "↵ submits · ⇧↵ newline"
 	},
 	"chains": {
 		"addFolder": "Add folder",
@@ -321,14 +323,16 @@
 		"outcome": "Outcome",
 		"hintRung": "Hint rung",
 		"missClass": "Miss class",
-		"retest": "Retest"
+		"retest": "Retest",
+		"yourThinking": "YOUR THINKING"
 	},
 	"pluginQuestionDock": {
 		"preparingQuestion": "Preparing question…",
 		"questionUnavailable": "Question unavailable",
 		"yourThinking": "Your thinking",
 		"submitAnswer": "Submit answer",
-		"dismissQuestion": "Dismiss question"
+		"dismissQuestion": "Dismiss question",
+		"enterSubmits": "↵ submits · ⇧↵ newline"
 	},
 	"questionDock": {
 		"checkUnderstanding": "Check your understanding",
@@ -528,7 +532,12 @@
 		"catalogFailed": "Model catalog could not be loaded. Check the connection and retry.",
 		"retry": "Retry",
 		"cacheDefault": "Cache: default",
-		"addFolder": "Add folder"
+		"addFolder": "Add folder",
+		"graphToolsHint": "Lets the tutor consult your knowledge map between sessions",
+		"graphDisabled": "Graph is disabled",
+		"includeReasoningHint": "Use saved output-token usage to account for replayed reasoning on matching OpenAI Responses models. Off uses the original text-based estimate.",
+		"noSearchEngine": "No search engine configured — set a Tavily, Brave, Exa, Firecrawl, or Ollama search API key",
+		"searchEngineActive": "Search engine: {engine}"
 	},
 	"settingsKeys": {
 		"pasteKey": "Paste key…",
@@ -561,7 +570,9 @@
 		"retry": "Retry",
 		"deepgramKey": "Deepgram API key",
 		"allowReuse": "Allow reuse of the effective existing key for this URL",
-		"reloadConfig": "Reload configuration"
+		"reloadConfig": "Reload configuration",
+		"deepgramHintBefore": "Create a",
+		"deepgramHintAfter": " with the Member role or higher, then add it above."
 	},
 	"settingsAppearance": {
 		"typography": "Typography",
@@ -623,7 +634,10 @@
 				"name": "UI Showcase",
 				"description": "An ephemeral gallery of public host UI controls, local callbacks, and native session surfaces."
 			}
-		}
+		},
+		"noCorePlugins": "No Core plugins available.",
+		"noCommunityPlugins": "No community plugins installed.",
+		"loadingPlugins": "Loading plugins…"
 	},
 	"settingsUpdate": {
 		"checking": "Checking for updates…",
@@ -698,7 +712,8 @@
 		"searchProviders": "Search providers…",
 		"noProvidersMatch": "No providers match.",
 		"searchFonts": "Search fonts…",
-		"loadingFonts": "Loading fonts…"
+		"loadingFonts": "Loading fonts…",
+		"noThinkingLevels": "No thinking levels."
 	},
 	"settingsClaudeCode": {
 		"installHint": "Install and authenticate Claude Code",
@@ -722,7 +737,8 @@
 		"select": "Select…",
 		"continue": "Continue",
 		"retry": "Retry",
-		"signInAgain": "Sign in again"
+		"signInAgain": "Sign in again",
+		"cancel": "Cancel"
 	},
 	"settingsChatgpt": {
 		"chatgpt": "ChatGPT",
@@ -743,7 +759,9 @@
 		"addAccounts": "Add accounts",
 		"signInAgain": "Sign in again",
 		"enableBackground": "Enable background use",
-		"desktopOnly": "ChatGPT sign-in is available only in the desktop app. API-key connections remain available here."
+		"desktopOnly": "ChatGPT sign-in is available only in the desktop app. API-key connections remain available here.",
+		"manageEllipsis": "Manage…",
+		"connect": "Connect"
 	},
 	"phase": {
 		"probe": "Probing",
@@ -793,9 +811,29 @@
 		"nextBranch": "Next branch"
 	},
 	"pluginProblemSubmitted": {
-		"problemUnavailable": "Problem unavailable"
+		"problemUnavailable": "Problem unavailable",
+		"yourThinking": "YOUR THINKING"
 	},
 	"settingsCacheRetention": {
-		"cacheRetention": "Cache retention"
+		"cacheRetention": "Cache retention",
+		"intro": "Controls the cache-retention preference sent to Pi. Support and duration depend on the provider and model. This does not guarantee a cache hit.",
+		"optionDefaultLabel": "Pi default",
+		"optionDefaultDescription": "Leave the option unset. Pi’s normal behavior and environment override apply.",
+		"optionNoneLabel": "Don’t request caching",
+		"optionNoneDescription": "Pass Pi’s native none preference. Providers may still cache automatically.",
+		"optionShortLabel": "Short retention",
+		"optionShortDescription": "Pass Pi’s native short preference. The duration depends on the provider and model.",
+		"optionLongLabel": "Long retention",
+		"optionLongDescription": "Pass Pi’s native long preference. Cache-write costs may be higher.",
+		"compactSummary": "Cache: {mode}",
+		"compact": {
+			"default": "default",
+			"notrequested": "not requested",
+			"short": "short",
+			"long": "long"
+		}
+	},
+	"pluginQuestionSlots": {
+		"yourThinking": "YOUR THINKING"
 	}
 }

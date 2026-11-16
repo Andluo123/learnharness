@@ -118,11 +118,11 @@ export async function activate(ctx: PluginFrontendContext): Promise<() => void> 
     { key: "lightInkColor", label: t("Light mode ink color") },
   ] as const).map(({ key, label }) => ({
     key, type: "text" as const, label, value: value[key],
-    description: "Six-digit hex color. Recolors all unsent ink when this app theme mode is active.", validate: colorError,
+    description: t("Six-digit hex color. Recolors all unsent ink when this app theme mode is active."), validate: colorError,
     async onChange(color: string) { applySettings(await ctx.call("set-ink-color", { [key]: color })); },
   })), {
     key: "imageScale", type: "number", label: t("Image scale"), value: value.imageScale, min: 0, max: 100,
-    description: "Export percentage (default 50%). Applied before the fixed 2000 × 2000 pixel cap. Does not change the drawing surface.",
+    description: t("Export percentage (default 50%). Applied before the fixed 2000 × 2000 pixel cap. Does not change the drawing surface."),
     validate: imageScaleError,
     async onChange(imageScale) { applySettings(await ctx.call("set-image-scale", { imageScale })); },
   }];

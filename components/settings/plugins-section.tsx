@@ -45,7 +45,7 @@ export function PluginsSection({ onOpenSettings, origin = "community" }: { onOpe
 		</>}
 		{snapshot.error && <p role="alert" className="text-xs text-destructive">{snapshot.error}</p>}
 		{snapshot.loading ? <p role="status" className="text-xs text-muted-foreground">{t("loadingPlugins")}</p>
-			: plugins.length === 0 ? <p className="text-xs text-muted-foreground">{core ? "No Core plugins available." : "No community plugins installed."}</p>
+			: plugins.length === 0 ? <p className="text-xs text-muted-foreground">{core ? t("noCorePlugins") : t("noCommunityPlugins")}</p>
 				: plugins.map(plugin => <PluginRow key={plugin.info.id} plugin={plugin}
 					onSettings={() => onOpenSettings?.(plugin.info.id)} />)}
 	</SettingsSection>;

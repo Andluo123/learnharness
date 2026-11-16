@@ -719,7 +719,7 @@ export function AgentSection({
 									widthClass="w-20"
 								/>
 								{advancedModels && <MenuTrigger
-									value={cacheRetentionLabel(override?.cacheRetention)}
+									value={cacheRetentionLabel(override?.cacheRetention, t)}
 									emptyLabel={t("cacheDefault")}
 									ariaLabel={t("slotCacheAria", { slot: t(SLOT_META[slot].key) })}
 									testid={`slot-cache-${slot}`}
@@ -842,7 +842,7 @@ export function AgentSection({
 					return (
 						<SettingsRow
 							label={t("graphTools")}
-							hint={graphOn ? "Lets the tutor consult your knowledge map between sessions" : "Graph is disabled"}
+							hint={graphOn ? t("graphToolsHint") : t("graphDisabled")}
 							testid="graph-tools-row"
 							dimmed={!graphOn}
 						>
@@ -957,7 +957,7 @@ export function AgentSection({
 					return (
 						<SettingsRow
 							label={t("searchEngine")}
-							hint={search?.reason ?? undefined}
+							hint={!anyKey ? t("noSearchEngine") : search?.engine ? t("searchEngineActive", { engine: SEARCH_ENGINES.find((e) => e.id === search.engine)?.label ?? search.engine }) : undefined}
 							testid="search-engine-row"
 							dimmed={!anyKey}
 						>
@@ -1030,7 +1030,7 @@ export function AgentSection({
 				</SettingsRow>
 				<SettingsRow
 					label={t("includeReasoning")}
-					hint="Use saved output-token usage to account for replayed reasoning on matching OpenAI Responses models. Off uses the original text-based estimate."
+					hint={t("includeReasoningHint")}
 					testid="compaction-row-reasoning"
 				>
 					<Toggle
