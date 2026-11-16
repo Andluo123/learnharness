@@ -52,7 +52,7 @@ import { type ProviderKeyInfo, CUSTOM_PROVIDER_INFO, CustomEndpointSetup } from 
 import { ProviderMenuList } from "@/components/settings/model-menu";
 import { ChatGPTBackgroundAccess } from "@/components/settings/chatgpt-connection";
 import { NativeSubscriptionBackgroundAccess, SubscriptionConnections } from "@/components/settings/subscription-connections";
-import { defaultOrderLevel, populateLevel, THINKING_LABEL, thinkingLabel } from "@/components/thinking-default";
+import { defaultOrderLevel, populateLevel, THINKING_LABEL, useThinkingLabel } from "@/components/thinking-default";
 import { ThinkingMenuList } from "@/components/settings/model-menu";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import { useT } from "@/i18n/use-t.ts";
@@ -161,6 +161,7 @@ export function SetupKeysBody({
 	isCustom?: boolean;
 	onCustomSaved?: () => void;
 }) {
+	const thinkingLabelOf = useThinkingLabel();
 	const t = useT("setup");
 	return (
 		<div className="flex flex-col gap-3 px-6 py-5" data-testid="setup-stage-keys">
@@ -260,6 +261,7 @@ export function SetupDialog(props: SetupDialogProps) {
 }
 
 function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
+	const thinkingLabelOf = useThinkingLabel();
 	const t = useT("setup");
 	const controller = useInteractionLayers();
 	const { catalog, failed, refresh } = useModelCatalog();
@@ -564,7 +566,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 												className="flex h-7 w-24 items-center gap-1 rounded-sm border border-border bg-background px-1.5 font-ui text-xs text-foreground transition-colors hover:border-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-40"
 											>
 												<span className="min-w-0 flex-1 truncate text-left">
-													{entry ? (level ? thinkingLabel(level, t) : "…") : "—"}
+													{entry ? (level ? thinkingLabelOf(level) : "…") : "—"}
 												</span>
 												<span aria-hidden className="text-muted-foreground">
 													▾

@@ -85,7 +85,7 @@ export async function activate(ctx: PluginFrontendContext): Promise<() => void> 
     get name() {
       const id = pageSessions.get(ctx.app.pathname());
       const state = id ? sheets.sessions.get(id) : undefined;
-      return state && sheets.pending(state) ? "Draw (unsent)" : "Draw";
+      return state && sheets.pending(state) ? t("Draw (unsent)") : t("Draw");
     },
     run(context) { if (context.surface === "session") toggle(context); },
   };
@@ -96,19 +96,19 @@ export async function activate(ctx: PluginFrontendContext): Promise<() => void> 
     return mounted?.canUseEditingShortcuts() ? mounted : undefined;
   }
   const undoAction: PluginAction = {
-    id: "undo", name: "Undo drawing",
+    id: "undo", name: t("Undo drawing"),
     shortcut: { scope: { sessions: ["teaching", "practice"] }, defaultBinding: "mod+z" },
     disabled: context => !editingPad(context)?.canUndo(),
     run(context) { editingPad(context)?.undo(); },
   };
   const toggleToolsAction: PluginAction = {
-    id: "toggle-pen-eraser", name: "Toggle pen/eraser",
+    id: "toggle-pen-eraser", name: t("Toggle pen/eraser"),
     shortcut: { scope: { sessions: ["teaching", "practice"] }, defaultBinding: "mod+shift+e" },
     disabled: context => !editingPad(context),
     run(context) { editingPad(context)?.togglePenEraser(); },
   };
   const handAction: PluginAction = {
-    id: "hand", name: "Hand",
+    id: "hand", name: t("Hand"),
     shortcut: { scope: { sessions: ["teaching", "practice"] }, defaultBinding: "mod+shift+h" },
     disabled: context => !editingPad(context),
     run(context) { editingPad(context)?.selectHand(); },

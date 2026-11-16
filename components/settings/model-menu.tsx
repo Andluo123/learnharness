@@ -25,6 +25,7 @@ import { CLAUDE_CODE_PROVIDER, CUSTOM_PROVIDER, fuzzyScore, subscriptionLabel } 
 import { formatTokens } from "@/components/usage-format";
 import { SearchMenuList } from "./search-menu-list";
 import { useT } from "@/i18n/use-t.ts";
+import { useThinkingLabel } from "@/components/thinking-default";
 
 function priceLabel(cost: ModelCatalogEntry["cost"]): string {
 	if (!cost) return "Unpriced";
@@ -120,11 +121,12 @@ export function ThinkingMenuList({
 	empty?: string;
 	footer?: string;
 }) {
+	const thinkingLabel = useThinkingLabel();
 	const t = useT("settingsModelMenu");
 	return (
 		<>
 			{levels.length === 0 ? (
-				<div className="px-2 py-3 text-center text-muted-foreground">{empty ?? "No thinking levels."}</div>
+				<div className="px-2 py-3 text-center text-muted-foreground">{empty ?? t("noThinkingLevels")}</div>
 			) : (
 				levels.map((level) => (
 					<button
@@ -136,7 +138,7 @@ export function ThinkingMenuList({
 							level === effectiveLevel ? "bg-muted/60 text-card-foreground" : "text-card-foreground"
 						}`}
 					>
-						<span>{level}</span>
+						<span>{thinkingLabel(level)}</span>
 						{level === effectiveLevel && <span aria-hidden>✓</span>}
 					</button>
 				))

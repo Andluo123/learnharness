@@ -3,6 +3,7 @@
 import { ChevronRightIcon, ClipboardCheckIcon } from "lucide-react";
 import { ToolContentResponse } from "@/components/ai-elements/message";
 import { parseProbeDoneInput, type ProbeDoneResult } from "@/src/core";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * The probe conclusion card (docs/archive/probe-teach-split.md §2): renders the
@@ -24,6 +25,7 @@ import { parseProbeDoneInput, type ProbeDoneResult } from "@/src/core";
  * Refusals, malformed calls and the writing fallback remain visible/plain.
  */
 export function ProbeDoneCard({ part }: { part: { input?: unknown; output?: unknown; state?: unknown } }) {
+	const t = useT("questionDock");
 	const output = part.output as ProbeDoneResult | undefined;
 	const state = typeof part.state === "string" ? part.state : "";
 
@@ -43,7 +45,7 @@ export function ProbeDoneCard({ part }: { part: { input?: unknown; output?: unkn
 
 	const heading = <>
 		<ClipboardCheckIcon className="size-3.5 text-primary" />
-		<span className="min-w-0 truncate">Probe assessment</span>
+		<span className="min-w-0 truncate">{t("probeAssessment")}</span>
 	</>;
 	const note = output && !output.ok ? <>
 		The prober retried: {output.error}

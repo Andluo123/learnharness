@@ -137,7 +137,9 @@
 		"somethingWentWrong": "出现问题",
 		"retry": "重试",
 		"refusalModels": "尚未配置模型 —— 请先完成模型设置",
-		"refusalProviderKey": "尚未设置 {provider} 密钥 —— 请到「设置 → 服务提供商」中添加"
+		"refusalProviderKey": "尚未设置 {provider} 密钥 —— 请到「设置 → 服务提供商」中添加",
+		"agentThinking": "代理的思考",
+		"retrying": "正在重试…"
 	},
 	"dialog": {
 		"deleteNodeAria": "删除节点",
@@ -177,7 +179,10 @@
 	"answeredCard": {
 		"answeredDontKnow": "已回答“我不知道”。",
 		"why": "原因",
-		"theAnswer": "答案"
+		"theAnswer": "答案",
+		"correct": "正确",
+		"incorrect": "错误",
+		"hideWhy": "收起原因"
 	},
 	"practice": {
 		"problem": "题目",
@@ -297,7 +302,18 @@
 		"confidenceAria": "信心 —— 你认为所选答案正确的概率",
 		"confidenceTitle": "你认为所选答案正确的概率 —— 50% 相当于抛硬币。用 ←/→ 调整。",
 		"typeAnswer": "输入你的答案…",
-		"whyAnswer": "为什么选这个答案？想到什么就写什么。"
+		"whyAnswer": "为什么选这个答案？想到什么就写什么。",
+		"probeLabel": "探测",
+		"recallLabel": "回忆",
+		"correct": "正确",
+		"incorrect": "错误",
+		"hideWhy": "收起原因",
+		"why": "原因",
+		"yourAnswer": "你的答案",
+		"yourThinking": "你的思考",
+		"submitAnswer": "提交答案",
+		"compactingSession": "正在压缩会话…",
+		"enterSubmits": "↵ 提交 · ⇧↵ 换行"
 	},
 	"citationComment": {
 		"commentAria": "为选中的文字添加评论",
@@ -463,7 +479,14 @@
 		"reasoningUseReported": "推理强度：使用上报值",
 		"reasoningSupported": "推理强度：支持",
 		"reasoningNotSupported": "推理强度：不支持",
-		"environment": "环境变量"
+		"environment": "环境变量",
+		"notSet": "未设置",
+		"addProvider": "添加提供商",
+		"connecting": "正在连接…",
+		"connect": "连接",
+		"disconnect": "断开连接",
+		"dictation": "听写",
+		"search": "搜索"
 	},
 	"settingsAppearance": {
 		"typography": "排版",
@@ -497,7 +520,35 @@
 		"authoringHint": "为你的编程助手下载插件开发技能包。",
 		"downloadAuthoring": "下载开发技能包",
 		"pluginsDirectory": "插件目录",
-		"refreshPlugins": "刷新插件"
+		"refreshPlugins": "刷新插件",
+		"saving": "保存中…",
+		"enablePlugin": "启用 {name}",
+		"enabled": "已启用",
+		"disabled": "已禁用",
+		"pluginError": "错误",
+		"pluginLoading": "加载中…",
+		"plugin": {
+			"flashcards": {
+				"name": "闪卡",
+				"description": "从你的知识图谱生成事实回忆提示，并用 FSRS-6 安排复习。生成过程使用你配置的模型，可能产生费用。仅支持原生应用，不集成 Anki。"
+			},
+			"coding-questions": {
+				"name": "编程题",
+				"description": "教学提问与编程练习，提供语法高亮，并使用你已安装的工具自动运行测试。以你的用户权限运行本地代码，不在沙箱中。"
+			},
+			"drawing-pad": {
+				"name": "绘图板",
+				"description": "在只读的题目参考图上绘图，并随学习者提交一起发送你的解题过程。"
+			},
+			"rich-code-blocks": {
+				"name": "富代码块",
+				"description": "从 SMILES、ABC 与 TikZ 代码块渲染静态化学结构、乐谱与技术图表。"
+			},
+			"ui-showcase": {
+				"name": "界面展示",
+				"description": "一个临时性的画廊，展示公开的宿主界面控件、本地回调与原生会话界面。"
+			}
+		}
 	},
 	"settingsUpdate": {
 		"checking": "正在检查更新…",
@@ -519,7 +570,42 @@
 	},
 	"settingsKeyboard": {
 		"keyboard": "键盘",
-		"storedOnDevice": "保存在本机"
+		"storedOnDevice": "保存在本机",
+		"action": {
+			"toggle-dictation": "切换语音输入",
+			"open-settings": "打开设置",
+			"open-model-picker": "模型选择器",
+			"cycle-thinking": "循环切换思考等级",
+			"toggle-sidebar": "切换会话侧边栏",
+			"sessions-search": "搜索会话",
+			"jump-graph": "图谱视图",
+			"new-session": "新建会话",
+			"rename-session": "重命名会话",
+			"toggle-user-thinking": "折叠/展开所有你的思考",
+			"toggle-question-thread": "提问 · 请求提示（侧边对话）",
+			"find": "查找",
+			"cheat-sheet": "快捷键速查表",
+			"question-focus": "题目 · 在思考与选项间切换焦点",
+			"question-next-row": "题目 · 下一项",
+			"question-prev-row": "题目 · 上一项",
+			"question-pick-row": "题目 · 选择该项",
+			"question-submit": "题目 · 提交"
+		},
+		"fixedHint": "固定 —— 属于此界面",
+		"pressKeys": "请按键…",
+		"cancel": "取消",
+		"rebind": "重新绑定",
+		"reset": "重置",
+		"clear": "清除",
+		"unbound": "未绑定",
+		"storedHint": "保存在本机（lh:keymap）—— 仅保存覆盖项。",
+		"scopeGlobal": "全局",
+		"scopeChat": "会话",
+		"scopeGraph": "图谱",
+		"resetAll": "全部重置",
+		"rebindError": "请使用 Mod/Alt 组合键或功能键。Escape、Tab 与 Enter 为保留键。",
+		"pluginUnavailable": "此插件操作已不可用。",
+		"inactive": "未激活"
 	},
 	"settingsPluginPage": {
 		"loadingSettings": "正在加载插件设置…",
@@ -578,5 +664,16 @@
 		"high": "高",
 		"xhigh": "很高",
 		"max": "最大"
+	},
+	"settingsGeneral": {
+		"languageRow": "语言",
+		"languageRowHint": "界面与代理教学所使用的语言。",
+		"version": "版本 {version}",
+		"releaseNotes": "发行说明",
+		"autoUpdate": "自动更新",
+		"autoUpdateHint": "启动时及每 24 小时检查一次。关闭后不会中止进行中或待安装的更新。"
+	},
+	"probeDone": {
+		"probeAssessment": "探测评估"
 	}
 }

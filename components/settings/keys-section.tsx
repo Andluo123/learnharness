@@ -152,8 +152,8 @@ export function providerKeyLabel(id: string, providers: readonly ProviderKeyInfo
 
 /** The minimal status line, e.g. "…ab12 · 64 chars" (" · env" marks an
  *  environment-owned value — the row itself is read-only then). Pure. */
-export function keyStatusLine(status: AuthKeyStatus): string {
-	if (!status.present || !status.masked) return "not set";
+export function keyStatusLine(status: AuthKeyStatus, t?: (key: string) => string): string {
+	if (!status.present || !status.masked) return t ? t("notSet") : "not set";
 	const tail = status.masked.replace(/ \((\d+) chars\)$/, "");
 	const chars = status.masked.match(/\((\d+) chars\)$/)?.[1] ?? "?";
 	return `${tail} · ${chars}${status.source === "env" ? " · env" : ""}`;
@@ -289,7 +289,7 @@ function KeyTableRow({
 						</a>
 					)}
 					<span data-testid={`${testid}-status`} className="font-mono text-[11px] text-muted-foreground">
-						{keyStatusLine(status)}
+						{keyStatusLine(status, t)}
 					</span>
 				</span>
 			</button>
@@ -311,6 +311,7 @@ function AddProviderRow({
 	addable: ProviderKeyInfo[];
 	onPick: (p: ProviderKeyInfo) => void;
 }) {
+	const t = useT("settingsKeys");
 	const [open, setOpen] = useState(false);
 	const anchorRef = useRef<HTMLDivElement>(null);
 	const interactions = useInteractionLayers();
@@ -337,7 +338,7 @@ function AddProviderRow({
 				onClick={() => setOpen((v) => !v)}
 				className="flex w-full items-center justify-between gap-3 rounded-sm px-1 py-1.5 text-left font-ui text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
 			>
-				<span>+ Add a provider</span>
+				<span>+ {t("addProvider")}</span>
 				{addable.length > 0 && <span className="font-mono text-[11px]">{addable.length}</span>}
 			</button>
 			{open && (
@@ -583,8 +584,8 @@ export function KeysSection({
 				<ClaudeCodeInstallationStatus />
 			</SettingsGroup>
 
-			{(["Dictation", "Search"] as const).map((label) => <SettingsGroup key={label} label={label} testid={label === "Dictation" ? "group-dictation" : "group-search"}>
-				{toolRows.filter((status) => label === "Dictation" ? status.id === "DEEPGRAM_API_KEY" : status.id !== "DEEPGRAM_API_KEY").map((status) => (
+			{(["dictation", "search"] as const).map((label) => <SettingsGroup key={label} label={t(label)} testid={label === "dictation" ? "group-dictation" : "group-search"}>
+				{toolRows.filter((status) => label === "dictation" ? status.id === "DEEPGRAM_API_KEY" : status.id !== "DEEPGRAM_API_KEY").map((status) => (
 					<KeyTableRow
 						key={status.id}
 						label={status.info?.label ?? status.id}
@@ -602,7 +603,7 @@ export function KeysSection({
 						testid={`key-${status.id.toLowerCase()}`}
 					/>
 				))}
-				{label === "Dictation" && <>
+				{label === "dictation" && <>
 					<DictationLanguageSetting />
 					<p data-testid="dictation-setup-hint" className="px-1 text-[11px] leading-relaxed text-muted-foreground/70">
 						Create a <a
@@ -954,7 +955,7 @@ function CustomEndpointEditor({
 					data-testid="custom-save"
 					className="shrink-0 text-xs text-foreground underline-offset-2 hover:underline disabled:text-muted-foreground/40 disabled:no-underline"
 				>
-					{busy ? "Connecting…" : "Connect"}
+					{busy ? t("connecting") : t("connect")}
 				</button>
 				<button
 					type="button"
@@ -976,7 +977,7 @@ function CustomEndpointEditor({
 						data-testid="custom-delete"
 						className="shrink-0 text-xs text-muted-foreground/70 underline-offset-2 hover:text-error hover:underline"
 					>
-						Disconnect
+						{t("disconnect")}
 					</button>
 				)}
 			</div>

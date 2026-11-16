@@ -137,7 +137,9 @@
 		"somethingWentWrong": "Something went wrong",
 		"retry": "Retry",
 		"refusalModels": "No model configured — set up your models first",
-		"refusalProviderKey": "No {provider} key is set — add one in Settings → Providers"
+		"refusalProviderKey": "No {provider} key is set — add one in Settings → Providers",
+		"agentThinking": "AGENT’S THINKING",
+		"retrying": "Retrying…"
 	},
 	"dialog": {
 		"deleteNodeAria": "Delete node",
@@ -177,7 +179,10 @@
 	"answeredCard": {
 		"answeredDontKnow": "Answered “I don't know”.",
 		"why": "Why",
-		"theAnswer": "The answer"
+		"theAnswer": "The answer",
+		"correct": "correct",
+		"incorrect": "incorrect",
+		"hideWhy": "Hide why"
 	},
 	"practice": {
 		"problem": "Problem",
@@ -297,7 +302,18 @@
 		"confidenceAria": "Confidence — the probability your selected answer is correct",
 		"confidenceTitle": "The probability your selected answer is correct — 50% is a coin flip. Adjust with ←/→.",
 		"typeAnswer": "Type your answer…",
-		"whyAnswer": "Why this answer? Whatever comes to mind."
+		"whyAnswer": "Why this answer? Whatever comes to mind.",
+		"probeLabel": "Probe",
+		"recallLabel": "Recall",
+		"correct": "correct",
+		"incorrect": "incorrect",
+		"hideWhy": "Hide why",
+		"why": "Why",
+		"yourAnswer": "Your answer",
+		"yourThinking": "YOUR THINKING",
+		"submitAnswer": "Submit answer",
+		"compactingSession": "compacting session…",
+		"enterSubmits": "↵ submits · ⇧↵ newline"
 	},
 	"citationComment": {
 		"commentAria": "Comment on selected text",
@@ -463,7 +479,14 @@
 		"reasoningUseReported": "Reasoning effort: Use reported",
 		"reasoningSupported": "Reasoning effort: Supported",
 		"reasoningNotSupported": "Reasoning effort: Not supported",
-		"environment": "Environment"
+		"environment": "Environment",
+		"notSet": "not set",
+		"addProvider": "Add a provider",
+		"connecting": "Connecting…",
+		"connect": "Connect",
+		"disconnect": "Disconnect",
+		"dictation": "Dictation",
+		"search": "Search"
 	},
 	"settingsAppearance": {
 		"typography": "Typography",
@@ -497,7 +520,35 @@
 		"authoringHint": "Download the authoring skill for your coding agent.",
 		"downloadAuthoring": "Download authoring skill",
 		"pluginsDirectory": "Plugins directory",
-		"refreshPlugins": "Refresh plugins"
+		"refreshPlugins": "Refresh plugins",
+		"saving": "Saving…",
+		"enablePlugin": "Enable {name}",
+		"enabled": "Enabled",
+		"disabled": "Disabled",
+		"pluginError": "Error",
+		"pluginLoading": "Loading…",
+		"plugin": {
+			"flashcards": {
+				"name": "Flashcards",
+				"description": "Generate fact-recall cues from your knowledge graph and review them with FSRS-6. Generation uses your configured model and may incur cost. Native only; no Anki integration."
+			},
+			"coding-questions": {
+				"name": "Coding questions",
+				"description": "Teaching questions and coding practice with syntax highlighting and automatic tests using your installed tools. Runs local code with your user permissions; not sandboxed."
+			},
+			"drawing-pad": {
+				"name": "Drawing Pad",
+				"description": "Draw over read-only question references and send your working with learner submissions."
+			},
+			"rich-code-blocks": {
+				"name": "Rich code blocks",
+				"description": "Static chemical structures, musical notation and technical diagrams from SMILES, ABC and TikZ code blocks."
+			},
+			"ui-showcase": {
+				"name": "UI Showcase",
+				"description": "An ephemeral gallery of public host UI controls, local callbacks, and native session surfaces."
+			}
+		}
 	},
 	"settingsUpdate": {
 		"checking": "Checking for updates…",
@@ -519,7 +570,42 @@
 	},
 	"settingsKeyboard": {
 		"keyboard": "Keyboard",
-		"storedOnDevice": "Stored on this device"
+		"storedOnDevice": "Stored on this device",
+		"action": {
+			"toggle-dictation": "Toggle dictation",
+			"open-settings": "Open settings",
+			"open-model-picker": "Model selector",
+			"cycle-thinking": "Cycle thinking level",
+			"toggle-sidebar": "Toggle sessions sidebar",
+			"sessions-search": "Search sessions",
+			"jump-graph": "Graph view",
+			"new-session": "New session",
+			"rename-session": "Rename session",
+			"toggle-user-thinking": "Toggle all your thinking",
+			"toggle-question-thread": "Question · ask for a nudge (side thread)",
+			"find": "Find",
+			"cheat-sheet": "Shortcut cheat sheet",
+			"question-focus": "Question · focus thinking ↔ rows",
+			"question-next-row": "Question · next row",
+			"question-prev-row": "Question · previous row",
+			"question-pick-row": "Question · pick row",
+			"question-submit": "Question · submit"
+		},
+		"fixedHint": "Fixed — part of this screen",
+		"pressKeys": "Press keys…",
+		"cancel": "Cancel",
+		"rebind": "Rebind",
+		"reset": "Reset",
+		"clear": "Clear",
+		"unbound": "Unbound",
+		"storedHint": "Stored on this device (lh:keymap) — overrides only.",
+		"scopeGlobal": "Global",
+		"scopeChat": "Chat",
+		"scopeGraph": "Graph",
+		"resetAll": "Reset all",
+		"rebindError": "Use a Mod/Alt chord or function key. Escape, Tab and Enter are reserved.",
+		"pluginUnavailable": "This plugin action is no longer available.",
+		"inactive": "Inactive"
 	},
 	"settingsPluginPage": {
 		"loadingSettings": "Loading plugin settings…",
@@ -578,5 +664,16 @@
 		"high": "high",
 		"xhigh": "xhigh",
 		"max": "max"
+	},
+	"settingsGeneral": {
+		"languageRow": "Language",
+		"languageRowHint": "The language of the interface and of the agent’s teaching.",
+		"version": "Version {version}",
+		"releaseNotes": "Release notes",
+		"autoUpdate": "Automatic updates",
+		"autoUpdateHint": "Check at startup and every 24 hours. Turning this off does not stop updates already in progress or ready to install."
+	},
+	"probeDone": {
+		"probeAssessment": "Probe assessment"
 	}
 }

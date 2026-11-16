@@ -57,7 +57,7 @@ export function AnsweredCard({ answer: savedAnswer, input }: { answer: QuestionA
 		    ThinkingBlock, instead of an inset inside the answer. Same muted
 		    rail as before; the label is now plain "Your thinking". */}
 		{(answer.readingThinking || answer.images?.readingThinking?.length) && (
-			<ThinkingBlock testId="reading-thinking-block" label="YOUR THINKING" text={answer.readingThinking ?? ""} images={answer.images?.readingThinking} defaultOpen />
+			<ThinkingBlock testId="reading-thinking-block" label={t("yourThinking")} text={answer.readingThinking ?? ""} images={answer.images?.readingThinking} defaultOpen />
 		)}
 		{/* [&>*:last-child]:mb-0 (owner round, 2026-10-07): on ask cards the
 		    thinking row is the last child — its my-3 stacked with the card's
@@ -86,9 +86,9 @@ export function AnsweredCard({ answer: savedAnswer, input }: { answer: QuestionA
 					(answer.dontKnow ? (
 						<StatusBadge text="didn't know" />
 					) : answer.correct ? (
-						<StatusBadge text="correct" color="var(--lh-success)" />
+						<StatusBadge text={t("correct")} color="var(--lh-success)" />
 					) : (
-						<StatusBadge text="incorrect" color="var(--lh-error)" />
+						<StatusBadge text={t("incorrect")} color="var(--lh-error)" />
 					))}
 			</div>
 			<div className="mb-3 font-medium">
@@ -193,7 +193,7 @@ export function AnsweredCard({ answer: savedAnswer, input }: { answer: QuestionA
 				    the accent lift read too light); rail only, heights identical. */
 				<ThinkingBlock
 					testId="your-thinking"
-					label="YOUR THINKING"
+					label={t("yourThinking")}
 					text={answer.thinking ?? answer.note ?? ""}
 					images={answer.images?.thinking}
 					inCard
@@ -214,7 +214,7 @@ export function AnsweredCard({ answer: savedAnswer, input }: { answer: QuestionA
 						onClick={() => setWhyOpen((v) => !v)}
 						className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
 					>
-						{whyOpen ? "Hide why" : "Why"}
+						{whyOpen ? t("hideWhy") : t("why")}
 					</button>
 					{whyOpen && (
 						<div className="mt-1.5 rounded-lg bg-muted py-2 text-sm text-foreground/50">

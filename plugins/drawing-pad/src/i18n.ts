@@ -17,8 +17,10 @@
 const ZH: Record<string, string> = {
 	"Drawing pad": "绘图板",
 	"Draw (unsent)": "绘图（未发送）",
+	"Draw": "绘图",
 	"Undo drawing": "撤销绘图",
 	"Toggle pen/eraser": "切换画笔/橡皮",
+	"Hand": "平移",
 	"Dark mode ink color": "深色模式墨色",
 	"Light mode ink color": "浅色模式墨色",
 	"Six-digit hex color. Recolors all unsent ink when this app theme mode is active.": "六位十六进制颜色。该主题模式启用时，会重绘所有未发送的墨迹。",

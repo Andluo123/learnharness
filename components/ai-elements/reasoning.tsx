@@ -27,6 +27,7 @@ import { transformMathDelimiters } from "@/src/core";
 import { streamdownPlugins, streamdownRehypePlugins, streamdownRemend } from "./message";
 import { mdComponents } from "@/components/md-blocks";
 import { Shimmer } from "./shimmer";
+import { useT } from "@/i18n/use-t.ts";
 
 interface ReasoningContextValue {
   isStreaming: boolean;
@@ -134,20 +135,23 @@ export type ReasoningTriggerProps = ComponentProps<
    for a few seconds"), bookkeeping for information we knowingly lose. The
    label pairs with the user's collapsed "Your thinking" rows — one
    language; motion (spinner + shimmer) stays the working signal. */
-const defaultGetThinkingMessage = (isStreaming: boolean) => {
-  if (isStreaming) {
-    return <Shimmer duration={1}>Thinking...</Shimmer>;
-  }
-  return <p>AGENT’S THINKING</p>;
-};
+/** The default trigger copy, translated (zh-CN i18n wave). A HOOK-using
+ *  component so the label follows the UI language like every other
+ *  surface — the previous module-level function pinned English. */
+function DefaultThinkingMessage({ isStreaming }: { isStreaming: boolean }) {
+  const t = useT("chat");
+  if (isStreaming) return <Shimmer duration={1}>{t("thinkingUpper")}</Shimmer>;
+  return <p>{t("agentThinking")}</p>;
+}
 
 export const ReasoningTrigger = memo(
   ({
     className,
     children,
-    getThinkingMessage = defaultGetThinkingMessage,
+    getThinkingMessage,
     ...props
   }: ReasoningTriggerProps) => {
+    const t = useT("chat");
     const { isStreaming, isOpen } = useReasoning();
 
     return (
@@ -175,8 +179,8 @@ export const ReasoningTrigger = memo(
                 the component default (h-3) — IDENTICAL to the placeholder
                 spinner (owner, 2026-10-02): the handoff between the two
                 states must be visually seamless, one size everywhere. */}
-            {isStreaming && <BrailleSpinner label="Thinking" />}
-            {getThinkingMessage(isStreaming)}
+            {isStreaming && <BrailleSpinner label={t("thinking")} />}
+            {getThinkingMessage ? getThinkingMessage(isStreaming) : <DefaultThinkingMessage isStreaming={isStreaming} />}
             <ChevronDownIcon
               className={cn(
                 "size-4 transition-transform",

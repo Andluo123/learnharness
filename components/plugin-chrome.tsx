@@ -57,13 +57,18 @@ function ActionButton({ item, context, captureContext, className, iconOnly = fal
 	onRun?: () => void;
 }) {
 	const { manager } = usePlugins();
-	return <Hint label={item.action.name} side={context.placement === "graph" ? "right" : "bottom"}>
-		<button type="button" role={menuItem ? "menuitem" : undefined} data-plugin-action={item.key} title={item.action.name} aria-label={item.action.name}
+	const t = useT("pluginChrome");
+	// Plugin-authored names are DATA (the manifest/registration), not UI copy
+	// this app owns — so they resolve by plugin id, falling back to the
+	// plugin's own English name when no translation exists.
+	const actionName = t(`action.${item.pluginId}.${item.action.id}`, { fallback: item.action.name });
+	return <Hint label={actionName} side={context.placement === "graph" ? "right" : "bottom"}>
+		<button type="button" role={menuItem ? "menuitem" : undefined} data-plugin-action={item.key} title={actionName} aria-label={actionName}
 			disabled={item.busy || pluginActionDisabled(item.action, context)} aria-busy={item.busy || undefined}
 			className={`${className} disabled:pointer-events-none disabled:opacity-40`}
 			onClick={() => { void manager?.runAction(item.pluginId, item.action, () => { const captured = captureContext ? captureContext() : context; if (captured) onRun?.(); return captured; }); }}>
 			<ActionIcon action={item.action} />
-			{!iconOnly && <span className="min-w-0 truncate">{item.action.name}</span>}
+			{!iconOnly && <span className="min-w-0 truncate">{actionName}</span>}
 		</button>
 	</Hint>;
 }

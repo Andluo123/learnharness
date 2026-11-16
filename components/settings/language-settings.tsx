@@ -19,6 +19,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { useT } from "@/i18n/use-t.ts";
 import { LOCALES, LOCALE_LABELS, type AppLocale } from "@/i18n/config.ts";
 import { SettingsRow } from "./controls.tsx";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,7 @@ export function LanguageSettings({
 	value: AppLocale;
 	onChange: (language: AppLocale) => void;
 }) {
+	const t = useT("settingsGeneral");
 	const refresh = useOptionalRefresh();
 	const [pending, startTransition] = useTransition();
 
@@ -55,7 +57,7 @@ export function LanguageSettings({
 			hint="The language of the interface and of the agent's teaching."
 			testid="row-language"
 		>
-			<div role="radiogroup" aria-label="Language" data-testid="language-picker" className="flex items-center gap-1">
+			<div role="radiogroup" aria-label={t("languageRow")} data-testid="language-picker" className="flex items-center gap-1">
 				{LOCALES.map((locale) => {
 					const active = locale === value;
 					return (

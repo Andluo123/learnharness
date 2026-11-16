@@ -14,7 +14,7 @@ import { Hint } from "@/components/ui/hint";
 import { notifySettingsSaved, useSettingsSaved } from "@/components/settings-signal";
 import { useModelCatalog } from "@/components/model-catalog";
 export { useModelCatalog } from "@/components/model-catalog";
-import { defaultOrderLevel, populateLevel, thinkingLabel } from "@/components/thinking-default";
+import { defaultOrderLevel, populateLevel, useThinkingLabel } from "@/components/thinking-default";
 import { useT } from "@/i18n/use-t.ts";
 
 /** provider:id → known contextWindow over the cached catalog, mirroring
@@ -42,6 +42,7 @@ export function catalogLimits(catalog: Pick<ModelCatalogResponse, "models">): Ma
  * no-factory-fallback language: the UI never presents a default model).
  */
 export function ModelControl({ chatId, onModelChange }: { chatId?: string; onModelChange?: (model: string | undefined) => void }) {
+	const thinkingLabelOf = useThinkingLabel();
 	const t = useT("modelPicker");
 	const { catalog, refresh } = useModelCatalog();
 	const [models, setModels] = useState<ModelsSettings | undefined>();
@@ -300,7 +301,7 @@ export function ModelControl({ chatId, onModelChange }: { chatId?: string; onMod
 						openMenu("thinking");
 					}}
 					aria-expanded={open === "thinking"}
-				>{effectiveLevel === undefined ? "—" : thinkingLabel(effectiveLevel, t)}</ModelPickerPill>
+				>{effectiveLevel === undefined ? "—" : thinkingLabelOf(effectiveLevel)}</ModelPickerPill>
 			</Hint>
 
 			{/* The shared dropdown body (extracted 2026-09-20): the agent

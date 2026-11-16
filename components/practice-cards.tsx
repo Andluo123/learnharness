@@ -296,9 +296,10 @@ function MetadataPopover({
 }
 
 export function ThinkingCard({ data }: { data: PracticeThinkingData }) {
+	const t = useT("practiceCards");
 	// The unified row (owner rounds, 2026-10-05): one style, one label —
 	// 50%-italic quote block on expand. Legacy records' commit flag is
 	// deliberately unread (one lane now). A TRANSCRIPT row (owner round,
 	// 2026-10-07): full-width band + rail, arriving expanded.
-	return <ThinkingBlock testId="thinking-card" label="YOUR THINKING" text={data.text} images={data.images} defaultOpen />;
+	return <ThinkingBlock testId="thinking-card" label={t("yourThinking")} text={data.text} images={data.images} defaultOpen />;
 }

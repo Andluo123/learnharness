@@ -1928,7 +1928,7 @@ export function Chat({
 												) {
 													return (
 														<SystemLine key={`retry-${pi}`} testId="tool-retry">
-															Retrying…
+															{t("retrying")}
 														</SystemLine>
 													);
 												}

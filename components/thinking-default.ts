@@ -14,6 +14,7 @@
  */
 import { DEFAULT_THINKING_ORDER } from "@/src/core";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
+import { useT } from "@/i18n/use-t.ts";
 
 /** Display labels for the levels (shared by every trigger that shows
  *  one). Lowercase, always (owner refinement round, 2026-09-24): the
@@ -33,14 +34,26 @@ export const THINKING_LABEL: Record<string, string> = {
 /** The display label for a level, translated when a translator is supplied
  *  (zh-CN i18n wave). The raw level strings stay the identity key
  *  everywhere — the record, the clamp, and the wire are never translated;
- *  only what the learner READS is. Pure — exported for tests and for call
- *  sites without a hook. */
+ *  only what the learner READS is.
+ *
+ *  IMPORTANT: the translator must be the ROOT one (useT() with no
+ *  namespace) — the labels live under the top-level "thinking" namespace,
+ *  so a section-scoped translator would render the key path instead
+ *  ("modelPicker.thinking.medium"). useThinkingLabel() below is the
+ *  safe way to obtain one. */
 export function thinkingLabel(
 	level: string,
 	t?: (key: string) => string,
 ): string {
 	if (!t) return THINKING_LABEL[level] ?? level;
 	return t(`thinking.${level}`);
+}
+
+/** The hook form: a ROOT translator bound to the thinking namespace, safe
+ *  to call from any component regardless of its own useT namespace. */
+export function useThinkingLabel(): (level: string) => string {
+	const t = useT();
+	return (level: string) => thinkingLabel(level, t);
 }
 
 /** The level a fresh pick of `supported` populates with. Empty support

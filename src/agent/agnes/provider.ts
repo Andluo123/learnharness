@@ -51,8 +51,41 @@ export const AGNES_MODELS: readonly AgnesModelSpec[] = [
 	},
 ];
 
+/**
+ * Agnes's OpenAI-compatibility quirks, pinned explicitly.
+ *
+ * pi-ai's detectCompat() decides these from a provider/base-URL allowlist.
+ * Agnes is not on that list, so the defaults were used — and the endpoint
+ * rejected every tool round with:
+ *
+ *   400 ... missing field `tool_call_id` at line 1 column 43951 ...
+ *
+ * The cause: pi-ai only stamps the `name` field on a role:"tool" message
+ * when compat.requiresToolResultName is true, but Agnes validates against a
+ * schema that REQUIRES it alongside tool_call_id.
+ *
+ * Model.compat is the documented override seam, so the provider states its
+ * needs here instead of being inferred:
+ *  - requiresToolResultName: the 400 above (the field Agnes demands)
+ *  - maxTokensField "max_tokens": the endpoint documents max_tokens
+ *  - supportsReasoningEffort: Agnes documents a Thinking mode
+ *  - supportsStore/DeveloperRole off: plain Chat Completions, no /responses
+ */
+const AGNES_COMPAT = {
+	requiresToolResultName: true,
+	requiresAssistantAfterToolResult: false,
+	requiresThinkingAsText: false,
+	requiresReasoningContentOnAssistantMessages: false,
+	maxTokensField: "max_tokens" as const,
+	supportsReasoningEffort: true,
+	supportsStore: false,
+	supportsDeveloperRole: false,
+	supportsUsageInStreaming: true,
+	supportsFinishReason: true,
+} as const;
+
 /** Map one catalog entry to pi-ai's Model shape. */
-function toPiModel(spec: AgnesModelSpec): Model<Api> {
+function toPiModel(spec: AgnesModelSpec): Model<"openai-completions"> {
 	return {
 		id: spec.id,
 		name: spec.name,
@@ -65,6 +98,7 @@ function toPiModel(spec: AgnesModelSpec): Model<Api> {
 		contextWindow: spec.context,
 		maxTokens: spec.maxTokens,
 		type: "chat",
+		compat: AGNES_COMPAT,
 	};
 }
 

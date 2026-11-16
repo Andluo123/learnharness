@@ -133,6 +133,7 @@ export function QuestionDock({
 	compactionRunning = false,
 	workingRef,
 }: QuestionDockProps) {
+	const t = useT("questionDock");
 	// The probe-phase names (owner, 2026-10-09) canonicalize onto their
 	// teach twins for every dock concern — parse dispatch, labels, kinds:
 	// the probe quiz ("probe") is quiz-shaped, the probe free-recall
@@ -142,7 +143,7 @@ export function QuestionDock({
 	// The chip's display name carries the tool's OWN name (owner
 	// 2026-10-09): probe-phase questions label Probe/Recall in the
 	// composer; teach tools keep the standing labels.
-	const toolLabel = toolName === "probe" ? "Probe" : toolName === "recall" ? "Recall" : undefined;
+	const toolLabel = toolName === "probe" ? t("probeLabel") : toolName === "recall" ? t("recallLabel") : undefined;
 	// Parse, don't cast (src/core/tool-parts.ts): the model authored this
 	// input, and only the schema the tool declared vouches for its shape.
 	// The dock mounts on input-available parts (already validated at the
@@ -907,7 +908,7 @@ function QuestionDockForm({
 					className="rounded-[10px] border border-border/70 bg-background/60 transition-colors focus-within:border-primary/50"
 				>
 					<div className="px-2.5 pt-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-						{qd.mode === "text" ? "Your answer" : "YOUR THINKING"}
+						{qd.mode === "text" ? t("yourAnswer") : t("yourThinking")}
 					</div>
 					{qd.mode === "text" ? (
 						<PathInput
@@ -977,14 +978,13 @@ function QuestionDockForm({
 					)}
 					<div className="flex items-center justify-between gap-2 p-1">
 						<span aria-hidden className="pl-1.5 text-xs text-muted-foreground">
-								{compactionRunning ? "compacting session…" : "↵ submits · ⇧↵ newline"}
+								{compactionRunning ? t("compactingSession") : t("enterSubmits")}
 						</span>
 						<Button
 							type="submit"
 							disabled={!canSubmit || compactionRunning || preparing}
 							className="ml-auto h-9 rounded-[6px] px-3.5 text-sm font-medium"
-						>
-							Submit answer
+						>{t("submitAnswer")}
 						</Button>
 					</div>
 				</div>

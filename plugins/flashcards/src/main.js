@@ -419,8 +419,8 @@ export function activate(ctx) {
     }, signal);
     return () => { scope.abort(); root.remove(); };
   }
-  registrations.push(ctx.registerView({ id: 'library', name: 'Flashcards', mount: mountLibrary }));
-  registrations.push(ctx.registerAction({ id: 'open', name: 'Flashcards', icon: flashcardsIcon, run: () => ctx.app.openView('library') }));
+  registrations.push(ctx.registerView({ id: 'library', name: t('Flashcards'), mount: mountLibrary }));
+  registrations.push(ctx.registerAction({ id: 'open', name: t('Flashcards'), icon: flashcardsIcon, run: () => ctx.app.openView('library') }));
   registrations.push(ctx.placeAction({ id: 'open-sidebar', actionId: 'open', location: 'sidebar' }));
   registrations.push(ctx.registerSettings(mountSettings));
   registrations.push(ctx.onNotification(event => { if ((!event.pluginId || event.pluginId === ctx.manifest.id) && ['changed', 'batch-changed'].includes(event.topic)) void refresh(); }));

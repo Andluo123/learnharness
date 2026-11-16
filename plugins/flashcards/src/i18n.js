@@ -57,7 +57,8 @@ const ZH = {
 	"Delete": "删除",
 	"Close": "关闭",
 	"Search": "搜索",
-	"Loading…": "加载中…"
+	"Loading…": "加载中…",
+	"Flashcards": "闪卡"
 };
 
 /** The active UI language as the host declares it. */
