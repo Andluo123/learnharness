@@ -85,10 +85,10 @@ import { useT } from "@/i18n/use-t.ts";
 
 /** One slot's display identity — the tier's roster as the row hint rides
  *  with the resolved default (owner: the hint ALWAYS names the default). */
-const SLOT_META: Record<ModelSlotName, { label: string; roster: string }> = {
-	strong: { label: "Strong", roster: "The main model for your sessions" },
-	cheap: { label: "Cheap", roster: "The assistants that research, build demos, and grade your work" },
-	vision: { label: "Vision", roster: "The assistants that draw and read PDFs" },
+const SLOT_META: Record<ModelSlotName, { key: string; rosterKey: string }> = {
+	strong: { key: "slotStrong", rosterKey: "slotStrongRoster" },
+	cheap: { key: "slotCheap", rosterKey: "slotCheapRoster" },
+	vision: { key: "slotVision", rosterKey: "slotVisionRoster" },
 };
 
 /** The owner's final toggleable-tool list (confirm with the user before
@@ -580,7 +580,7 @@ export function AgentSection({
 					}}
 					className="text-xs text-muted-foreground/70 underline-offset-2 hover:text-foreground hover:underline"
 				>
-					{open ? "Hide text" : "Show text"}
+					{open ? t("hideText") : t("showText")}
 				</button>
 				{open && (
 					<div className="mt-1 flex flex-col gap-2">
@@ -662,7 +662,7 @@ export function AgentSection({
 					aria-expanded={advancedModels}
 					onClick={() => { setAdvancedModels(!advancedModels); setOpenMenu(null); }}
 					className="mb-1 self-start text-xs text-muted-foreground hover:text-foreground"
-				>{advancedModels ? "Hide advanced settings" : "Show advanced settings"}</button>
+				>{advancedModels ? t("hideAdvanced") : t("showAdvanced")}</button>
 				{catalogFailed && <p role="alert" className="text-xs text-error">Model catalog could not be loaded. Check the connection and retry. <button type="button" className="underline" onClick={refreshCatalog}>Retry</button></p>}
 				{MODEL_SLOTS.map((slot) => {
 					const override = models?.[slot];
@@ -685,8 +685,8 @@ export function AgentSection({
 					return (
 						<SettingsRow
 							key={slot}
-							label={SLOT_META[slot].label}
-							hint={SLOT_META[slot].roster}
+							label={t(SLOT_META[slot].key)}
+							hint={t(SLOT_META[slot].rosterKey)}
 							testid={`slot-row-${slot}`}
 						>
 							{/* The anchor for the outside-click contract is the
@@ -700,7 +700,7 @@ export function AgentSection({
 									value={modelId ? prettyModel(modelId) : ""}
 									hint={modelId ? `${provider}:${modelId}` : undefined}
 									emptyLabel="—"
-									ariaLabel={`${SLOT_META[slot].label} model`}
+									ariaLabel={t("slotModelAria", { slot: t(SLOT_META[slot].key) })}
 									testid={`slot-model-${slot}`}
 									open={thisMenuOpen === "model"}
 									onClick={() => setOpenMenu(thisMenuOpen === "model" ? null : { target: slot, kind: "model" })}
@@ -712,7 +712,7 @@ export function AgentSection({
 									// what the engine build runs). Display-only until a pick writes.
 									value={thinking || (chosen ? defaultOrderLevel(levels) : "")}
 									emptyLabel="—"
-									ariaLabel={`${SLOT_META[slot].label} thinking`}
+									ariaLabel={t("slotThinkingAria", { slot: t(SLOT_META[slot].key) })}
 									testid={`slot-thinking-${slot}`}
 									open={thisMenuOpen === "thinking"}
 									onClick={() => setOpenMenu(thisMenuOpen === "thinking" ? null : { target: slot, kind: "thinking" })}
@@ -721,7 +721,7 @@ export function AgentSection({
 								{advancedModels && <MenuTrigger
 									value={cacheRetentionLabel(override?.cacheRetention)}
 									emptyLabel="Cache: default"
-									ariaLabel={`${SLOT_META[slot].label} cache retention`}
+									ariaLabel={t("slotCacheAria", { slot: t(SLOT_META[slot].key) })}
 									testid={`slot-cache-${slot}`}
 									open={thisMenuOpen === "cache"}
 									disabled={!override?.model}
@@ -887,7 +887,7 @@ export function AgentSection({
 												active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
 											)}
 										>
-											{m === "choice" ? "Multiple choice" : "Free recall"}
+											{m === "choice" ? t("multipleChoice") : t("freeRecall")}
 										</button>
 									);
 								})}
@@ -898,7 +898,7 @@ export function AgentSection({
 				{TOGGLE_TOOLS.map((id) => (
 					<SettingsRow
 						key={id}
-						label={`Tool · ${id}`}
+						label={t("toolLabel", { id })}
 						testid={`tool-row-${id}`}
 					>
 						<Toggle
@@ -922,7 +922,7 @@ export function AgentSection({
 					return (
 						<div data-testid="file-access-row" className="flex flex-col gap-2">
 							<SettingsRow label={t("fileAccess")} hint={!restricted
-								? "Broad local source access, except protected locations"
+								? t("broadAccess")
 								: folders.length ? "Only listed folders and subfolders."
 									: "Restricted: no folders allowed. Add a folder to enable access."}>
 								<div className="flex items-center gap-2 text-xs">
@@ -964,7 +964,7 @@ export function AgentSection({
 							<span ref={open ? menuAnchorRef : undefined} className="relative flex items-center gap-2">
 								<MenuTrigger
 									value={SEARCH_ENGINES.find(({ id }) => id === engine)?.label ?? ""}
-									emptyLabel="Automatic"
+									emptyLabel={t("automatic")}
 									ariaLabel="Search engine"
 									testid="search-engine-trigger"
 									open={open}
@@ -980,7 +980,7 @@ export function AgentSection({
 										onClose={() => { setOpenMenu(null); return "closed"; }}
 										menuClass="flex w-44 flex-col gap-0.5 rounded-xl border border-border bg-card p-2 text-xs shadow-xl"
 									>
-										{engineOption("auto", "Automatic", engine === null, null, () => {
+										{engineOption("auto", t("automatic"), engine === null, null, () => {
 											onSectionChange(composeSearchEngine(agent, null));
 											setOpenMenu(null);
 										})}
@@ -1029,12 +1029,12 @@ export function AgentSection({
 					/>
 				</SettingsRow>
 				<SettingsRow
-					label="Include reasoning in token estimates (OpenAI Responses only)"
+					label={t("includeReasoning")}
 					hint="Use saved output-token usage to account for replayed reasoning on matching OpenAI Responses models. Off uses the original text-based estimate."
 					testid="compaction-row-reasoning"
 				>
 					<Toggle
-						label="Include reasoning in token estimates (OpenAI Responses only)"
+						label={t("includeReasoning")}
 						checked={resolvedCompaction.includeReasoning}
 						onChange={(includeReasoning) => onCompactionChange({ ...compaction, includeReasoning })}
 					/>
@@ -1051,7 +1051,7 @@ export function AgentSection({
 						{sectionedSegments(prompts).map((section) => (
 							<div key={section.id} data-testid={`prompt-section-${section.id}`}>
 								<p className="mb-1 text-xs uppercase tracking-widest text-muted-foreground/70">
-									{section.label}
+									{t(`section.${section.id}`)}
 								</p>
 								<div className="flex flex-col gap-2">
 									{section.segments.map((info) => segmentRow(info))}

@@ -157,7 +157,13 @@
 		"keptNote": "会话、已导入的来源记录以及非空文件夹都会保留。",
 		"emptyFolders": "空文件夹：",
 		"deleting": "正在删除…",
-		"deleteButton": "删除"
+		"deleteButton": "删除",
+		"deleteSessionBody": "这将永久删除该会话 —— 包括它的消息、后台任务与提取记录。除非勾选下方选项，否则它加入知识图谱的内容会保留。此操作无法撤销。",
+		"tracesTitle": "同时移除它的图谱痕迹",
+		"tracesBody": "该会话的主题、连线与事件也会从图谱中移除。其他会话或导入笔记同样涵盖的主题会保留；仅由该会话创建的主题将被彻底移除。",
+		"tryAgain": "重试",
+		"cancel": "取消",
+		"delete": "删除"
 	},
 	"activity": {
 		"totalRunningCost": "累计运行成本（估算）",
@@ -167,7 +173,19 @@
 		"backgroundAgents": "后台代理",
 		"abortFailed": "中止失败 —— 请重试",
 		"endBackgroundProcess": "结束此后台进程",
-		"endProcessIn": "结束 {title} 中的 {label}"
+		"endProcessIn": "结束 {title} 中的 {label}",
+		"jobExtraction": "提取中 — {phase}",
+		"jobResearcher": "研究员",
+		"jobDemoBuilder": "演示构建器",
+		"jobFigureMaker": "图形生成器",
+		"jobPdfReader": "PDF 阅读器",
+		"jobPluginWorker": "插件工作器",
+		"jobSubAgent": "子代理",
+		"phase": {
+			"running": "进行中",
+			"extracting": "提取中",
+			"idle": "空闲"
+		}
 	},
 	"stats": {
 		"contextLastCall": "上下文（上次调用）",
@@ -457,7 +475,32 @@
 		"override": "覆盖版本",
 		"originalInstructions": "原始指令",
 		"yourInstructions": "你的指令版本",
-		"addInstructions": "添加你自己的指令…"
+		"addInstructions": "添加你自己的指令…",
+		"hideAdvanced": "隐藏高级设置",
+		"showAdvanced": "显示高级设置",
+		"toolLabel": "工具 · {id}",
+		"broadAccess": "可访问本地来源，受保护位置除外",
+		"automatic": "自动",
+		"includeReasoning": "在 token 估算中计入推理内容（仅 OpenAI Responses）",
+		"hideText": "隐藏原文",
+		"showText": "显示原文",
+		"slotStrong": "强",
+		"slotStrongRoster": "用于你的会话的主模型",
+		"slotCheap": "经济",
+		"slotCheapRoster": "负责调研、构建演示与批改作业的助手",
+		"slotVision": "视觉",
+		"slotVisionRoster": "负责绘图与阅读 PDF 的助手",
+		"slotModelAria": "{slot}模型",
+		"slotThinkingAria": "{slot}思考等级",
+		"slotCacheAria": "{slot}缓存保留",
+		"multipleChoice": "选择题",
+		"freeRecall": "自由回忆",
+		"section": {
+			"teacher": "教师",
+			"prober": "探测者",
+			"practice": "练习",
+			"shared": "共享"
+		}
 	},
 	"settingsKeys": {
 		"pasteKey": "粘贴密钥…",

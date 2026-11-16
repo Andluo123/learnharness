@@ -351,7 +351,13 @@ export function Chat({
 	const inputViewReader = useRef<(() => PluginSessionViewInput) | null>(null) as SessionInputViewReader;
 	const refreshPluginActions = useRef<(() => void) | null>(null);
 	const notifyViewChanged = useCallback(() => { if (submissionMounted.current) refreshPluginActions.current?.(); }, []);
-	inputViewReader.changed = notifyViewChanged;
+	// The reader is a live capability handle that some capture paths clone and
+	// freeze (see core/plugin-view-context.ts). Assigning onto a frozen object
+	// throws "Cannot add property changed, object is not extensible", so the
+	// assignment is guarded: when the handle is frozen the callback is already
+	// in place from the render that created it.
+	try { inputViewReader.changed = notifyViewChanged; }
+	catch { /* frozen handle: the installed callback stands */ }
 	const submissionLive = useRef({ nativeMessages, surfaceTarget, ready: true });
 	submissionLive.current = { nativeMessages, surfaceTarget, ready: true };
 	const runSubmission = async (target: PluginSubmissionTarget, capture: () => PluginSubmission | Promise<PluginSubmission>, current: () => boolean, deliver: (prepared: PluginSubmission, attempt: SubmissionAttempt) => Promise<boolean>): Promise<boolean> => {

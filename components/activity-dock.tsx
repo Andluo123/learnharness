@@ -428,18 +428,18 @@ function ActivityBlobRow({
 	const Icon = blob.process === "extraction" ? WaypointsIcon : (blob.jobKind && KIND_ICON[blob.jobKind]) || BotIcon;
 	const label =
 		blob.process === "extraction"
-			? `Extraction — ${blob.phase ?? "running"}`
+			? t("jobExtraction", { phase: blob.phase ?? "running" })
 			: blob.jobKind === "research"
-				? "Researcher"
+				? t("jobResearcher")
 				: blob.jobKind === "demo"
-					? "Demo builder"
+					? t("jobDemoBuilder")
 					: blob.jobKind === "visual"
-						? "Figure maker"
+						? t("jobFigureMaker")
 						: blob.jobKind === "pdf"
-							? "PDF reader"
+							? t("jobPdfReader")
 							: blob.jobKind === "plugin"
-								? "Plugin worker"
-								: "Sub-agent";
+								? t("jobPluginWorker")
+								: t("jobSubAgent");
 	return (
 		<div
 			data-testid={`activity-blob-${blob.process}`}

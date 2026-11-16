@@ -12,8 +12,12 @@ import { useT } from "@/i18n/use-t.ts";
 export const TRACES_COPY = {
 	testid: "delete-traces",
 	checkbox: "delete-traces-checkbox",
+	titleKey: "tracesTitle",
+	bodyKey: "tracesBody",
+	// English source copy — the render tests pin this exact wording, and the
+	// UI translates through titleKey/bodyKey at render time.
 	title: "Also remove its graph traces",
-	body: "This session’s topics, links, and events leave the graph too. Topics other sessions or imported notes also cover survive; topics only this session created are removed entirely.",
+	body: "This session's topics, links, and events leave the graph too. Topics other sessions or imported notes also cover survive; topics only this session created are removed entirely.",
 };
 
 /**
@@ -155,10 +159,7 @@ export function DeleteSessionBody({
 					{chat.title}
 				</code>
 			</div>
-			<p className="mt-2 text-sm text-muted-foreground">
-				This permanently removes the session — its messages, background jobs, and extraction records. Everything
-				it added to the graph stays unless you check below. This cannot be undone.
-			</p>
+			<p className="mt-2 text-sm text-muted-foreground">{t("deleteSessionBody")}</p>
 			<label
 				data-testid={TRACES_COPY.testid}
 				className="mt-4 flex cursor-pointer items-start gap-2.5 rounded-lg border border-border/60 px-4 py-3"
@@ -172,8 +173,8 @@ export function DeleteSessionBody({
 					className="mt-0.5 size-4 shrink-0 accent-primary"
 				/>
 				<span className="min-w-0">
-					<span className="block text-sm text-foreground">{TRACES_COPY.title}</span>
-					<span className="mt-1 block text-xs text-muted-foreground">{TRACES_COPY.body}</span>
+					<span className="block text-sm text-foreground">{t(TRACES_COPY.titleKey)}</span>
+					<span className="mt-1 block text-xs text-muted-foreground">{t(TRACES_COPY.bodyKey)}</span>
 				</span>
 			</label>
 			{failure && (
@@ -190,7 +191,7 @@ export function DeleteSessionBody({
 						disabled={busy}
 						className="ml-3 text-xs text-foreground underline-offset-2 hover:underline disabled:opacity-40"
 					>
-						Try again
+						{t("tryAgain")}
 					</button>
 				</div>
 			)}
@@ -205,7 +206,7 @@ export function DeleteSessionBody({
 					disabled={busy}
 					className="rounded-sm px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground disabled:opacity-40"
 				>
-					Cancel
+					{t("cancel")}
 				</button>
 				<button
 					type="button"
@@ -214,7 +215,7 @@ export function DeleteSessionBody({
 					disabled={busy}
 					className="rounded-sm border border-destructive/50 bg-destructive/10 px-3 py-1.5 text-xs text-destructive transition-colors hover:bg-destructive/20 disabled:opacity-40"
 				>
-					{busy ? "Deleting…" : "Delete"}
+					{busy ? t("deleting") : t("delete")}
 				</button>
 			</div>
 		</div>

@@ -58,10 +58,11 @@ function ActionButton({ item, context, captureContext, className, iconOnly = fal
 }) {
 	const { manager } = usePlugins();
 	const t = useT("pluginChrome");
-	// Plugin-authored names are DATA (the manifest/registration), not UI copy
-	// this app owns — so they resolve by plugin id, falling back to the
-	// plugin's own English name when no translation exists.
-	const actionName = t(`action.${item.pluginId}.${item.action.id}`, { fallback: item.action.name });
+	// Plugin-authored names are DATA the plugin localizes itself (each plugin
+	// ships its own i18n and reads <html lang>). The host must NOT translate
+	// them: doing so demanded keys the host does not own and produced
+	// MISSING_MESSAGE console noise for every plugin action.
+	const actionName = item.action.name;
 	return <Hint label={actionName} side={context.placement === "graph" ? "right" : "bottom"}>
 		<button type="button" role={menuItem ? "menuitem" : undefined} data-plugin-action={item.key} title={actionName} aria-label={actionName}
 			disabled={item.busy || pluginActionDisabled(item.action, context)} aria-busy={item.busy || undefined}
