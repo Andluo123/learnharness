@@ -63,13 +63,13 @@ export function mountDashboard({ container, signal }) {
     const descriptions = [];
     for (const [index, row] of rows.entries()) {
       const labels = dateLabels(row.day);
-      const special = kind === 'due' && row.day === null ? t('Overdue') : (kind === 'due' && index === 1) || (kind === 'activity' && index === rows.length - 1) ? 'Today' : '';
+      const special = kind === 'due' && row.day === null ? t('Overdue') : (kind === 'due' && index === 1) || (kind === 'activity' && index === rows.length - 1) ? t('Today') : '';
       const label = special || (kind === 'due' ? labels.weekday : labels.date);
       const detail = special || labels.full, value = count(row.count);
       descriptions.push(`${detail}: ${value}`);
       const group = svgElement('g', { 'data-day': row.day ?? 'overdue' });
       const x = step * (index + .5), height = Math.max(1, value / maximum * 104);
-      const bucket = kind === 'activity' ? 'activity' : special === t('Overdue') ? 'overdue' : special === 'Today' ? 'today' : 'future';
+      const bucket = kind === 'activity' ? 'activity' : special === t('Overdue') ? 'overdue' : special === t('Today') ? 'today' : 'future';
       // Palette hooks belong to bars, never their groups or foreground labels.
       group.append(svgElement('rect', { class: 'fc-chart-bar', 'data-bucket': bucket, x: x - step * .3, y: baseline - height, width: step * .6, height, fill: 'currentColor', opacity: '.6', rx: 2 }));
       group.append(svgElement('text', { class: 'fc-chart-count', x, y: baseline - height - 6, 'text-anchor': 'middle', 'font-size': 12, fill: 'currentColor' }, String(value)));

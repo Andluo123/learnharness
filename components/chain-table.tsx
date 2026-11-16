@@ -321,7 +321,7 @@ export function ChainTableBody({
 			    law: later in the DOM). */}
 			<TopBar sidebarToggle={!pickerChrome}>
 				<span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
-					{chains.length} {chains.length === 1 ? "chain" : "chains"} · {nodes.length} {nodes.length === 1 ? "node" : "nodes"}
+					{t("counts", { chains: chains.length, nodes: nodes.length })}
 				</span>
 				{onOrganizationChange && <button type="button" aria-label={t("addFolder")} data-testid="add-source-folder"
 					onClick={() => setCreatingFolder(true)} className="lh-no-drag rounded-lg p-2 text-muted-foreground hover:bg-accent"><FolderPlusIcon className="size-4" /></button>}
@@ -366,7 +366,7 @@ export function ChainTableBody({
 						aria-sort={sort.col === "name" ? (sort.dir === 1 ? "ascending" : "descending") : "none"}
 						{...treeColumnLayout({ grow: true, align: "left", className: "flex items-center gap-1 transition-colors hover:text-foreground" })}
 					>
-						Name {dirIcon("name")}
+						{t("colName")} {dirIcon("name")}
 					</button>
 					<button
 						type="button"
@@ -375,7 +375,7 @@ export function ChainTableBody({
 						aria-sort={sort.col === "props" ? (sort.dir === 1 ? "ascending" : "descending") : "none"}
 						{...treeColumnLayout({ widthClassName: "w-14", align: "right", className: "flex items-center justify-end gap-1 transition-colors hover:text-foreground" })}
 					>
-						Props {dirIcon("props")}
+						{t("colProps")} {dirIcon("props")}
 					</button>
 					<button
 						type="button"
@@ -384,7 +384,7 @@ export function ChainTableBody({
 						aria-sort={sort.col === "created" ? (sort.dir === 1 ? "ascending" : "descending") : "none"}
 						{...treeColumnLayout({ widthClassName: "w-20", align: "right", className: "flex items-center justify-end gap-1 transition-colors hover:text-foreground" })}
 					>
-						Created {dirIcon("created")}
+						{t("colCreated")} {dirIcon("created")}
 					</button>
 				</TreeHeader>
 
@@ -429,7 +429,7 @@ export function ChainTableBody({
 								<TreeGuide selectionColumn depth={0} data-testid={`cluster-thread-${group.key}`} />
 							)}
 							{/* The cluster row: birth-session group header. */}
-							<SourceDragRow {...chainRow(["source", group.key], depth, open)} kind="source" id={group.key} name={group.label ?? "unlabeled"} enabled={Boolean(onOrganizationChange && group.birth)} {...treeRowLayout()}>
+							<SourceDragRow {...chainRow(["source", group.key], depth, open)} kind="source" id={group.key} name={group.label ?? t("unlabeled")} enabled={Boolean(onOrganizationChange && group.birth)} {...treeRowLayout()}>
 								<RowCheckbox
 									disabled={selectMode ? group.nodeIds.length === 0 : !directory?.sources.some((s) => s.id === group.birth)}
 									checked={selectMode ? selectedCount === group.nodeIds.length && group.nodeIds.length > 0 : group.birth !== null && selectedSources.has(group.birth)}
@@ -446,7 +446,7 @@ export function ChainTableBody({
 								{onOrganizationChange && group.birth && group.kind !== null
 									? <EditableSourceName name={group.label ?? ""} muted={empty} onSave={(name) => onOrganizationChange({ action: "rename-source", id: group.birth!, name })} />
 									: <span className={`min-w-0 flex-1 truncate text-sm font-medium${empty ? " text-muted-foreground/60" : ""}`}>{group.label ?? <span className="text-muted-foreground/60">unlabeled</span>}</span>}
-								{group.kind === "notes" && <span className="text-[11px] uppercase tracking-widest text-muted-foreground/60">notes</span>}
+								{group.kind === "notes" && <span className="text-[11px] uppercase tracking-widest text-muted-foreground/60">{t("notesBadge")}</span>}
 								<TreeCell widthClassName="w-14" align="right" className="text-xs tabular-nums text-muted-foreground">
 									{group.nodeIds.length}
 								</TreeCell>
@@ -586,7 +586,7 @@ export function ChainTableBody({
 						className="pointer-events-auto flex items-center gap-3 rounded-full border bg-card py-2 pl-4 pr-2 shadow-lg"
 					>
 						<span data-testid="chain-selected-summary" className="text-xs font-medium">
-							{selectMode ? <>{selection.size} {selection.size === 1 ? "node" : "nodes"} → {derived.length} {derived.length === 1 ? "chain" : "chains"}</>
+							{selectMode ? <>{t("selectionSummary", { nodes: selection.size, chains: derived.length })}</>
 								: <>{selectedSources.size} {selectedSources.size === 1 ? "source" : "sources"}{fullySelectedFolders.size > 0 && ` · ${fullySelectedFolders.size} ${fullySelectedFolders.size === 1 ? "folder" : "folders"}`}</>}
 						</span>
 						<button

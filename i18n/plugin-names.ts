@@ -15,7 +15,7 @@ import type { AppLocale } from "./config.ts";
 
 /** The catalogue the settings surface knows how to name. */
 export const PLUGIN_NAMES: Readonly<Record<string, string>> = {
-	flashcards: "闪卡",
+	flashcards: "记忆卡片",
 	"coding-questions": "编程题",
 	"drawing-pad": "绘图板",
 	"rich-code-blocks": "富代码块",

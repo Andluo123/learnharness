@@ -220,7 +220,14 @@
 		"searchNodesPlaceholder": "Search nodes…",
 		"searchNodes": "Search nodes",
 		"closeChains": "Close chains",
-		"deleteSources": "Delete selected sources and folders"
+		"deleteSources": "Delete selected sources and folders",
+		"counts": "{chains, plural, one {# chain} other {# chains}} · {nodes, plural, one {# node} other {# nodes}}",
+		"colName": "Name",
+		"colProps": "Props",
+		"colCreated": "Created",
+		"selectionSummary": "{nodes, plural, one {# node} other {# nodes}} → {chains, plural, one {# chain} other {# chains}}",
+		"unlabeled": "unlabeled",
+		"notesBadge": "notes"
 	},
 	"sourceTree": {
 		"folderNamePlaceholder": "Folder name",
@@ -575,7 +582,12 @@
 		"allowReuse": "Allow reuse of the effective existing key for this URL",
 		"reloadConfig": "Reload configuration",
 		"deepgramHintBefore": "Create a",
-		"deepgramHintAfter": " with the Member role or higher, then add it above."
+		"deepgramHintAfter": " with the Member role or higher, then add it above.",
+		"save": "Save",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"saving": "Saving…",
+		"saveLimits": "Save limits"
 	},
 	"settingsAppearance": {
 		"typography": "Typography",

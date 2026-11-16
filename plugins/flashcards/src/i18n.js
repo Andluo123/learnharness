@@ -36,12 +36,12 @@ const ZH = {
 	"Proposition": "命题",
 	"Archive": "归档",
 	"Rename deck": "重命名牌组",
-	"Flashcards library": "闪卡库",
+	"Flashcards library": "记忆卡片库",
 	"Propositions": "命题",
 	"New today": "今日新增",
-	"No matching flashcards.": "没有匹配的闪卡。",
-	"No flashcards yet. Pick knowledge or upload a file above to generate your first cues.": "还没有闪卡。在上方选择知识点或上传文件，即可生成第一批提示。",
-	"Flashcard practice": "闪卡练习",
+	"No matching flashcards.": "没有匹配的记忆卡片。",
+	"No flashcards yet. Pick knowledge or upload a file above to generate your first cues.": "还没有记忆卡片。在上方选择知识点或上传文件，即可生成第一批提示。",
+	"Flashcard practice": "记忆卡片练习",
 	"Practice mode does not change your review schedule.": "练习模式不会改变你的复习计划。",
 	"Practice complete.": "练习完成。",
 	"Reveal answer": "显示答案",
@@ -58,7 +58,7 @@ const ZH = {
 	"Close": "关闭",
 	"Search": "搜索",
 	"Loading…": "加载中…",
-	"Flashcards": "闪卡",
+	"Flashcards": "记忆卡片",
 	"Decks…": "牌组…",
 	"Search decks, propositions, and cues": "搜索牌组、命题与提示",
 	"Delete selected": "删除所选",
@@ -71,7 +71,7 @@ const ZH = {
 	"Generation chunk budget (estimated tokens)": "生成分块预算（估算 token 数）",
 	"Model": "模型",
 	"Follow cheap slot": "跟随「经济」槽位",
-	"Generate flashcards": "生成闪卡",
+	"Generate flashcards": "生成记忆卡片",
 	"Generate from file…": "从文件生成…",
 	"Create deck": "新建牌组",
 	"Review all": "复习全部",
@@ -82,7 +82,11 @@ const ZH = {
 	"Review": "复习",
 	"New": "新卡",
 	"New propositions per day": "每日新命题数",
-	"Today": "今天"
+	"Today": "今天",
+	"{count} selected": "已选 {count} 项",
+	"Name": "名称",
+	"Due": "到期",
+	"notes": "笔记"
 };;
 
 /** The active UI language as the host declares it. */

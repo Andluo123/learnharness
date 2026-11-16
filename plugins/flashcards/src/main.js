@@ -268,7 +268,7 @@ export function activate(ctx) {
     const clearSelection = button(selectionSummary, t('Clear'), () => tree.clearSelection(), signal, { variant: 'ghost', disabled: true });
     const updateSelection = () => {
       const selected = selection.count > 0;
-      selectionCount.textContent = `${selection.count} selected`;
+      selectionCount.textContent = t('{count} selected').replace('{count}', String(selection.count));
       reviewAction.update({ label: selected ? t('Review selected') : t('Review all'), disabled: selected && !selection.cueIds.length });
       practiceAction.update({ label: selected ? t('Practice selected') : t('Practice all'), disabled: selected ? !selection.cueIds.length : !hasPracticeCards });
       const blocked = !!activeBatch(snapshot?.batch);

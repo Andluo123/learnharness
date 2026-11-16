@@ -220,7 +220,14 @@
 		"searchNodesPlaceholder": "搜索节点…",
 		"searchNodes": "搜索节点",
 		"closeChains": "关闭链路视图",
-		"deleteSources": "删除选中的来源与文件夹"
+		"deleteSources": "删除选中的来源与文件夹",
+		"counts": "{chains} 条链路 · {nodes} 个节点",
+		"colName": "名称",
+		"colProps": "属性",
+		"colCreated": "创建时间",
+		"selectionSummary": "{nodes} 个节点 → {chains} 条链路",
+		"unlabeled": "未命名",
+		"notesBadge": "笔记"
 	},
 	"sourceTree": {
 		"folderNamePlaceholder": "文件夹名称",
@@ -575,7 +582,12 @@
 		"allowReuse": "允许为此 URL 复用当前有效的已有密钥",
 		"reloadConfig": "重新加载配置",
 		"deepgramHintBefore": "创建一个",
-		"deepgramHintAfter": "（需 Member 或更高权限），然后在上方填入。"
+		"deepgramHintAfter": "（需 Member 或更高权限），然后在上方填入。",
+		"save": "保存",
+		"cancel": "取消",
+		"delete": "删除",
+		"saving": "保存中…",
+		"saveLimits": "保存限制"
 	},
 	"settingsAppearance": {
 		"typography": "排版",
@@ -618,7 +630,7 @@
 		"pluginLoading": "加载中…",
 		"plugin": {
 			"flashcards": {
-				"name": "闪卡",
+				"name": "记忆卡片",
 				"description": "从你的知识图谱生成事实回忆提示，并用 FSRS-6 安排复习。生成过程使用你配置的模型，可能产生费用。仅支持原生应用，不集成 Anki。"
 			},
 			"coding-questions": {

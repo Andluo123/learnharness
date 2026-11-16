@@ -232,7 +232,7 @@ function KeyTableRow({
 						data-testid={`${testid}-save`}
 						className="shrink-0 text-xs text-foreground underline-offset-2 hover:underline disabled:text-muted-foreground/40 disabled:no-underline"
 					>
-						Save
+						{t("save")}
 					</button>
 					<button
 						type="button"
@@ -241,7 +241,7 @@ function KeyTableRow({
 						data-testid={`${testid}-cancel`}
 						className="shrink-0 text-xs text-muted-foreground/70 underline-offset-2 hover:text-foreground hover:underline"
 					>
-						Cancel
+						{t("cancel")}
 					</button>
 					{status.present && status.source === "file" && onDelete && (
 						<button
@@ -251,7 +251,7 @@ function KeyTableRow({
 							data-testid={`${testid}-delete`}
 							className="shrink-0 text-xs text-muted-foreground/70 underline-offset-2 hover:text-error hover:underline"
 						>
-							Delete
+							{t("delete")}
 						</button>
 					)}
 				</div>
@@ -1043,7 +1043,7 @@ function CustomEndpointEditor({
 							data-testid="custom-pins-save"
 							className="ml-auto shrink-0 text-xs text-foreground underline-offset-2 hover:underline disabled:text-muted-foreground/40 disabled:no-underline"
 						>
-							{pinsBusy ? "Saving…" : "Save limits"}
+							{pinsBusy ? t("saving") : t("saveLimits")}
 						</button>
 					</div>
 				</div>

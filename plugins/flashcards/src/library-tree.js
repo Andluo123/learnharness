@@ -90,7 +90,7 @@ export function mountLibraryTree({ ctx, container, signal, button, onReview, onP
       if (record.kind === 'deck') {
         if (!drafts.has(record.deck.id)) drafts.set(record.deck.id, { editing: false, value: '', saving: false, error: '' });
         draft = drafts.get(record.deck.id);
-        input = el('input', 'fc-tree-rename'); input.type = 'text'; input.setAttribute('aria-label', 'Deck name');
+        input = el('input', 'fc-tree-rename'); input.type = 'text'; input.setAttribute('aria-label', t('Deck name'));
         error = el('span', 'fc-tree-rename-error'); error.setAttribute('role', 'alert');
         const commit = async () => {
           if (!live() || mountSignal.aborted || !draft.editing || draft.saving) return;
@@ -144,9 +144,9 @@ export function mountLibraryTree({ ctx, container, signal, button, onReview, onP
     if (records.has(key)) Object.assign(records.get(key), data); else records.set(key, data);
     return content(key);
   }
-  let tree = ctx.ui.mountTree(inner, { label: t('Flashcards library'), header: 'Name', rows: [], columns: [
+  let tree = ctx.ui.mountTree(inner, { label: t('Flashcards library'), header: t('Name'), rows: [], columns: [
     { key: 'propositions', header: t('Propositions'), width: '6.5rem', align: 'right' },
-    { key: 'due', header: 'Due', width: '3rem', align: 'right' },
+    { key: 'due', header: t('Due'), width: '3rem', align: 'right' },
     { key: 'new', header: t('New today'), width: '6rem', align: 'right' },
   ] }, { signal });
   function render() {
