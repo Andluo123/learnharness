@@ -6,6 +6,9 @@ import type { FrontendPlugin } from "@/components/plugin-manager";
 import { Button } from "@/components/ui/button";
 import { SettingsRow, SettingsSection, Toggle } from "./controls";
 import { useT } from "@/i18n/use-t.ts";
+import { pluginDisplayName } from "@/i18n/plugin-names.ts";
+import { useActiveLocale } from "@/i18n/use-active-locale.ts";
+import { LOCALE_LABELS, isAppLocale, type AppLocale } from "@/i18n/config.ts";
 
 export const PLUGIN_TRUST_WARNING = "Only enable plugins you trust. Plugins run trusted local code with broad file and network access; they are not sandboxed. A broken plugin may require restarting LearnHarness.";
 
@@ -52,10 +55,11 @@ export function PluginsSection({ onOpenSettings, origin = "community" }: { onOpe
 }
 
 function PluginRow({ plugin, onSettings }: { plugin: FrontendPlugin; onSettings: () => void }) {
+	const activeLocale = useActiveLocale();
 	const t = useT("settingsPlugins");
 	const { manager, snapshot } = usePlugins();
 	const { info } = plugin;
-	const name = t(`plugin.${info.id}.name`);
+	const name = pluginDisplayName(info.id, info.manifest?.name, activeLocale, t);
 	return <div className="border-t border-border/60 pt-3" data-testid={`plugin-${info.id}`}>
 		<SettingsRow label={name} hint={[info.origin === "community" ? info.manifest?.version : undefined, plugin.busy ? t("saving") : plugin.error ? t("pluginError") : plugin.phase === "loading" ? t("pluginLoading") : info.enabled ? t("enabled") : t("disabled")].filter(Boolean).join(" · ")}>
 			<div className="flex shrink-0 items-center gap-2">

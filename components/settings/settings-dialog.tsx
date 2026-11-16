@@ -62,6 +62,9 @@ import { usePlugins } from "@/components/plugins";
 import { useT } from "@/i18n/use-t.ts";
 import { ChatGPTUIProvider } from "./chatgpt-connection.tsx";
 import { NativeSubscriptionUIProvider } from "./subscription-connections.tsx";
+import { pluginDisplayName } from "@/i18n/plugin-names.ts";
+import { useActiveLocale } from "@/i18n/use-active-locale.ts";
+import { LOCALE_LABELS, isAppLocale, type AppLocale } from "@/i18n/config.ts";
 
 /** Owner (2026-09-20): hints earn their place — mechanics-explaining
  *  prose is out; only the keyboard note stays (storage location is a
@@ -195,6 +198,8 @@ export function SettingsDialogBody({
 	 *  retargets follow it exactly like initialSection below. */
 	initialRow?: string | null;
 }) {
+	const activeLocale = useActiveLocale();
+	const pluginT = useT("settingsPlugins");
 	const t = useT("settings");
 	const { onAppearanceChange } = useAppearance();
 	const inheritedWriteOrder = useContext(WriteOrderContext);
@@ -268,7 +273,7 @@ export function SettingsDialogBody({
 		})),
 		{ id: "core-plugins", label: t("sections.corePlugins"), icon: PlugIcon },
 		{ id: "plugins", label: t("sections.plugins"), icon: PuzzleIcon },
-		...enabledPlugins.map(plugin => ({ id: `plugin:${plugin.info.id}` as const, label: plugin.info.manifest?.name ?? plugin.info.id })),
+		...enabledPlugins.map(plugin => ({ id: `plugin:${plugin.info.id}` as const, label: pluginDisplayName(plugin.info.id, plugin.info.manifest?.name, activeLocale, pluginT) })),
 	];
 
 	// A save may finish after its original dialog closes. Publish its

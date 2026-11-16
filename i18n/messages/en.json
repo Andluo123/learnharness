@@ -379,7 +379,8 @@
 	"minimalHome": {
 		"startSessionToLearn": "Start a session to begin learning.",
 		"attachMaterial": "Attach your material with the paperclip or drag and drop.",
-		"everyReasoningChain": "Every reasoning chain"
+		"everyReasoningChain": "Every reasoning chain",
+		"chainsButton": "Chains"
 	},
 	"sideThread": {
 		"showQuotedText": "Show the quoted tutor text",
@@ -472,7 +473,9 @@
 	},
 	"notesImport": {
 		"extractHint": "Extract files into the graph",
-		"attachInstead": "For lessons, attach material to a session instead."
+		"attachInstead": "For lessons, attach material to a session instead.",
+		"extracting": "Extracting…",
+		"extractFiles": "Extract files…"
 	},
 	"pluginKnowledgePicker": {
 		"pickNodes": "Pick nodes",

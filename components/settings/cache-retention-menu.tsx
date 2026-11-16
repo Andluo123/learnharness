@@ -20,7 +20,17 @@ export function cacheRetentionLabel(
 ): string {
 	const compact = OPTIONS.find((option) => option.value === value)!.compact;
 	if (!t) return `Cache: ${compact}`;
+	// `t` MUST be bound to the "settingsCacheRetention" namespace (it is the
+	// one useT() at the top of this module). Passing a root translator here
+	// rendered the raw keys (MISSING_MESSAGE: compactSummary / compact.default).
 	return t("compactSummary", { mode: t(`compact.${compact.replace(/\s+/g, "")}`) });
+}
+
+/** The hook form — the safe way for a caller to get the correctly-namespaced
+ *  translator for cacheRetentionLabel(). */
+export function useCacheRetentionLabel(): (value: CacheRetention | undefined) => string {
+	const t = useT("settingsCacheRetention");
+	return (value: CacheRetention | undefined) => cacheRetentionLabel(value, t);
 }
 
 export function CacheRetentionMenu({ value, onPick }: {

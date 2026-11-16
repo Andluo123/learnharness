@@ -53,11 +53,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CacheRetention } from "@earendil-works/pi-ai";
-import { CacheRetentionMenu, cacheRetentionLabel } from "./cache-retention-menu.tsx";
+import { CacheRetentionMenu, useCacheRetentionLabel } from "./cache-retention-menu.tsx";
 import { MenuShell } from "@/components/menu-shell";
 import { useInteractionLayers } from "@/components/interaction-layers";
 import { useSettingsSaved } from "@/components/settings-signal";
-import { defaultOrderLevel, populateLevel } from "@/components/thinking-default";
+import { defaultOrderLevel, populateLevel, useThinkingLabel } from "@/components/thinking-default";
 import { useModelCatalog } from "@/components/model-catalog";
 import { Hint } from "@/components/ui/hint";
 import type React from "react";
@@ -369,6 +369,8 @@ export function AgentSection({
 	/** Writes the whole compaction section (replace-PUT discipline). */
 	onCompactionChange: (next: CompactionSettings) => boolean | Promise<boolean>;
 }) {
+	const cacheRetentionLabelOf = useCacheRetentionLabel();
+	const thinkingLabelOf = useThinkingLabel();
 	const t = useT("settingsAgent");
 	const { catalog: body, failed: catalogFailed, refresh: refreshCatalog } = useModelCatalog();
 	const catalog = body?.models;
@@ -710,7 +712,7 @@ export function AgentSection({
 									// Legacy display (chunk 2 item 4): no stored level + a known
 									// model → the RESOLVED level (the ordering's first supported —
 									// what the engine build runs). Display-only until a pick writes.
-									value={thinking || (chosen ? defaultOrderLevel(levels) : "")}
+									value={(thinking || (chosen ? defaultOrderLevel(levels) : "")) ? thinkingLabelOf(thinking || defaultOrderLevel(levels)) : ""}
 									emptyLabel="—"
 									ariaLabel={t("slotThinkingAria", { slot: t(SLOT_META[slot].key) })}
 									testid={`slot-thinking-${slot}`}
@@ -719,7 +721,7 @@ export function AgentSection({
 									widthClass="w-20"
 								/>
 								{advancedModels && <MenuTrigger
-									value={cacheRetentionLabel(override?.cacheRetention, t)}
+									value={cacheRetentionLabelOf(override?.cacheRetention)}
 									emptyLabel={t("cacheDefault")}
 									ariaLabel={t("slotCacheAria", { slot: t(SLOT_META[slot].key) })}
 									testid={`slot-cache-${slot}`}

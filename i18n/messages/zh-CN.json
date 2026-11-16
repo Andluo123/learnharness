@@ -379,7 +379,8 @@
 	"minimalHome": {
 		"startSessionToLearn": "开始一个会话，即可着手学习。",
 		"attachMaterial": "用回形针附加你的材料，或直接拖放。",
-		"everyReasoningChain": "所有推理链"
+		"everyReasoningChain": "所有推理链",
+		"chainsButton": "链路"
 	},
 	"sideThread": {
 		"showQuotedText": "显示所引用的教师原文",
@@ -472,7 +473,9 @@
 	},
 	"notesImport": {
 		"extractHint": "从文件提取到知识图谱",
-		"attachInstead": "用于课程时，请改为在会话中附加材料。"
+		"attachInstead": "用于课程时，请改为在会话中附加材料。",
+		"extracting": "正在提取…",
+		"extractFiles": "提取文件…"
 	},
 	"pluginKnowledgePicker": {
 		"pickNodes": "选择节点",
