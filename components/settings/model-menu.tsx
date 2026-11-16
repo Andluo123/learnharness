@@ -24,6 +24,7 @@ import type { ModelCatalogEntry } from "@/src/core";
 import { CLAUDE_CODE_PROVIDER, CUSTOM_PROVIDER, fuzzyScore, subscriptionLabel } from "@/src/core";
 import { formatTokens } from "@/components/usage-format";
 import { SearchMenuList } from "./search-menu-list";
+import { useT } from "@/i18n/use-t.ts";
 
 function priceLabel(cost: ModelCatalogEntry["cost"]): string {
 	if (!cost) return "Unpriced";
@@ -60,6 +61,7 @@ export function ModelMenuList({
 	 *  Image-capable ones float to the top. */
 	vision?: boolean;
 }) {
+	const t = useT("settingsModelMenu");
 	// Vision slot: built-ins must report image input; custom-endpoint models
 	// stay selectable (the endpoint may not report a modality). Image-capable
 	// ones float to the top of the list.
@@ -79,7 +81,7 @@ export function ModelMenuList({
 				searchTestid="model-search"
 				listTestid="model-list"
 				optionTestid={(m) => `model-option-${m.id.replace(/[^a-z0-9-]/gi, "_")}`}
-				placeholder="Search models…"
+				placeholder={t("searchModels")}
 				loading="Loading models…"
 				empty="No models match."
 				renderItem={(m) => <>
@@ -118,6 +120,7 @@ export function ThinkingMenuList({
 	empty?: string;
 	footer?: string;
 }) {
+	const t = useT("settingsModelMenu");
 	return (
 		<>
 			{levels.length === 0 ? (
@@ -157,6 +160,7 @@ export function ProviderMenuList({
 	providers: { id: string; envVar: string; label: string }[];
 	onPick: (provider: { id: string; envVar: string; label: string }) => void;
 }) {
+	const t = useT("settingsModelMenu");
 	const [query, setQuery] = useState("");
 	const [menuIdx, setMenuIdx] = useState<number | null>(null);
 	const searchRef = useRef<HTMLInputElement>(null);
@@ -206,11 +210,11 @@ export function ProviderMenuList({
 						}
 					}
 				}}
-				placeholder="Search providers…"
+				placeholder={t("searchProviders")}
 				className="lh-input mb-1.5 w-full rounded-lg border bg-background px-2 py-1.5 text-foreground outline-none focus:ring-1 focus:ring-ring"
 			/>
 			{results.length === 0 && (
-				<div className="px-2 py-3 text-center text-muted-foreground">No providers match.</div>
+				<div className="px-2 py-3 text-center text-muted-foreground">{t("noProvidersMatch")}</div>
 			)}
 			<ul ref={listRef} data-testid="provider-list" className="flex max-h-72 flex-col overflow-y-auto px-1">
 				{results.map((p, i) => (
@@ -287,6 +291,7 @@ export function FontMenuList({
 	/** Quiet footer note under the list. */
 	footer?: string;
 }) {
+	const t = useT("settingsModelMenu");
 	const [query, setQuery] = useState("");
 	const [menuIdx, setMenuIdx] = useState<number | null>(null);
 	const searchRef = useRef<HTMLInputElement>(null);
@@ -336,10 +341,10 @@ export function FontMenuList({
 						}
 					}
 				}}
-				placeholder="Search fonts…"
+				placeholder={t("searchFonts")}
 				className="lh-input mb-1.5 w-full rounded-lg border bg-background px-2 py-1.5 text-foreground outline-none focus:ring-1 focus:ring-ring"
 			/>
-			{!families && <div className="px-2 py-3 text-center text-muted-foreground">Loading fonts…</div>}
+			{!families && <div className="px-2 py-3 text-center text-muted-foreground">{t("loadingFonts")}</div>}
 			<ul ref={listRef} data-testid="font-list" className="flex max-h-72 flex-col overflow-y-auto px-1">
 				{families &&
 					results.map((family, i) => {

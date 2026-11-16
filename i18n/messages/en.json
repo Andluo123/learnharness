@@ -161,7 +161,11 @@
 		"totalRunningCost": "Total running cost (inferred)",
 		"context": "Context",
 		"model": "Model",
-		"steps": "Steps"
+		"steps": "Steps",
+		"backgroundAgents": "Background agents",
+		"abortFailed": "Abort failed — try again",
+		"endBackgroundProcess": "End this background process",
+		"endProcessIn": "End {label} in {title}"
 	},
 	"stats": {
 		"contextLastCall": "Context (last call)",
@@ -332,7 +336,12 @@
 	},
 	"dictation": {
 		"stopDictationHint": "Stop dictation (Esc)",
-		"stopDictation": "Stop dictation"
+		"stopDictation": "Stop dictation",
+		"dictate": "Dictate",
+		"startDictation": "Start dictation",
+		"dictationFailed": "Dictation failed: {error}",
+		"language": "Language",
+		"searchLanguages": "Search languages…"
 	},
 	"shortcuts": {
 		"title": "Keyboard shortcuts",
@@ -407,5 +416,167 @@
 	"pluginKnowledgePicker": {
 		"pickNodes": "Pick nodes"
 	},
-	"practiceSession": "Practice session"
+	"practiceSession": "Practice session",
+	"settingsAgent": {
+		"concurrentWorkers": "Concurrent worker requests",
+		"concurrentWorkersHint": "Maximum simultaneous background-worker model requests. Direct conversations are not limited.",
+		"tools": "Tools",
+		"graphTools": "Graph tools",
+		"graphToolsAria": "graph tools",
+		"quizzing": "Quizzing",
+		"quizzingHint": "How both tutors check your understanding",
+		"quizzingAria": "Quizzing mechanics",
+		"fileAccess": "File access",
+		"restrictFolders": "Restrict to listed folders",
+		"allowedFolderPath": "Allowed folder path",
+		"folderPathPlaceholder": "Absolute path or ~/folder",
+		"remove": "Remove",
+		"searchEngine": "Search engine",
+		"modelsGroup": "Models",
+		"contextGroup": "Context",
+		"compactionThreshold": "Compaction threshold",
+		"systemPrompts": "System prompts",
+		"loadingSegments": "Loading prompt segments…",
+		"source": "Source",
+		"override": "Override",
+		"originalInstructions": "The original instructions",
+		"yourInstructions": "Your version of the instructions",
+		"addInstructions": "Add your own instructions…"
+	},
+	"settingsKeys": {
+		"pasteKey": "Paste key…",
+		"loadingKeys": "Loading keys…",
+		"modelApiKeys": "Model API keys",
+		"subscriptions": "Subscriptions",
+		"externalCli": "External CLI",
+		"customEndpoint": "Custom endpoint",
+		"customLoadFailed": "Unable to load custom configuration.",
+		"loadingCustom": "Loading custom configuration…",
+		"baseUrlPlaceholder": "Base URL, e.g. http://localhost:11434/v1",
+		"customBaseUrl": "Custom endpoint base URL",
+		"modelIdsPlaceholder": "Model IDs, comma-separated — optional, needed when the endpoint has no /models list",
+		"customModelIds": "Custom endpoint model IDs",
+		"customAuth": "Custom endpoint authentication",
+		"keyless": "Keyless",
+		"apiKeyMode": "API key",
+		"customApiKey": "Custom endpoint API key",
+		"reasoningUseReported": "Reasoning effort: Use reported",
+		"reasoningSupported": "Reasoning effort: Supported",
+		"reasoningNotSupported": "Reasoning effort: Not supported",
+		"environment": "Environment"
+	},
+	"settingsAppearance": {
+		"typography": "Typography",
+		"readingFont": "Reading font",
+		"chooseFontHint": "Choose from your installed fonts",
+		"readingFontSize": "Reading font size",
+		"codeLigatures": "Code ligatures",
+		"sessionNamesSerif": "Session names in serif",
+		"sessionNamesSerifAria": "session names serif",
+		"headingWeight": "Heading weight",
+		"extraction": "Extraction",
+		"extractionHint": "Off = the graph stops growing",
+		"extractionEnabled": "extraction enabled",
+		"graphRendering": "Graph rendering",
+		"graphRenderingHint": "Off = home shows the chains view",
+		"graphRenderingEnabled": "graph rendering enabled",
+		"chunkBudget": "Extraction chunk budget"
+	},
+	"settingsPlugins": {
+		"corePluginsTitle": "Core plugins",
+		"communityPluginsTitle": "Community plugins",
+		"trustWarning": "Only enable plugins you trust. Plugins run trusted local code with broad file and network access; they are not sandboxed. A broken plugin may require restarting LearnHarness.",
+		"howToInstall": "How to install a plugin",
+		"installStep1": "Clone or copy the plugin into the directory below, using its plugin ID as the folder name.",
+		"installStep2Before": "For source projects, follow the repository’s dependency setup and run",
+		"installStep2Mid": "Prebuilt packages already contain",
+		"installStep2After": "and need no build.",
+		"installStep3": "Refresh the list, then enable the plugin. New plugins are disabled by default.",
+		"installStep4": "Restart LearnHarness after changing loaded code. Preserve data/ beside dist/ when updating.",
+		"buildPlugin": "Build a plugin",
+		"authoringHint": "Download the authoring skill for your coding agent.",
+		"downloadAuthoring": "Download authoring skill",
+		"pluginsDirectory": "Plugins directory",
+		"refreshPlugins": "Refresh plugins"
+	},
+	"settingsUpdate": {
+		"checking": "Checking for updates…",
+		"downloadingVersion": "Downloading version {version}…",
+		"downloading": "Downloading an update…",
+		"upToDate": "No newer version was found at the last check.",
+		"versionReady": "Version {version} is ready. It will install when you quit the app.",
+		"updateReady": "An update is ready. It will install when you quit the app.",
+		"automaticUpdates": "Automatic updates",
+		"checkForUpdates": "Check for updates",
+		"restart": "Restart",
+		"releaseNotes": "Release notes",
+		"rowVersion": "Version {version}",
+		"manualHint": "Checking downloads available updates. Downloaded updates install when you quit the app.",
+		"autoHint": "Check at startup and every 24 hours. Turning this off does not stop updates already in progress or ready to install.",
+		"checkFailed": "Couldn’t check for updates. Try again later.",
+		"downloadingAria": "Downloading update",
+		"checkingAria": "Checking for updates"
+	},
+	"settingsKeyboard": {
+		"keyboard": "Keyboard",
+		"storedOnDevice": "Stored on this device"
+	},
+	"settingsPluginPage": {
+		"loadingSettings": "Loading plugin settings…",
+		"loadFailed": "Plugin settings could not be loaded.",
+		"noSettings": "No settings available."
+	},
+	"settingsThemes": {
+		"theme": "Theme",
+		"importJson": "Import JSON",
+		"remove": "Remove"
+	},
+	"settingsModelMenu": {
+		"searchModels": "Search models…",
+		"searchProviders": "Search providers…",
+		"noProvidersMatch": "No providers match.",
+		"searchFonts": "Search fonts…",
+		"loadingFonts": "Loading fonts…"
+	},
+	"settingsClaudeCode": {
+		"installHint": "Install and authenticate Claude Code",
+		"checksHint": "Checks installation/version only—not authentication, model access, or",
+		"externalCli": "External CLI",
+		"claudeCode": "Claude Code"
+	},
+	"settingsSubs": {
+		"manage": "Manage",
+		"manageEllipsis": "Manage…",
+		"connect": "Connect",
+		"disconnect": "Disconnect",
+		"allowBackground": "Allow background use"
+	},
+	"settingsChatgpt": {
+		"chatgpt": "ChatGPT",
+		"cancel": "Cancel",
+		"manage": "Manage…",
+		"addAccount": "Add another account or workspace",
+		"savedAccount": "Saved ChatGPT account",
+		"manageAccount": "Manage ChatGPT account",
+		"waitingSignIn": "Waiting for browser sign-in…",
+		"chatgptAccount": "ChatGPT account",
+		"disconnect": "Disconnect",
+		"manageBtn": "Manage…",
+		"edit": "Edit"
+	},
+	"phase": {
+		"probe": "Probing",
+		"plan": "Planning",
+		"teach": "Teaching",
+		"planWithCount": "Plan · {count} node"
+	},
+	"thinking": {
+		"off": "off",
+		"minimal": "minimal",
+		"low": "low",
+		"medium": "medium",
+		"high": "high",
+		"xhigh": "xhigh",
+		"max": "max"
+	}
 }

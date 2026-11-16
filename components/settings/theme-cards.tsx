@@ -17,6 +17,7 @@ import { useRef, useState } from "react";
 import { CheckIcon, DownloadIcon, Trash2Icon, UploadIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { exportThemeFile, type AppearanceSettings, type Theme } from "@/src/core";
+import { useT } from "@/i18n/use-t.ts";
 
 /** The selected card's frame: a 2px gap in the dialog surface, then a 1px
  *  ring in the theme accent (the check by the name does the rest). */
@@ -85,6 +86,7 @@ export function ThemeCards({
 	/** After a successful import (the catalog must be re-read). */
 	onImported: (theme: Theme) => void;
 }) {
+	const t = useT("settingsThemes");
 	const fileRef = useRef<HTMLInputElement>(null);
 	const [importError, setImportError] = useState<string | null>(null);
 	const [busy, setBusy] = useState(false);
@@ -127,7 +129,7 @@ export function ThemeCards({
 		<div data-testid="row-theme" className="flex flex-col gap-3 py-1">
 			<div className="flex items-end justify-between gap-4">
 				<span className="min-w-0">
-					<span className="block font-prose text-(length:--lh-prose-size)">Theme</span>
+					<span className="block font-prose text-(length:--lh-prose-size)">{t("theme")}</span>
 					<span data-testid="theme-hint" className="block text-xs text-muted-foreground/70">
 						{active.name} · {active.mode} · sets every color below
 					</span>
@@ -190,7 +192,7 @@ export function ThemeCards({
 					className="flex min-h-27 flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-muted-foreground/50 p-3 text-center font-ui text-xs text-muted-foreground transition-colors hover:text-foreground"
 				>
 					<UploadIcon className="size-4" />
-					<span>Import JSON</span>
+					<span>{t("importJson")}</span>
 					{importError ? (
 						<span data-testid="theme-import-error" className="text-error">{importError}</span>
 					) : (

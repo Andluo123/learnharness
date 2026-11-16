@@ -14,7 +14,7 @@ import { Hint } from "@/components/ui/hint";
 import { notifySettingsSaved, useSettingsSaved } from "@/components/settings-signal";
 import { useModelCatalog } from "@/components/model-catalog";
 export { useModelCatalog } from "@/components/model-catalog";
-import { defaultOrderLevel, populateLevel, THINKING_LABEL } from "@/components/thinking-default";
+import { defaultOrderLevel, populateLevel, thinkingLabel } from "@/components/thinking-default";
 import { useT } from "@/i18n/use-t.ts";
 
 /** provider:id → known contextWindow over the cached catalog, mirroring
@@ -300,7 +300,7 @@ export function ModelControl({ chatId, onModelChange }: { chatId?: string; onMod
 						openMenu("thinking");
 					}}
 					aria-expanded={open === "thinking"}
-				>{effectiveLevel === undefined ? "—" : (THINKING_LABEL[effectiveLevel] ?? effectiveLevel)}</ModelPickerPill>
+				>{effectiveLevel === undefined ? "—" : thinkingLabel(effectiveLevel, t)}</ModelPickerPill>
 			</Hint>
 
 			{/* The shared dropdown body (extracted 2026-09-20): the agent

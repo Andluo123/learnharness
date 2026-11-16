@@ -10,7 +10,7 @@ import { MenuShell } from "@/components/menu-shell";
 import { useInteractionLayers } from "@/components/interaction-layers";
 import { isInputShortcutScopeEligible } from "@/components/plugin-input-focus";
 import { prettyModel } from "@/components/usage-format";
-import { THINKING_LABEL } from "@/components/thinking-default";
+import { thinkingLabel } from "@/components/thinking-default";
 import { claimPluginInputFocus } from "@/components/plugin-dictation";
 import { useT } from "@/i18n/use-t.ts";
 
@@ -96,7 +96,7 @@ export function PluginThinkingPicker({ model, value, onChange, disabled, onError
 	});
 	return <div ref={root} className="relative inline-flex" data-plugin-thinking-picker="">
 		<ModelPickerPill disabled={disabled || !model} aria-label={t("thinking")} aria-expanded={open} onClick={() => setOpen(!open)}>
-			{value === undefined ? "—" : THINKING_LABEL[value] ?? value}
+			{value === undefined ? "—" : thinkingLabel(value, t)}
 		</ModelPickerPill>
 		{open && !disabled && <MenuShell anchorRef={root} preferredSide="up" testid="plugin-thinking-menu" onClose={() => { close(); return "closed"; }} menuClass="flex w-44 flex-col gap-0.5 rounded-xl border bg-card p-2 text-xs shadow-xl">
 			<ThinkingMenuList levels={levels} effectiveLevel={value} onPick={(level) => pick(level as ThinkingLevel)} empty={catalog ? "No thinking levels." : "Loading…"} />

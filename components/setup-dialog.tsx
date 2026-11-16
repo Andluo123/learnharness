@@ -52,7 +52,7 @@ import { type ProviderKeyInfo, CUSTOM_PROVIDER_INFO, CustomEndpointSetup } from 
 import { ProviderMenuList } from "@/components/settings/model-menu";
 import { ChatGPTBackgroundAccess } from "@/components/settings/chatgpt-connection";
 import { NativeSubscriptionBackgroundAccess, SubscriptionConnections } from "@/components/settings/subscription-connections";
-import { defaultOrderLevel, populateLevel, THINKING_LABEL } from "@/components/thinking-default";
+import { defaultOrderLevel, populateLevel, THINKING_LABEL, thinkingLabel } from "@/components/thinking-default";
 import { ThinkingMenuList } from "@/components/settings/model-menu";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import { useT } from "@/i18n/use-t.ts";
@@ -564,7 +564,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 												className="flex h-7 w-24 items-center gap-1 rounded-sm border border-border bg-background px-1.5 font-ui text-xs text-foreground transition-colors hover:border-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-40"
 											>
 												<span className="min-w-0 flex-1 truncate text-left">
-													{entry ? (level ? THINKING_LABEL[level] ?? level : "…") : "—"}
+													{entry ? (level ? thinkingLabel(level, t) : "…") : "—"}
 												</span>
 												<span aria-hidden className="text-muted-foreground">
 													▾

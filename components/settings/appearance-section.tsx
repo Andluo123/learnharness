@@ -47,6 +47,7 @@ import { BUNDLED_READING_FONTS, useAppearance } from "./appearance.tsx";
 import { FontMenuList } from "./model-menu";
 import { ThemeCards } from "./theme-cards.tsx";
 import { CommitInput, SettingsMenuTrigger, SettingsRow, Toggle } from "./controls.tsx";
+import { useT } from "@/i18n/use-t.ts";
 
 /** The factory reading family — the DEFAULT row's identity (unset =
  *  this). Exported for tests. */
@@ -197,6 +198,7 @@ export function AppearanceSection({
 	/** PUT the whole appearance section; the page re-applies on success. */
 	onSectionChange: (next: AppearanceSettings) => boolean | Promise<boolean>;
 }) {
+	const t = useT("settingsAppearance");
 	const { appearance: resolved, activeTheme, colors, themes, refreshThemes } = useAppearance();
 	const md = appearance?.mdRendering;
 
@@ -325,9 +327,9 @@ export function AppearanceSection({
 					))}
 				</div>
 			</div>
-			<p className="mt-5 mb-2 text-xs uppercase tracking-widest text-muted-foreground">Typography</p>
+			<p className="mt-5 mb-2 text-xs uppercase tracking-widest text-muted-foreground">{t("typography")}</p>
 			<SettingsRow
-				label="Reading font"
+				label={t("readingFont")}
 				hint={`Empty = ${DEFAULT_READING_FONT}`}
 				testid="row-font"
 			>
@@ -342,7 +344,7 @@ export function AppearanceSection({
 						const triggerButton = (
 							<SettingsMenuTrigger
 								value={appearance?.fontFamily || DEFAULT_READING_FONT}
-								aria-label="Reading font"
+								aria-label={t("readingFont")}
 								aria-expanded={fontMenuOpen}
 								data-testid="font-trigger"
 								onClick={openFontMenu}
@@ -352,7 +354,7 @@ export function AppearanceSection({
 						return fontMenuOpen ? (
 							triggerButton
 						) : (
-							<Hint label="Choose from your installed fonts" side="left">
+							<Hint label={t("chooseFontHint")} side="left">
 								{triggerButton}
 							</Hint>
 						);
@@ -383,7 +385,7 @@ export function AppearanceSection({
 					)}
 				</span>
 			</SettingsRow>
-			<SettingsRow label="Reading font size" hint={`${resolved.proseFontSize}px`} testid="row-prose-size">
+			<SettingsRow label={t("readingFontSize")} hint={`${resolved.proseFontSize}px`} testid="row-prose-size">
 				<CommitInput
 					type="number"
 					value={String(appearance?.proseFontSize ?? "")}
@@ -403,21 +405,21 @@ export function AppearanceSection({
 					}}
 				/>
 			</SettingsRow>
-			<SettingsRow label="Code ligatures" testid="row-code-ligatures">
+			<SettingsRow label={t("codeLigatures")} testid="row-code-ligatures">
 				<Toggle
 					checked={resolved.codeLigatures}
-					label="Code ligatures"
+					label={t("codeLigatures")}
 					onChange={(on) => onSectionChange({ ...appearance, codeLigatures: on })}
 				/>
 			</SettingsRow>
-			<SettingsRow label="Session names in serif" testid="row-session-serif">
+			<SettingsRow label={t("sessionNamesSerif")} testid="row-session-serif">
 				<Toggle
 					checked={appearance?.sessionNameSerif ?? true}
-					label="session names serif"
+					label={t("sessionNamesSerifAria")}
 					onChange={(on) => onSectionChange({ ...appearance, sessionNameSerif: on })}
 				/>
 			</SettingsRow>
-			<SettingsRow label="Heading weight" hint={`${resolved.mdRendering.headingWeight}`} testid="row-heading-weight">
+			<SettingsRow label={t("headingWeight")} hint={`${resolved.mdRendering.headingWeight}`} testid="row-heading-weight">
 				<CommitInput
 					type="number"
 					value={String(md?.headingWeight ?? "")}
@@ -450,6 +452,7 @@ export function GraphSection({
 	graph: GraphSettings | undefined;
 	onSectionChange: (next: GraphSettings) => boolean | Promise<boolean>;
 }) {
+	const t = useT("settingsAppearance");
 	// Wave 7 collapse (owner ruling 2026-09-23): the section is the MASTER
 	// SWITCH — the embedding/clustering/labeling rungs are gone; clustering
 	// is the free birth-session partition derived on read, labels ARE session
@@ -470,10 +473,10 @@ export function GraphSection({
 			    switch below arrived: off ≠ no graph, off = the graph stops
 			    growing. The testid keeps the old name's shape (row-enabled) so
 			    this stays one rename, not a test re-pin. */}
-			<SettingsRow label="Extraction" hint="Off = the graph stops growing" testid="graph-row-enabled">
+			<SettingsRow label={t("extraction")} hint={t("extractionHint")} testid="graph-row-enabled">
 				<Toggle
 					checked={graph?.enabled ?? true}
-					label="extraction enabled"
+					label={t("extractionEnabled")}
 					onChange={(on) =>
 						// Compose, never replace-whole (the section PUT is, but the
 					// row must not drop its sibling field — fixed with the budget
@@ -486,15 +489,15 @@ export function GraphSection({
 			    round): display-only. Off = the home shows the chains view
 			    instead of the canvas. The ledgers, the pipeline, everything
 			    data keeps working — that is the extraction switch above. */}
-			<SettingsRow label="Graph rendering" hint="Off = home shows the chains view" testid="graph-row-rendering">
+			<SettingsRow label={t("graphRendering")} hint={t("graphRenderingHint")} testid="graph-row-rendering">
 				<Toggle
 					checked={graph?.rendering ?? true}
-					label="graph rendering enabled"
+					label={t("graphRenderingEnabled")}
 					onChange={(on) => onSectionChange({ ...graph, rendering: on })}
 				/>
 			</SettingsRow>
 			<SettingsRow
-				label="Extraction chunk budget"
+				label={t("chunkBudget")}
 				hint={`${resolved.extractionChunkTokens} tok`}
 				testid="graph-row-chunk-tokens"
 			>

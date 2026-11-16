@@ -30,6 +30,19 @@ export const THINKING_LABEL: Record<string, string> = {
 	max: "max",
 };
 
+/** The display label for a level, translated when a translator is supplied
+ *  (zh-CN i18n wave). The raw level strings stay the identity key
+ *  everywhere — the record, the clamp, and the wire are never translated;
+ *  only what the learner READS is. Pure — exported for tests and for call
+ *  sites without a hook. */
+export function thinkingLabel(
+	level: string,
+	t?: (key: string) => string,
+): string {
+	if (!t) return THINKING_LABEL[level] ?? level;
+	return t(`thinking.${level}`);
+}
+
 /** The level a fresh pick of `supported` populates with. Empty support
  *  (shouldn't happen — the catalog always reports at least ["off"])
  *  resolves "off", matching the server's fallback. */

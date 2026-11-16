@@ -43,6 +43,7 @@ import { isInteractionScopeEligible } from "@/components/plugin-input-focus";
 import { MenuShell } from "@/components/menu-shell";
 import { notifySettingsSaved } from "@/components/settings-signal";
 import { DictationLanguageSetting } from "@/components/dictation-language";
+import { useT } from "@/i18n/use-t.ts";
 
 /** One pi-ai provider with plain API-key auth (the Platform seam —
  *  derived from pi-ai's own env-key table; no drift possible). */
@@ -185,6 +186,7 @@ function KeyTableRow({
 	onCancel: () => void;
 	testid: string;
 }) {
+	const t = useT("settingsKeys");
 	const envOwned = status.source === "env";
 	const [value, setValue] = useState("");
 	const [error, setError] = useState<string | null>(null);
@@ -216,7 +218,7 @@ function KeyTableRow({
 						onKeyDown={(e) => {
 							if (e.key === "Enter") void save();
 						}}
-						placeholder="Paste key…"
+						placeholder={t("pasteKey")}
 						aria-label={`${label} key`}
 						data-testid={`${testid}-input`}
 						disabled={busy}
@@ -370,6 +372,7 @@ export function KeysSection({
 }: {
 	initialRow?: string;
 }) {
+	const t = useT("settingsKeys");
 	const [statuses, setStatuses] = useState<AuthKeyStatus[] | null>(null);
 	const [providers, setProviders] = useState<ProviderKeyInfo[] | undefined>(undefined);
 	const [loading, setLoading] = useState(true);
@@ -469,7 +472,7 @@ export function KeysSection({
 	}
 
 	if (loading || statuses === null) {
-		return <p className="px-6 py-5 text-xs text-muted-foreground/70">Loading keys…</p>;
+		return <p className="px-6 py-5 text-xs text-muted-foreground/70">{t("loadingKeys")}</p>;
 	}
 
 	const { providerRows, toolRows, unknownRows, addable } = classifyKeys(statuses, providers);
@@ -485,7 +488,7 @@ export function KeysSection({
 
 	return (
 		<div ref={editorScopeRef} className="contents">
-			<SettingsGroup label="Model API keys" testid="group-provider-keys">
+			<SettingsGroup label={t("modelApiKeys")} testid="group-provider-keys">
 				{providerRows.map((status) => (
 					<KeyTableRow
 						key={status.id}
@@ -572,11 +575,11 @@ export function KeysSection({
 				</div>}
 			</SettingsGroup>
 
-			<SettingsGroup label="Subscriptions" testid="group-subscriptions">
+			<SettingsGroup label={t("subscriptions")} testid="group-subscriptions">
 				<SubscriptionConnections />
 			</SettingsGroup>
 
-			<SettingsGroup label="External CLI" testid="group-external-cli">
+			<SettingsGroup label={t("externalCli")} testid="group-external-cli">
 				<ClaudeCodeInstallationStatus />
 			</SettingsGroup>
 
@@ -631,6 +634,7 @@ function AddProviderEditor({
 	onCancel: () => void;
 	error: string | null;
 }) {
+	const t = useT("settingsKeys");
 	const [value, setValue] = useState("");
 	const inputRef = useRef<HTMLInputElement>(null);
 	const interactions = useInteractionLayers();
@@ -647,7 +651,7 @@ function AddProviderEditor({
 				onKeyDown={(e) => {
 					if (e.key === "Enter" && value.trim()) onSave(value);
 				}}
-				placeholder="Paste key…"
+				placeholder={t("pasteKey")}
 				aria-label={`${provider.label} key`}
 				data-testid={`key-${provider.id}-input`}
 				autoFocus={active}
@@ -682,6 +686,7 @@ function AddProviderEditor({
 /** One donor editor for first setup and Settings; setup omits offline pin and
  * disconnect controls, while authentication/revisions/manual IDs stay identical. */
 export function CustomEndpointSetup({ onSaved }: { onSaved: () => void | Promise<void> }) {
+	const t = useT("settingsKeys");
 	const [status, setStatus] = useState<CustomStatus | null>(null);
 	const [error, setError] = useState(false);
 	async function reload() {
@@ -689,7 +694,7 @@ export function CustomEndpointSetup({ onSaved }: { onSaved: () => void | Promise
 		catch { setError(true); }
 	}
 	useEffect(() => { void reload(); }, []);
-	if (!status || error) return <div className="text-xs">{error ? "Unable to load custom configuration." : "Loading custom configuration…"}{error && <button onClick={() => void reload()}>Retry</button>}</div>;
+	if (!status || error) return <div className="text-xs">{error ? t("customLoadFailed") : t("loadingCustom")}{error && <button onClick={() => void reload()}>Retry</button>}</div>;
 	return <CustomEndpointEditor key={status.revision} setup revision0={status.revision} authMode0={status.authMode} keySource0={status.keySource} keyReuseRequired0={status.keyReuseRequired} baseUrl0={status.baseUrl} keyPresent={status.keyPresent} models={status.models} overrides={status.overrides} manualModels0={status.manualModels} onSaved={onSaved} onPinsSaved={reload} onReload={reload} onCancel={reload} />;
 }
 
@@ -703,6 +708,7 @@ function CustomEndpointRow({
 	expanded: boolean;
 	onToggle: () => void;
 }) {
+	const t = useT("settingsKeys");
 	const count = status.models.length;
 	const line = `${status.baseUrl} · ${count} model${count === 1 ? "" : "s"} · ${status.authMode === "keyless" ? "keyless" : status.keyPresent ? "API key" : "API key missing"}`;
 	return (
@@ -714,7 +720,7 @@ function CustomEndpointRow({
 				onClick={onToggle}
 				className="flex w-full items-center justify-between gap-3 rounded-sm px-1 py-1.5 text-left cursor-pointer transition-colors hover:bg-accent/50"
 			>
-				<span className="font-ui text-xs text-foreground">Custom endpoint</span>
+				<span className="font-ui text-xs text-foreground">{t("customEndpoint")}</span>
 				<span data-testid="custom-endpoint-status" className="max-w-[60%] truncate font-mono text-[11px] text-muted-foreground">
 					{line}
 				</span>
@@ -800,6 +806,7 @@ function CustomEndpointEditor({
 	onCancel: () => void;
 	onDelete?: (revision: string) => Promise<string | null>;
 }) {
+	const t = useT("settingsKeys");
 	const baseUrlRef = useRef<HTMLInputElement>(null);
 	const interactions = useOptionalInteractionLayers();
 	useEffect(() => {
@@ -894,14 +901,14 @@ function CustomEndpointEditor({
 	return (
 		<div data-testid="custom-endpoint-editor" className="flex flex-col gap-2 rounded-sm px-1 py-1.5">
 			<div className="flex items-center gap-2">
-				<span className="shrink-0 font-ui text-xs text-foreground">Custom endpoint</span>
+				<span className="shrink-0 font-ui text-xs text-foreground">{t("customEndpoint")}</span>
 				<input
 					ref={baseUrlRef}
 					type="text"
 					value={baseUrl}
 					onChange={(e) => setBaseUrl(e.target.value)}
-					placeholder="Base URL, e.g. http://localhost:11434/v1"
-					aria-label="Custom endpoint base URL"
+					placeholder={t("baseUrlPlaceholder")}
+					aria-label={t("customBaseUrl")}
 					data-testid="custom-baseurl-input"
 					disabled={busy}
 					autoFocus={active}
@@ -912,18 +919,18 @@ function CustomEndpointEditor({
 				type="text"
 				value={manualModels}
 				onChange={(e) => setManualModels(e.target.value)}
-				placeholder="Model IDs, comma-separated — optional, needed when the endpoint has no /models list"
-				aria-label="Custom endpoint model IDs"
+				placeholder={t("modelIdsPlaceholder")}
+				aria-label={t("customModelIds")}
 				data-testid="custom-models-input"
 				disabled={busy}
 				className="h-7 min-w-0 rounded-sm border border-border bg-background px-1.5 font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground/60 focus:border-muted-foreground/50"
 			/>
 			<label className="flex items-center gap-2 text-xs">Authentication
-				<select aria-label="Custom endpoint authentication" data-testid="custom-auth-mode" value={authMode} disabled={busy || pinsBusy} onChange={(e) => { setAuthMode(e.target.value as "keyless" | "apiKey"); setReuseKey(false); }}>
-					<option value="keyless">Keyless</option><option value="apiKey">API key</option>
+				<select aria-label={t("customAuth")} data-testid="custom-auth-mode" value={authMode} disabled={busy || pinsBusy} onChange={(e) => { setAuthMode(e.target.value as "keyless" | "apiKey"); setReuseKey(false); }}>
+					<option value="keyless">{t("keyless")}</option><option value="apiKey">{t("apiKeyMode")}</option>
 				</select>
 			</label>
-			{authMode === "apiKey" && keySource === "env" && <p className="text-[11px] text-muted-foreground" data-testid="custom-env-owned">Environment supplies the effective key. Change the environment to replace it.</p>}
+			{authMode === "apiKey" && keySource === "env" && <p className="text-[11px] text-muted-foreground" data-testid="custom-env-owned">{t("environment")} supplies the effective key. Change the environment to replace it.</p>}
 			{authMode === "apiKey" && keyPresent && (changedTarget || keyReuseRequired) && <label className="text-[11px]"><input type="checkbox" data-testid="custom-reuse-key" checked={reuseKey} onChange={(e) => setReuseKey(e.target.checked)} /> Allow reuse of the effective existing key for this URL</label>}
 			<div className="flex items-center gap-2">
 				{authMode === "apiKey" && <input
@@ -935,7 +942,7 @@ function CustomEndpointEditor({
 						if (!e.target.value.trim()) setAuthMode("keyless");
 					}}
 					placeholder={keyPresent ? "Leave blank to keep effective key" : "API key"}
-					aria-label="Custom endpoint API key"
+					aria-label={t("customApiKey")}
 					data-testid="custom-key-input"
 					disabled={busy || pinsBusy || keySource === "env"}
 					className="h-7 min-w-0 flex-1 rounded-sm border border-border bg-background px-1.5 font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground/60 focus:border-muted-foreground/50"
@@ -1014,9 +1021,9 @@ function CustomEndpointEditor({
 										disabled={pinsBusy}
 										className="h-7 shrink-0 rounded-sm border border-border bg-background px-1 font-ui text-[11px] text-foreground outline-none focus:border-muted-foreground/50"
 									>
-										<option value="">Reasoning effort: Use reported</option>
-										<option value="on">Reasoning effort: Supported</option>
-										<option value="off">Reasoning effort: Not supported</option>
+										<option value="">{t("reasoningUseReported")}</option>
+										<option value="on">{t("reasoningSupported")}</option>
+										<option value="off">{t("reasoningNotSupported")}</option>
 									</select>
 								</div>
 							);

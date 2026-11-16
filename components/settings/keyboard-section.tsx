@@ -34,6 +34,7 @@ import {
 } from "@/src/core";
 import { SettingsRow } from "./controls.tsx";
 import { coreShortcutBindings, pluginShortcutScopeLabel, useKeymapRevision, usePluginShortcutRows } from "../plugin-shortcuts";
+import { useT } from "@/i18n/use-t.ts";
 
 const SCOPES: { scope: KeyScope; label: string }[] = [
 	{ scope: "global", label: "Global" },

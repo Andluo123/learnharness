@@ -161,7 +161,11 @@
 		"totalRunningCost": "累计运行成本（估算）",
 		"context": "上下文",
 		"model": "模型",
-		"steps": "步数"
+		"steps": "步数",
+		"backgroundAgents": "后台代理",
+		"abortFailed": "中止失败 —— 请重试",
+		"endBackgroundProcess": "结束此后台进程",
+		"endProcessIn": "结束 {title} 中的 {label}"
 	},
 	"stats": {
 		"contextLastCall": "上下文（上次调用）",
@@ -332,7 +336,12 @@
 	},
 	"dictation": {
 		"stopDictationHint": "停止语音输入（Esc）",
-		"stopDictation": "停止语音输入"
+		"stopDictation": "停止语音输入",
+		"dictate": "语音输入",
+		"startDictation": "开始语音输入",
+		"dictationFailed": "语音输入失败：{error}",
+		"language": "语言",
+		"searchLanguages": "搜索语言…"
 	},
 	"shortcuts": {
 		"title": "键盘快捷键",
@@ -407,5 +416,167 @@
 	"pluginKnowledgePicker": {
 		"pickNodes": "选择节点"
 	},
-	"practiceSession": "练习会话"
+	"practiceSession": "练习会话",
+	"settingsAgent": {
+		"concurrentWorkers": "并发工作请求数",
+		"concurrentWorkersHint": "后台工作模型请求的最大并发数。直接对话不受此限制。",
+		"tools": "工具",
+		"graphTools": "图谱工具",
+		"graphToolsAria": "图谱工具",
+		"quizzing": "测验",
+		"quizzingHint": "两位教师如何检验你的理解",
+		"quizzingAria": "测验机制",
+		"fileAccess": "文件访问",
+		"restrictFolders": "限制为所列文件夹",
+		"allowedFolderPath": "允许的文件夹路径",
+		"folderPathPlaceholder": "绝对路径或 ~/文件夹",
+		"remove": "移除",
+		"searchEngine": "搜索引擎",
+		"modelsGroup": "模型",
+		"contextGroup": "上下文",
+		"compactionThreshold": "压缩阈值",
+		"systemPrompts": "系统提示词",
+		"loadingSegments": "正在加载提示词片段…",
+		"source": "原文",
+		"override": "覆盖版本",
+		"originalInstructions": "原始指令",
+		"yourInstructions": "你的指令版本",
+		"addInstructions": "添加你自己的指令…"
+	},
+	"settingsKeys": {
+		"pasteKey": "粘贴密钥…",
+		"loadingKeys": "正在加载密钥…",
+		"modelApiKeys": "模型 API 密钥",
+		"subscriptions": "订阅",
+		"externalCli": "外部 CLI",
+		"customEndpoint": "自定义端点",
+		"customLoadFailed": "无法加载自定义配置。",
+		"loadingCustom": "正在加载自定义配置…",
+		"baseUrlPlaceholder": "基础 URL，例如 http://localhost:11434/v1",
+		"customBaseUrl": "自定义端点基础 URL",
+		"modelIdsPlaceholder": "模型 ID，用逗号分隔 —— 可选，当端点没有 /models 列表时需要",
+		"customModelIds": "自定义端点模型 ID",
+		"customAuth": "自定义端点认证方式",
+		"keyless": "无需密钥",
+		"apiKeyMode": "API 密钥",
+		"customApiKey": "自定义端点 API 密钥",
+		"reasoningUseReported": "推理强度：使用上报值",
+		"reasoningSupported": "推理强度：支持",
+		"reasoningNotSupported": "推理强度：不支持",
+		"environment": "环境变量"
+	},
+	"settingsAppearance": {
+		"typography": "排版",
+		"readingFont": "阅读字体",
+		"chooseFontHint": "从已安装的字体中选择",
+		"readingFontSize": "阅读字号",
+		"codeLigatures": "代码连字",
+		"sessionNamesSerif": "会话名使用衬线字体",
+		"sessionNamesSerifAria": "会话名衬线字体",
+		"headingWeight": "标题字重",
+		"extraction": "提取",
+		"extractionHint": "关闭 = 知识图谱停止增长",
+		"extractionEnabled": "提取已启用",
+		"graphRendering": "图谱渲染",
+		"graphRenderingHint": "关闭 = 主页显示链路视图",
+		"graphRenderingEnabled": "图谱渲染已启用",
+		"chunkBudget": "提取分块预算"
+	},
+	"settingsPlugins": {
+		"corePluginsTitle": "核心插件",
+		"communityPluginsTitle": "社区插件",
+		"trustWarning": "仅启用你信任的插件。插件以受信任的本地代码运行，拥有广泛的文件与网络访问权限，且不在沙箱中。插件损坏时可能需要重启 LearnHarness。",
+		"howToInstall": "如何安装插件",
+		"installStep1": "将插件克隆或复制到下方目录中，并用其插件 ID 作为文件夹名。",
+		"installStep2Before": "源码项目请按仓库说明安装依赖并运行",
+		"installStep2Mid": "预构建包已包含",
+		"installStep2After": "，无需构建。",
+		"installStep3": "刷新列表后启用插件。新插件默认处于禁用状态。",
+		"installStep4": "更改已加载的代码后请重启 LearnHarness。更新时请把 data/ 保留在 dist/ 旁边。",
+		"buildPlugin": "开发插件",
+		"authoringHint": "为你的编程助手下载插件开发技能包。",
+		"downloadAuthoring": "下载开发技能包",
+		"pluginsDirectory": "插件目录",
+		"refreshPlugins": "刷新插件"
+	},
+	"settingsUpdate": {
+		"checking": "正在检查更新…",
+		"downloadingVersion": "正在下载版本 {version}…",
+		"downloading": "正在下载更新…",
+		"upToDate": "上次检查未发现新版本。",
+		"versionReady": "版本 {version} 已就绪，退出应用时会自动安装。",
+		"updateReady": "更新已就绪，退出应用时会自动安装。",
+		"automaticUpdates": "自动更新",
+		"checkForUpdates": "检查更新",
+		"restart": "重启",
+		"releaseNotes": "发行说明",
+		"rowVersion": "版本 {version}",
+		"manualHint": "检查会下载可用更新。下载完成后，退出应用时安装。",
+		"autoHint": "启动时及每 24 小时检查一次。关闭后不会中止进行中或待安装的更新。",
+		"checkFailed": "无法检查更新，请稍后再试。",
+		"downloadingAria": "正在下载更新",
+		"checkingAria": "正在检查更新"
+	},
+	"settingsKeyboard": {
+		"keyboard": "键盘",
+		"storedOnDevice": "保存在本机"
+	},
+	"settingsPluginPage": {
+		"loadingSettings": "正在加载插件设置…",
+		"loadFailed": "无法加载插件设置。",
+		"noSettings": "暂无可用设置。"
+	},
+	"settingsThemes": {
+		"theme": "主题",
+		"importJson": "导入 JSON",
+		"remove": "移除"
+	},
+	"settingsModelMenu": {
+		"searchModels": "搜索模型…",
+		"searchProviders": "搜索提供商…",
+		"noProvidersMatch": "没有匹配的提供商。",
+		"searchFonts": "搜索字体…",
+		"loadingFonts": "正在加载字体…"
+	},
+	"settingsClaudeCode": {
+		"installHint": "安装并登录 Claude Code",
+		"checksHint": "仅检查安装与版本 —— 不检查登录状态、模型访问权限，或",
+		"externalCli": "外部 CLI",
+		"claudeCode": "Claude Code"
+	},
+	"settingsSubs": {
+		"manage": "管理",
+		"manageEllipsis": "管理…",
+		"connect": "连接",
+		"disconnect": "断开连接",
+		"allowBackground": "允许后台使用"
+	},
+	"settingsChatgpt": {
+		"chatgpt": "ChatGPT",
+		"cancel": "取消",
+		"manage": "管理…",
+		"addAccount": "添加其他账户或工作区",
+		"savedAccount": "已保存的 ChatGPT 账户",
+		"manageAccount": "管理 ChatGPT 账户",
+		"waitingSignIn": "等待浏览器登录…",
+		"chatgptAccount": "ChatGPT 账户",
+		"disconnect": "断开连接",
+		"manageBtn": "管理…",
+		"edit": "编辑"
+	},
+	"phase": {
+		"probe": "探测中",
+		"plan": "规划中",
+		"teach": "教学中",
+		"planWithCount": "计划 · {count} 个节点"
+	},
+	"thinking": {
+		"off": "关闭",
+		"minimal": "最少",
+		"low": "低",
+		"medium": "中",
+		"high": "高",
+		"xhigh": "很高",
+		"max": "最大"
+	}
 }

@@ -1,4 +1,5 @@
 import type { Phase3 } from "@/src/core";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * The in-session phase presentation (owner, minimal-color round —
@@ -24,11 +25,13 @@ import type { Phase3 } from "@/src/core";
  * phase; work-state is the sidebar row's spinner.
  */
 
-/** Header-chip labels: the phases as the learner thinks of them. */
-const CHIP_LABEL: Record<Phase3, string> = {
-	probe: "Probing",
-	plan: "Planning",
-	teach: "Teaching",
+/** Header-chip labels: the phases as the learner thinks of them. Values are
+ *  message KEYS resolved through useT("phase") at render time, so the chip
+ *  follows the UI language instead of pinning English. */
+const CHIP_KEY: Record<Phase3, string> = {
+	probe: "probe",
+	plan: "plan",
+	teach: "teach",
 };
 
 /** The header label: the phase as a quiet flat tag (owner,
@@ -39,6 +42,7 @@ const CHIP_LABEL: Record<Phase3, string> = {
  *  at all, so it is part of the drag surface instead of a carved-out
  *  target. */
 export function PhaseChip({ phase }: { phase: Phase3 }) {
+	const t = useT("phase");
 	return (
 		<span
 			data-testid="phase-chip"
@@ -46,7 +50,7 @@ export function PhaseChip({ phase }: { phase: Phase3 }) {
 			aria-hidden="true"
 			className="pointer-events-none flex shrink-0 select-none items-center text-xs font-medium uppercase tracking-wide text-muted-foreground"
 		>
-			{CHIP_LABEL[phase]}
+			{t(CHIP_KEY[phase])}
 		</span>
 	);
 }
@@ -60,11 +64,12 @@ export function PhaseChip({ phase }: { phase: Phase3 }) {
  * after the start).
  */
 export function PhaseDivider({ phase, nodeCount }: { phase: Phase3; nodeCount?: number }) {
+	const t = useT("phase");
 	if (phase === "probe") return null;
 	const label =
 		phase === "plan" && nodeCount
-			? `Plan · ${nodeCount} node${nodeCount === 1 ? "" : "s"}`
-			: CHIP_LABEL[phase];
+			? t("planWithCount", { count: nodeCount })
+			: t(CHIP_KEY[phase]);
 	return (
 		<div className="my-4 flex w-full items-center gap-3" data-testid={`phase-divider-${phase}`}>
 			<span className="h-0 flex-1 border-t-2 border-dotted border-border/50" aria-hidden />
