@@ -838,5 +838,10 @@
 	},
 	"pluginQuestionSlots": {
 		"yourThinking": "你的思考"
+	},
+	"composerActions": {
+		"nodesSelected": "已选 {count} 个节点",
+		"pickNodes": "选择节点",
+		"clear": "清除"
 	}
 }

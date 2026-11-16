@@ -31,7 +31,11 @@ function PanePicker({ origin, openingLease, onClose, children }: {
 	const entered = useRef(false);
 	const focusInitial = useCallback(() => {
 		if (controller.getTopLayer()?.id !== PICKER_LAYER) return;
-		const search = root.current?.querySelector<HTMLElement>('input[aria-label={t("searchNodes")}]');
+		// Locate by STABLE identity, never by the localized label: the aria-label
+		// is translated, so a selector built from it breaks the moment the
+		// language changes (and it is not a valid selector once it contains
+		// a template expression).
+		const search = root.current?.querySelector<HTMLElement>('input[data-plugin-knowledge-search]');
 		if (search && controller.isElementEligible(search)) search.focus({ preventScroll: true });
 	}, [controller]);
 	// Snapshot authority before registration cleanup; covered/expired views do

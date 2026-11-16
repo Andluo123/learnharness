@@ -110,7 +110,7 @@ export function activate(ctx) {
       const preflight = await ctx.call('preflight', { propositionIds: [...propositionIds] });
       if (signal.aborted) return;
       const requestId = uuid();
-      dialog('Generate flashcards', signal, ({ root, actions, signal: ds, run, close }) => {
+      dialog(t('Generate flashcards'), signal, ({ root, actions, signal: ds, run, close }) => {
         root.append(el('p', 'fc-muted', generationSummary(`${preflight.propositionCount} propositions`, preflight.estimatedTokens)));
         button(actions, 'Start', run(async () => { if (await mutate('start-generation', { preflightId: preflight.id, requestId }, ds)) close(); }), ds, { variant: 'default' });
       });
@@ -118,7 +118,7 @@ export function activate(ctx) {
   }
   function confirmFileGeneration(preflight, notices, signal, onStarted) {
     const requestId = uuid();
-    dialog('Generate flashcards', signal, ({ root, actions, signal: ds, run, close }) => {
+    dialog(t('Generate flashcards'), signal, ({ root, actions, signal: ds, run, close }) => {
       root.append(el('p', 'fc-muted fc-file-name', generationSummary(preflight.name, preflight.estimatedTokens)));
       for (const notice of notices) root.append(el('p', 'fc-muted', notice));
       button(actions, 'Start', run(async () => {
@@ -213,7 +213,7 @@ export function activate(ctx) {
   }
   function editDeck(deck, signal) {
     dialog(deck ? t('Deck settings') : t('Create deck'), signal, ({ root, actions, signal: ds, run, close }) => {
-      const name = field(root, t('Deck name'), deck?.name || ''), limit = deck ? field(root, 'New propositions per day', deck.newLimit, 'number') : null;
+      const name = field(root, t('Deck name'), deck?.name || ''), limit = deck ? field(root, t('New propositions per day'), deck.newLimit, 'number') : null;
       if (limit) { limit.min = '0'; limit.step = '1'; }
       button(actions, deck ? 'Save' : 'Create', run(async () => {
         if (!name.value.trim()) throw new Error('Enter a deck name.');
@@ -249,8 +249,8 @@ export function activate(ctx) {
       generationIds = [...ids]; picker.update({ value: generationIds }); updateGenerationButtons();
     } }, { signal }), signal);
     toolbar.append(pickerSlot);
-    generationButton = button(toolbar, 'Generate', () => confirmGeneration(generationIds, signal, showError), signal, { disabled: true, variant: 'default' });
-    fileButton = button(toolbar, 'Generate from file…', () => fileInput.click(), signal, { disabled: !canConvertFiles, title: canConvertFiles ? undefined : 'Update LearnHarness to generate flashcards from files.' });
+    generationButton = button(toolbar, t('Generate'), () => confirmGeneration(generationIds, signal, showError), signal, { disabled: true, variant: 'default' });
+    fileButton = button(toolbar, t('Generate from file…'), () => fileInput.click(), signal, { disabled: !canConvertFiles, title: canConvertFiles ? undefined : 'Update LearnHarness to generate flashcards from files.' });
     toolbar.append(fileInput);
     const deckPanel = el('section', 'fc-deck-panel'), deckToolbar = el('div', 'fc-deck-toolbar');
     deckPanel.setAttribute('aria-label', 'Decks');
@@ -261,16 +261,16 @@ export function activate(ctx) {
     selectionSummary.append(selectionCount); selectionActions.append(scopeActions, selectionSummary);
     let selection = { cueIds: [], propositionIds: [], count: 0 }, tree, hasPracticeCards = false;
     const currentScope = () => selection.count ? { cueIds: [...selection.cueIds], propositionIds: [...selection.propositionIds] } : {};
-    const reviewAction = button(scopeActions, 'Review all', () => review.open(currentScope()), signal);
-    const practiceAction = button(scopeActions, 'Practice all', () => practice(currentScope()), signal, { disabled: true });
+    const reviewAction = button(scopeActions, t('Review all'), () => review.open(currentScope()), signal);
+    const practiceAction = button(scopeActions, t('Practice all'), () => practice(currentScope()), signal, { disabled: true });
     const deleteSlot = el('span', 'fc-delete-selected');
     const deleteAction = button(deleteSlot, t('Delete selected'), () => deleteContents({ cueIds: [...selection.cueIds], propositionIds: [...selection.emptyPropositionIds], deckIds: [...selection.emptyDeckIds] }, signal), signal, { icon: trashIcon, iconOnly: true, size: 'icon-sm', variant: 'ghost', title: t('Delete selected') });
-    const clearSelection = button(selectionSummary, 'Clear', () => tree.clearSelection(), signal, { variant: 'ghost', disabled: true });
+    const clearSelection = button(selectionSummary, t('Clear'), () => tree.clearSelection(), signal, { variant: 'ghost', disabled: true });
     const updateSelection = () => {
       const selected = selection.count > 0;
       selectionCount.textContent = `${selection.count} selected`;
-      reviewAction.update({ label: selected ? 'Review selected' : 'Review all', disabled: selected && !selection.cueIds.length });
-      practiceAction.update({ label: selected ? 'Practice selected' : 'Practice all', disabled: selected ? !selection.cueIds.length : !hasPracticeCards });
+      reviewAction.update({ label: selected ? t('Review selected') : t('Review all'), disabled: selected && !selection.cueIds.length });
+      practiceAction.update({ label: selected ? t('Practice selected') : t('Practice all'), disabled: selected ? !selection.cueIds.length : !hasPracticeCards });
       const blocked = !!activeBatch(snapshot?.batch);
       deleteAction.update({ disabled: !selected || blocked, title: blocked ? deletionBlocked : t('Delete selected') });
       if (selected) scopeActions.append(deleteSlot); else deleteSlot.remove();

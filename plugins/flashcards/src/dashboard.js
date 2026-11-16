@@ -1,6 +1,6 @@
 import { t } from './i18n.js';
 // Library-wide scheduling summaries, rendered only from the backend snapshot.
-const states = [['new', 'New'], ['learning', 'Learning'], ['review', 'Review'], ['relearning', 'Relearning']];
+const states = [['new', t('New')], ['learning', t('Learning')], ['review', t('Review')], ['relearning', t('Relearning')]];
 const svgNamespace = 'http://www.w3.org/2000/svg';
 const count = value => Number.isFinite(value) && value > 0 ? value : 0;
 function element(tag, className, text) {
@@ -28,8 +28,8 @@ function dateLabels(day) {
 }
 
 export function mountDashboard({ container, signal }) {
-  const root = element('section', 'fc-dashboard'); root.setAttribute('aria-label', 'Spaced repetition');
-  const heading = element('h2', 'fc-dashboard-heading', 'Spaced repetition');
+  const root = element('section', 'fc-dashboard'); root.setAttribute('aria-label', t('Spaced repetition'));
+  const heading = element('h2', 'fc-dashboard-heading', t('Spaced repetition'));
   const loading = element('p', 'fc-muted', t('Loading statistics…')); loading.setAttribute('role', 'status');
   const stateTitle = element('h3', '', t('Current states'));
   const stateBar = element('div', 'fc-state-bar'); stateBar.setAttribute('aria-hidden', 'true');

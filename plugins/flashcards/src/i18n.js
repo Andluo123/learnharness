@@ -16,7 +16,7 @@
 
 const ZH = {
 	"Learning": "学习中",
-	"Relearning": "重新学习",
+	"Relearning": "重学中",
 	"Spaced repetition": "间隔重复",
 	"Loading statistics…": "正在加载统计…",
 	"Current states": "当前状态",
@@ -70,7 +70,19 @@ const ZH = {
 	"Day starts at (hour)": "每日起始时间（小时）",
 	"Generation chunk budget (estimated tokens)": "生成分块预算（估算 token 数）",
 	"Model": "模型",
-	"Follow cheap slot": "跟随「经济」槽位"
+	"Follow cheap slot": "跟随「经济」槽位",
+	"Generate flashcards": "生成闪卡",
+	"Generate from file…": "从文件生成…",
+	"Create deck": "新建牌组",
+	"Review all": "复习全部",
+	"Practice all": "练习全部",
+	"Review selected": "复习所选",
+	"Practice selected": "练习所选",
+	"Clear": "清除",
+	"Review": "复习",
+	"New": "新卡",
+	"New propositions per day": "每日新命题数",
+	"Today": "今天"
 };;
 
 /** The active UI language as the host declares it. */

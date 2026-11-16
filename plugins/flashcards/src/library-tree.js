@@ -110,7 +110,7 @@ export function mountLibraryTree({ ctx, container, signal, button, onReview, onP
           if (event.key === 'Enter') { event.preventDefault(); event.stopPropagation(); void commit(); }
         }, { signal: mountSignal });
         labelSlot.append(error);
-        button(root, 'Review', run(() => onReview({ deckIds: [record.deck.id] })), mountSignal, { size: 'xs', variant: 'outline' });
+        button(root, t('Review'), run(() => onReview({ deckIds: [record.deck.id] })), mountSignal, { size: 'xs', variant: 'outline' });
       } else if (record.kind === 'cue') {
         label.addEventListener('click', event => { event.stopPropagation(); onPreview(record.p, record.cue, record.archive); }, { signal: mountSignal });
       }

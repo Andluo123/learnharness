@@ -2538,7 +2538,13 @@ export function DockOverlay({
 	const nativeViewReader = useRef<(() => NativeQuestionViewState) | null>(null) as ViewReaderRef<NativeQuestionViewState>;
 	const practiceViewReader = useRef<(() => string) | null>(null) as ViewReaderRef<string>;
 	const customViewReader = useRef<(() => { available: boolean }) | null>(null) as ViewReaderRef<{ available: boolean }>;
-	nativeViewReader.changed = practiceViewReader.changed = customViewReader.changed = viewReader?.changed;
+	// Live capability handles can be cloned+freezed by capture paths
+	// (core/plugin-view-context.ts); assigning onto a frozen object throws
+	// "Cannot add property changed, object is not extensible" and takes the
+	// whole session view down. Guard the whole chain.
+	try {
+		nativeViewReader.changed = practiceViewReader.changed = customViewReader.changed = viewReader?.changed;
+	} catch { /* frozen handles already carry their callback */ }
 
 	// Teach-question ARRIVAL state, applied during render — BEFORE the
 	// first paint (owner, scroll-honesty round 2026-09-25). Until now the

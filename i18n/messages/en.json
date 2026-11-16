@@ -838,5 +838,10 @@
 	},
 	"pluginQuestionSlots": {
 		"yourThinking": "YOUR THINKING"
+	},
+	"composerActions": {
+		"nodesSelected": "{count, plural, one {# node} other {# nodes}} selected",
+		"pickNodes": "Pick nodes",
+		"clear": "Clear"
 	}
 }
