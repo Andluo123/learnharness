@@ -16,10 +16,10 @@ import type { AppLocale } from "./config.ts";
 /** The catalogue the settings surface knows how to name. */
 export const PLUGIN_NAMES: Readonly<Record<string, string>> = {
 	flashcards: "记忆卡片",
-	"coding-questions": "编程题",
+	"coding-questions": "代码练习",
 	"drawing-pad": "绘图板",
-	"rich-code-blocks": "富代码块",
-	"ui-showcase": "界面展示",
+	"rich-code-blocks": "学科代码块",
+	"ui-showcase": "组件示例库",
 };
 
 /** The display name for a plugin, in the active language.

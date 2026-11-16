@@ -17,7 +17,7 @@
 const ZH: Record<string, string> = {
 	"Coding answers must be strings.": "编程答案必须是字符串。",
 	"Coding submissions must be strings.": "编程提交必须是字符串。",
-	"Coding question": "编程题",
+	"Coding question": "代码练习",
 	"Coding problem": "编程问题",
 	"Coding question payload is unavailable.": "编程题内容不可用。",
 	"Coding question test recipe is unavailable.": "编程题测试配置不可用。",

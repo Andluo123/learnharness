@@ -50,11 +50,12 @@ const ZH: Record<string, string> = {
 	"Select second example": "选择第二个示例",
 	"Open child dialog": "打开子对话框",
 	"Retained text": "保留的文本",
-	"UI Showcase surface": "界面展示面板",
+	"UI Showcase surface": "组件示例库面板",
 	"Open nested surface": "打开嵌套面板",
-	"Nested UI Showcase surface": "嵌套界面展示面板",
+	"Nested UI Showcase surface": "嵌套组件示例库面板",
 	"Enable selection": "启用选择",
-	"Directory example": "目录示例"
+	"Directory example": "目录示例",
+	"UI Showcase": "组件示例库"
 };;
 
 /** The active UI language as the host declares it. */
