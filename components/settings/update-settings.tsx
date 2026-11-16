@@ -121,7 +121,7 @@ export function UpdateSettings({
 			</SettingsRow>
 			{active && (
 				<SettingsRow label={t("automaticUpdates")} hint={AUTO_UPDATE_HINT} testid="row-auto-update">
-					<Toggle checked={autoUpdate} label="auto update" onChange={onAutoUpdateChange} />
+					<Toggle checked={autoUpdate} label={t("autoUpdateAria")} onChange={onAutoUpdateChange} />
 				</SettingsRow>
 			)}
 		</>

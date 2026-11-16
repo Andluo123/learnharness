@@ -255,7 +255,7 @@ export function activate(ctx) {
     const deckPanel = el('section', 'fc-deck-panel'), deckToolbar = el('div', 'fc-deck-toolbar');
     deckPanel.setAttribute('aria-label', 'Decks');
     const searchLabel = el('label', 'fc-search'), search = el('input', 'fc-input');
-    search.type = 'search'; search.placeholder = 'Search decks, propositions, and cues'; search.setAttribute('aria-label', 'Search flashcards'); searchLabel.append(search);
+    search.type = 'search'; search.placeholder = t('Search decks, propositions, and cues'); search.setAttribute('aria-label', 'Search flashcards'); searchLabel.append(search);
     const batchArea = el('div'), selectionActions = el('div', 'fc-actions fc-selection-actions'), selectionCount = el('span', 'fc-muted'), treeSlot = el('div', 'fc-tree');
     const scopeActions = el('div', 'fc-actions fc-scope-actions'), selectionSummary = el('div', 'fc-selection-summary');
     selectionSummary.append(selectionCount); selectionActions.append(scopeActions, selectionSummary);
@@ -264,7 +264,7 @@ export function activate(ctx) {
     const reviewAction = button(scopeActions, 'Review all', () => review.open(currentScope()), signal);
     const practiceAction = button(scopeActions, 'Practice all', () => practice(currentScope()), signal, { disabled: true });
     const deleteSlot = el('span', 'fc-delete-selected');
-    const deleteAction = button(deleteSlot, 'Delete selected', () => deleteContents({ cueIds: [...selection.cueIds], propositionIds: [...selection.emptyPropositionIds], deckIds: [...selection.emptyDeckIds] }, signal), signal, { icon: trashIcon, iconOnly: true, size: 'icon-sm', variant: 'ghost', title: 'Delete selected' });
+    const deleteAction = button(deleteSlot, t('Delete selected'), () => deleteContents({ cueIds: [...selection.cueIds], propositionIds: [...selection.emptyPropositionIds], deckIds: [...selection.emptyDeckIds] }, signal), signal, { icon: trashIcon, iconOnly: true, size: 'icon-sm', variant: 'ghost', title: t('Delete selected') });
     const clearSelection = button(selectionSummary, 'Clear', () => tree.clearSelection(), signal, { variant: 'ghost', disabled: true });
     const updateSelection = () => {
       const selected = selection.count > 0;
@@ -272,7 +272,7 @@ export function activate(ctx) {
       reviewAction.update({ label: selected ? 'Review selected' : 'Review all', disabled: selected && !selection.cueIds.length });
       practiceAction.update({ label: selected ? 'Practice selected' : 'Practice all', disabled: selected ? !selection.cueIds.length : !hasPracticeCards });
       const blocked = !!activeBatch(snapshot?.batch);
-      deleteAction.update({ disabled: !selected || blocked, title: blocked ? deletionBlocked : 'Delete selected' });
+      deleteAction.update({ disabled: !selected || blocked, title: blocked ? deletionBlocked : t('Delete selected') });
       if (selected) scopeActions.append(deleteSlot); else deleteSlot.remove();
       clearSelection.update({ disabled: !selected });
     };
@@ -306,11 +306,11 @@ export function activate(ctx) {
       const files = [...(fileInput.files || [])]; fileInput.value = '';
       if (signal.aborted || !canConvertFiles || filePreparing || activeBatch(snapshot?.batch) || !files.length) return;
       if (files.length !== 1) { showError('Choose one file at a time.'); return; }
-      filePreparing = true; error.textContent = ''; fileStatus.textContent = 'Converting file…'; updateGenerationButtons();
+      filePreparing = true; error.textContent = ''; fileStatus.textContent = t('Converting file…'); updateGenerationButtons();
       try {
         const converted = await ctx.documents.toMarkdown(files[0], { signal });
         if (signal.aborted) return;
-        fileStatus.textContent = 'Preparing generation…';
+        fileStatus.textContent = t('Preparing generation…');
         const preflight = await ctx.call('preflight-file', { name: converted.name, markdown: converted.markdown });
         if (signal.aborted) return;
         if (preflight.existingSourceId) {

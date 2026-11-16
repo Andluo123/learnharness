@@ -443,7 +443,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 			onClick={(e) => e.stopPropagation()} />}>
 				<header className="flex h-15 shrink-0 items-center gap-3 border-b border-border px-5">
 					<h2 className="font-title text-2xl tracking-tight">{t("setupTitle")}</h2>
-					<Hint label="Close" binding="escape" side="left">
+					<Hint label={t("close")} binding="escape" side="left">
 <button
 						type="button"
 						aria-label={t("closeSetup")}
@@ -458,7 +458,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 
 				{failed && (
 					<p role="alert" data-testid="setup-catalog-error" className="px-6 py-3 text-sm text-foreground">
-						Model catalog could not be loaded. Check the connection and retry. <button type="button" data-testid="setup-retry" className="underline" onClick={refresh}>Retry</button>
+						Model catalog could not be loaded. Check the connection and retry. <button type="button" data-testid="setup-retry" className="underline" onClick={refresh}>{t("retry")}</button>
 					</p>
 				)}
 				{stage === "loading" ? (

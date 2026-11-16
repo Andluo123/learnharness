@@ -59,7 +59,7 @@
 	},
 	"settings": {
 		"title": "设置",
-		"close": "关闭设置",
+		"close": "关闭",
 		"saved": "已保存",
 		"saving": "保存中…",
 		"sections": {
@@ -80,7 +80,10 @@
 		},
 		"keyboardHint": "保存在本机",
 		"sectionsLabel": "设置分区",
-		"loadError": "设置加载失败 —— 请刷新重试。"
+		"loadError": "设置加载失败 —— 请刷新重试。",
+		"settingTitleAria": "设置",
+		"loadingPlugins": "正在加载插件…",
+		"closeSettings": "关闭设置"
 	},
 	"composer": {
 		"placeholder": "你想学习什么？",
@@ -203,7 +206,8 @@
 		"theAnswer": "答案",
 		"correct": "正确",
 		"incorrect": "错误",
-		"hideWhy": "收起原因"
+		"hideWhy": "收起原因",
+		"yourThinking": "你的思考"
 	},
 	"practice": {
 		"problem": "题目",
@@ -219,7 +223,8 @@
 	"sourceTree": {
 		"folderNamePlaceholder": "文件夹名称",
 		"sourceOrFolderName": "来源或文件夹名称",
-		"moveOutsideFolders": "移到文件夹之外"
+		"moveOutsideFolders": "移到文件夹之外",
+		"rename": "重命名"
 	},
 	"graph": {
 		"graphCostsHint": "图谱成本 —— 点击查看详情",
@@ -254,7 +259,8 @@
 		"startSessionToLearn": "开始一个会话，即可着手学习。",
 		"attachMaterial": "用回形针附加你的材料，或直接拖放。",
 		"sessions": "会话",
-		"noSessionsRecorded": "尚未记录任何会话。"
+		"noSessionsRecorded": "尚未记录任何会话。",
+		"blur": "模糊"
 	},
 	"plan": {
 		"planDiagram": "计划图",
@@ -321,7 +327,8 @@
 		"preparingQuestion": "正在准备题目…",
 		"questionUnavailable": "题目不可用",
 		"yourThinking": "你的思考",
-		"submitAnswer": "提交答案"
+		"submitAnswer": "提交答案",
+		"dismissQuestion": "忽略此题"
 	},
 	"questionDock": {
 		"checkUnderstanding": "检验你的理解",
@@ -340,16 +347,20 @@
 		"yourThinking": "你的思考",
 		"submitAnswer": "提交答案",
 		"compactingSession": "正在压缩会话…",
-		"enterSubmits": "↵ 提交 · ⇧↵ 换行"
+		"enterSubmits": "↵ 提交 · ⇧↵ 换行",
+		"probeAssessment": "探测评估"
 	},
 	"citationComment": {
 		"commentAria": "为选中的文字添加评论",
 		"commentPlaceholder": "可添加可选评论…",
-		"commentLimit": "评论最多 8,000 个字符。"
+		"commentLimit": "评论最多 8,000 个字符。",
+		"cancel": "取消",
+		"commentKeys": "Enter 保存引用评论；Command/Ctrl+Enter 保存并发送；Shift+Enter 换行。"
 	},
 	"pluginChrome": {
 		"graphActions": "插件图谱操作",
-		"moreActions": "更多插件操作"
+		"moreActions": "更多插件操作",
+		"extract": "提取"
 	},
 	"pluginView": {
 		"pluginSettings": "插件设置",
@@ -418,7 +429,8 @@
 		"imageNotAvailable": "图片不可用"
 	},
 	"modelPicker": {
-		"thinking": "思考"
+		"thinking": "思考",
+		"levelsFooter": "此模型实际支持的思考等级"
 	},
 	"pluginQuestionPart": {
 		"questionDismissed": "题目已忽略"
@@ -447,17 +459,20 @@
 		"closeSetup": "关闭设置向导",
 		"loadingModels": "正在加载模型…",
 		"catalogFailed": "模型目录加载失败。请检查网络连接后重试。",
-		"retry": "重试"
+		"retry": "重试",
+		"close": "关闭"
 	},
 	"dictationLang": {
 		"language": "语言",
 		"searchLanguages": "搜索语言…"
 	},
 	"notesImport": {
-		"extractHint": "从文件提取到知识图谱"
+		"extractHint": "从文件提取到知识图谱",
+		"attachInstead": "用于课程时，请改为在会话中附加材料。"
 	},
 	"pluginKnowledgePicker": {
-		"pickNodes": "选择节点"
+		"pickNodes": "选择节点",
+		"searchNodes": "搜索节点"
 	},
 	"practiceSession": "练习会话",
 	"settingsAgent": {
@@ -509,7 +524,11 @@
 			"prober": "探测者",
 			"practice": "练习",
 			"shared": "共享"
-		}
+		},
+		"catalogFailed": "模型目录加载失败。请检查网络连接后重试。",
+		"retry": "重试",
+		"cacheDefault": "缓存：默认",
+		"addFolder": "添加文件夹"
 	},
 	"settingsKeys": {
 		"pasteKey": "粘贴密钥…",
@@ -538,7 +557,11 @@
 		"connect": "连接",
 		"disconnect": "断开连接",
 		"dictation": "听写",
-		"search": "搜索"
+		"search": "搜索",
+		"retry": "重试",
+		"deepgramKey": "Deepgram API 密钥",
+		"allowReuse": "允许为此 URL 复用当前有效的已有密钥",
+		"reloadConfig": "重新加载配置"
 	},
 	"settingsAppearance": {
 		"typography": "排版",
@@ -618,7 +641,8 @@
 		"autoHint": "启动时及每 24 小时检查一次。关闭后不会中止进行中或待安装的更新。",
 		"checkFailed": "无法检查更新，请稍后再试。",
 		"downloadingAria": "正在下载更新",
-		"checkingAria": "正在检查更新"
+		"checkingAria": "正在检查更新",
+		"autoUpdateAria": "自动更新"
 	},
 	"settingsKeyboard": {
 		"keyboard": "键盘",
@@ -680,14 +704,25 @@
 		"installHint": "安装并登录 Claude Code",
 		"checksHint": "仅检查安装与版本 —— 不检查登录状态、模型访问权限，或",
 		"externalCli": "外部 CLI",
-		"claudeCode": "Claude Code"
+		"claudeCode": "Claude Code",
+		"checkAgain": "重新检查",
+		"setupLink": "设置 ↗",
+		"startsHint": "LearnHarness 会在需要时启动它 —— 无需常驻后台进程。",
+		"verifyHint": "请独立核实 AI 的说法 —— 它们可能不准确、不完整、具有误导性或已过时。"
 	},
 	"settingsSubs": {
 		"manage": "管理",
 		"manageEllipsis": "管理…",
 		"connect": "连接",
 		"disconnect": "断开连接",
-		"allowBackground": "允许后台使用"
+		"allowBackground": "允许后台使用",
+		"enableBackground": "启用后台使用",
+		"deviceCode": "设备码：",
+		"openBrowser": "打开浏览器",
+		"select": "选择…",
+		"continue": "继续",
+		"retry": "重试",
+		"signInAgain": "重新登录"
 	},
 	"settingsChatgpt": {
 		"chatgpt": "ChatGPT",
@@ -700,7 +735,15 @@
 		"chatgptAccount": "ChatGPT 账户",
 		"disconnect": "断开连接",
 		"manageBtn": "管理…",
-		"edit": "编辑"
+		"edit": "编辑",
+		"dismiss": "关闭",
+		"disconnectAccount": "断开账户",
+		"openaiPrivacy": "OpenAI 隐私政策",
+		"manageUsage": "管理用量",
+		"addAccounts": "添加账户",
+		"signInAgain": "重新登录",
+		"enableBackground": "启用后台使用",
+		"desktopOnly": "ChatGPT 登录仅桌面应用可用。此处仍可使用 API 密钥连接。"
 	},
 	"phase": {
 		"probe": "探测中",
@@ -727,5 +770,32 @@
 	},
 	"probeDone": {
 		"probeAssessment": "探测评估"
+	},
+	"artifacts": {
+		"figure": "图",
+		"image": "图片",
+		"sources": "来源",
+		"invertLabel": "反转图形亮度",
+		"invertTitle": "反转颜色",
+		"downloadAria": "下载图形为 SVG",
+		"downloadTitle": "下载为 SVG",
+		"downloadImage": "下载图片",
+		"openFullscreenAria": "全屏查看图形",
+		"openFullscreenTitle": "全屏查看",
+		"demoError": "此演示抛出了错误",
+		"jobFailed": "后台任务恢复/投递失败",
+		"research": "调研",
+		"inputStreaming": "输入（流式）",
+		"taskDetails": "任务详情"
+	},
+	"message": {
+		"prevBranch": "上一个分支",
+		"nextBranch": "下一个分支"
+	},
+	"pluginProblemSubmitted": {
+		"problemUnavailable": "题目不可用"
+	},
+	"settingsCacheRetention": {
+		"cacheRetention": "缓存保留"
 	}
 }

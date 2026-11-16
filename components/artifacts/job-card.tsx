@@ -3,6 +3,7 @@
 import { DispatchCard } from "@/components/artifacts/dispatch-card";
 import { MessageResponse } from "@/components/ai-elements/message";
 import { isWebSourceUrl, type ArtifactPartProps, type PdfResult, type ResearchResult } from "@/src/core";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * The research tool-call box (contracts.ts "THE ASYNC PROTOCOL" §4).
@@ -77,6 +78,7 @@ export function PdfBriefCard({ output }: { output: unknown }) {
  * the steer card (sub-agent result delivery) renders the same artifact.
  */
 export function ResearchBriefCard({ output }: { output: unknown }) {
+	const t = useT("artifacts");
 	const result = output as ResearchResult | undefined;
 	if (!result || typeof result.brief !== "string") {
 		return (
@@ -97,7 +99,7 @@ export function ResearchBriefCard({ output }: { output: unknown }) {
 			</div>
 			{result.sources.length > 0 && (
 				<div className="mt-3 border-t pt-2">
-					<div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Sources</div>
+					<div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("sources")}</div>
 					<ul className="flex flex-col gap-0.5 text-xs">
 						{result.sources.map((s) => (
 							<li key={s.url} className="truncate">

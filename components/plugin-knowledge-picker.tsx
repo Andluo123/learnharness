@@ -31,7 +31,7 @@ function PanePicker({ origin, openingLease, onClose, children }: {
 	const entered = useRef(false);
 	const focusInitial = useCallback(() => {
 		if (controller.getTopLayer()?.id !== PICKER_LAYER) return;
-		const search = root.current?.querySelector<HTMLElement>('input[aria-label="Search nodes"]');
+		const search = root.current?.querySelector<HTMLElement>('input[aria-label={t("searchNodes")}]');
 		if (search && controller.isElementEligible(search)) search.focus({ preventScroll: true });
 	}, [controller]);
 	// Snapshot authority before registration cleanup; covered/expired views do
@@ -67,6 +67,7 @@ export function PluginKnowledgePicker({ value, onChange, disabled, signal, onErr
 	signal: AbortSignal;
 	onError: (error: unknown) => void;
 }) {
+	const t = useT("pluginKnowledgePicker");
 	const controller = useOptionalInteractionLayers();
 	const pane = useContext(HostContentRootContext);
 	const route = useContext(HostRouteLifetimeContext);
@@ -192,7 +193,7 @@ export function PluginKnowledgePicker({ value, onChange, disabled, signal, onErr
 		<NodePickerControl count={new Set(value).size} onOpen={show} onClear={() => change([])} disabled={disabled} triggerRef={trigger} />
 		{visible && source && (source.modal
 			? <HostDialog open layerId={PICKER_LAYER} ownerId={source.owner?.id ?? null} openingLease={lease.current!}
-				onClose={close} aria-label="Pick nodes" frame={<div className="absolute inset-0" />}>{table}</HostDialog>
+				onClose={close} aria-label={t("pickNodes")} frame={<div className="absolute inset-0" />}>{table}</HostDialog>
 			: <PanePicker origin={source} openingLease={lease.current!} onClose={close}>{table}</PanePicker>)}
 	</>;
 }

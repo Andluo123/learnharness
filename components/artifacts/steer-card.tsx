@@ -9,6 +9,7 @@ import { PdfBriefCard, ResearchBriefCard } from "@/components/artifacts/job-card
 import { VisualOutputCard } from "@/components/artifacts/visual-card";
 import { PluginWorkerCard } from "@/components/artifacts/plugin-worker-card";
 import { WorkerResultDetails } from "@/components/artifacts/worker-result-presentation";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * The sub-agent result delivery card (contracts.ts "THE ASYNC PROTOCOL" §4).
@@ -30,6 +31,7 @@ import { WorkerResultDetails } from "@/components/artifacts/worker-result-presen
  *     tool renderer and a persisted readable fallback (the call keeps its ack).
  */
 export function SubagentSteerCard({ message }: { message: LhViewMessage }) {
+	const t = useT("artifacts");
 	const artifactPart = message.parts.find((p) => p.type === "data-subagent-artifact");
 	const data = artifactPart?.data as SubagentArtifactData | undefined;
 	// The abort steer (2026-09 dock semantics): its message-type part is
@@ -43,7 +45,7 @@ export function SubagentSteerCard({ message }: { message: LhViewMessage }) {
 		// learner aborts and do not invent an outcome for an unreadable task.
 		if (typeof aborted?.data?.failure === "string") return (
 			<div data-testid="job-delivery-failure" role="alert" className="space-y-1 rounded-xl border bg-card p-4 text-sm">
-				<p className="font-medium">Background job recovery/delivery failed</p>
+				<p className="font-medium">{t("jobFailed")}</p>
 				<p className="whitespace-pre-wrap break-words text-muted-foreground">{aborted.data.failure}</p>
 			</div>
 		);
@@ -120,9 +122,10 @@ function PdfCompleteBadge({ result }: { result: PdfResult }) {
  * affordance): full markdown + sources, one click away, no extra fetch —
  * the artifact part in the record is the single source of truth. */
 function ResearchCompleteBadge({ result }: { result: ResearchResult }) {
+	const t = useT("artifacts");
 	return (
 		<WorkerResultDetails testId="research-complete-badge" heading={<>
-				<span className="font-medium uppercase tracking-wide">Research</span>
+				<span className="font-medium uppercase tracking-wide">{t("research")}</span>
 				<span>complete</span>
 				{result.sources.length > 0 && <span>· {result.sources.length} sources</span>}
 			</>}>

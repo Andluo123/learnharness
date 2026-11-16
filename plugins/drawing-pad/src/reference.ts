@@ -1,4 +1,5 @@
 import type { PluginFrontendContext, PluginSessionViewInput } from "learnharness-plugin-api";
+import { t } from "./i18n.ts";
 
 export interface Reference {
   label: string;
@@ -10,7 +11,7 @@ export interface Reference {
 }
 /** Only the host-selected, learner-facing projection is consumed here. */
 export function referenceFor(input: PluginSessionViewInput): Reference | undefined {
-  if (input.type === "thinking") return { label: "Problem", question: input.problem.statement, options: [], multiple: false };
+  if (input.type === "thinking") return { label: t("Problem"), question: input.problem.statement, options: [], multiple: false };
   if (input.type !== "answer" || !input.revealed || !input.available) return undefined;
   const question = input.question;
   const tool = question.occurrence.toolName;

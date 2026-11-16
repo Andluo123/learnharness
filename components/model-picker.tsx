@@ -343,7 +343,7 @@ export function ModelControl({ chatId, onModelChange }: { chatId?: string; onMod
 						effectiveLevel={effectiveLevel}
 						onPick={(level) => apply(effectiveProvider ?? "", effectiveId ?? "", level as ThinkingLevel)}
 						empty={catalog ? (effectiveId ? `${prettyModel(effectiveId)} has no thinking levels.` : "Pick a model first.") : "Loading…"}
-						footer="Levels this model actually supports"
+						footer={t("levelsFooter")}
 					/>
 					{error && <div className="mt-1 text-destructive">{error}</div>}
 				</MenuShell>

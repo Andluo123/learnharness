@@ -56,7 +56,7 @@ export function CitationCommentEditor({ initial, onDraftChange, onSave, onCancel
 				value={draft}
 				rows={2}
 				aria-label={t("commentAria")}
-				aria-description="Enter to save the citation comment; Command/Ctrl+Enter to save and send; Shift+Enter for a new line."
+				aria-description={t("commentKeys")}
 				placeholder={t("commentPlaceholder")}
 				className="field-sizing-content max-h-40 min-h-16 w-full resize-none rounded-md border bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 				onChange={(event) => { setDraft(event.target.value); onDraftChange(event.target.value); }}
@@ -74,7 +74,7 @@ export function CitationCommentEditor({ initial, onDraftChange, onSave, onCancel
 				<p role="status" className="text-xs text-destructive">{t("commentLimit")}</p>
 			) : null}
 			<div className="flex justify-end gap-2">
-				<Button type="button" size="xs" variant="outline" onPointerDown={(event) => event.preventDefault()} onClick={onCancel}>Cancel</Button>
+				<Button type="button" size="xs" variant="outline" onPointerDown={(event) => event.preventDefault()} onClick={onCancel}>{t("cancel")}</Button>
 				<Button type="button" size="xs" disabled={tooLong} onPointerDown={(event) => event.preventDefault()} onClick={() => onSave(draft, false)}>
 					{tooLong ? "Shorten comment" : "Save"}
 				</Button>

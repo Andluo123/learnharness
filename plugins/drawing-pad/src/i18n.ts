@@ -32,8 +32,9 @@ const ZH: Record<string, string> = {
 	"Clear": "清除",
 	"Undo": "撤销",
 	"Redo": "重做",
-	"Close": "关闭"
-};
+	"Close": "关闭",
+	"Problem": "题目"
+};;
 
 /** The active UI language as the host declares it. */
 export function uiLocale(): "zh-CN" | "en" {

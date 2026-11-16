@@ -362,7 +362,7 @@ export function SettingsDialogBody({
 			tabIndex={-1}
 			role="dialog"
 			aria-modal="true"
-			aria-label="Settings"
+			aria-label={t("settingTitleAria")}
 			data-testid="settings-dialog"
 			className="settings-dialog-pop flex h-[620px] max-h-[85vh] w-[920px] max-w-[90vw] flex-col overflow-hidden rounded-md border border-border bg-card shadow-xl"
 			onClick={(e) => e.stopPropagation()}
@@ -372,13 +372,13 @@ export function SettingsDialogBody({
 				<h2 className="font-title text-2xl tracking-tight">{t("title")}</h2>
 				<Hint
 						// Esc closes through the shared interaction owner.
-						label="Close"
+						label={t("closeSettings")}
 						binding="escape"
 						side="left"
 					>
 						<button
 					type="button"
-					aria-label={t("close")}
+					aria-label={t("closeSettings")}
 					data-testid="settings-close"
 					className="ml-auto size-7 rounded-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
 					onClick={onClose}
@@ -448,7 +448,7 @@ export function SettingsDialogBody({
 					)}
 					{selected === "plugins" || selected === "core-plugins" ? <PluginsSection origin={selected === "core-plugins" ? "core" : "community"} onOpenSettings={pluginId => setActive(`plugin:${pluginId}`)} />
 						: activePlugin ? <PluginSettingsPage key={`${activePlugin.info.id}/${activePlugin.info.revision}`} plugin={activePlugin} />
-							: activePluginId !== null ? <p role="status" className="px-6 py-5 text-xs text-muted-foreground">Loading plugins…</p>
+							: activePluginId !== null ? <p role="status" className="px-6 py-5 text-xs text-muted-foreground">{t("loadingPlugins")}</p>
 								: record === undefined ? (
 						<p className="px-6 py-5 text-xs text-muted-foreground/70">
 							Loading settings…

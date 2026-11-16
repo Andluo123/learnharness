@@ -11,6 +11,7 @@ import { DispatchCard } from "@/components/artifacts/dispatch-card";
 import { SvgImage } from "@/components/artifacts/svg-image";
 import { embedLearnerImage, type ArtifactPartProps, type VisualResult } from "@/src/core";
 import { useImageSnapshot } from "./use-image-snapshot";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * Visual artifact card (W6 → ack protocol): the tool part's output is the
@@ -51,6 +52,7 @@ export function VisualOutputCard({
 	messageId?: string;
 	initialInverted?: boolean;
 }) {
+	const t = useT("artifacts");
 	const result = output as VisualResult | undefined;
 	const snapshot = useImageSnapshot(result?.image?.snapshotId);
 	const svg = result?.image && snapshot.image ? embedLearnerImage(result.svg, snapshot.image) : result?.svg ?? "";
@@ -140,7 +142,7 @@ export function VisualOutputCard({
 					? "mt-2 flex w-0 min-w-full flex-wrap items-center justify-between gap-2"
 					: "mt-2 flex items-center justify-between gap-2"
 			}>
-				<div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Figure</div>
+				<div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("figure")}</div>
 				<div className={!invertible ? "ml-auto flex items-center gap-1.5" : "flex items-center gap-1.5"}>
 					{/* The invert affordance (owner round, 2026-10-07): the disc IS
 					    the half-filled contrast circle; the tooltip names it. */}
@@ -148,15 +150,15 @@ export function VisualOutputCard({
 						<Toggle
 							checked={inverted}
 							onChange={toggleInverted}
-							label="Invert figure brightness"
-							title="Invert colors"
+							label={t("invertLabel")}
+							title={t("invertTitle")}
 							discIcon={<InvertDiscIcon className="size-3" />}
 						/>
 					)}
 					<button
 						type="button"
-						aria-label="Download figure as SVG"
-						title="Download as SVG"
+						aria-label={t("downloadAria")}
+						title={t("downloadTitle")}
 						onClick={() => downloadFile("figure.svg", svg, "image/svg+xml")}
 						data-testid="visual-download"
 						className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
@@ -166,8 +168,8 @@ export function VisualOutputCard({
 					{overlay && (
 						<button
 							type="button"
-							aria-label="Open figure fullscreen"
-							title="Open fullscreen"
+							aria-label={t("openFullscreenAria")}
+							title={t("openFullscreenTitle")}
 							onClick={() => overlay.openFigure(svg, shownInverted)}
 							data-testid="visual-open"
 							className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"

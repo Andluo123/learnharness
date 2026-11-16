@@ -1,5 +1,6 @@
 import type { PluginTreeProps, PluginTreeRow, PluginUi, PluginUiContent, PluginWidgetHandle } from "learnharness-plugin-api";
 import { Scope, button, element, example, note, readout } from "./dom.ts";
+import { t } from "./i18n.ts";
 
 /** Synthetic controlled values only; the host owns row presentation and keyboard behavior. */
 export function mountTreeDemo(ui: PluginUi, body: HTMLElement, life: Scope): void {
@@ -12,7 +13,7 @@ export function mountTreeDemo(ui: PluginUi, body: HTMLElement, life: Scope): voi
   let lastCallback = "none";
   const show = readout(body, "tree");
   let tree: PluginWidgetHandle<PluginTreeProps>;
-  const toggle = button(ui, body, life, "toggle-tree-selection", { label: "Enable selection", variant: "outline", onClick() {
+  const toggle = button(ui, body, life, "toggle-tree-selection", { label: t("Enable selection"), variant: "outline", onClick() {
     if (life.signal.aborted) return;
     selectionEnabled = !selectionEnabled;
     lastCallback = selectionEnabled ? "selection enabled" : "selection disabled";
@@ -68,14 +69,14 @@ export function mountTreeDemo(ui: PluginUi, body: HTMLElement, life: Scope): voi
   const minimum = element("div"); minimum.style.minWidth = "36rem";
   viewport.append(minimum);
   tree = life.widget(ui.mountTree(minimum, {
-    label: "Directory example", header: "Name", rows: rows(), columns: [
+    label: t("Directory example"), header: "Name", rows: rows(), columns: [
       { key: "kind", header: "Kind", width: 56 },
       { key: "state", header: "State", width: 80 },
     ],
   }, { signal: life.signal }));
   function render() {
     tree.update({ rows: rows() });
-    toggle.update({ label: selectionEnabled ? "Disable selection" : "Enable selection" });
+    toggle.update({ label: selectionEnabled ? "Disable selection" : t("Enable selection") });
     show({ selectionEnabled, selectedOccurrenceKeys: [...selectedOccurrenceKeys], expanded: { ...expanded }, draft, lastCallback });
   }
   render();

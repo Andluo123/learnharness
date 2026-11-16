@@ -1,4 +1,5 @@
 import type { PluginButtonProps, PluginUi, PluginWidgetHandle } from "learnharness-plugin-api";
+import { t } from "./i18n.ts";
 
 /** A mount-local lifetime, including promises awaiting manual completion. */
 export class Scope {
@@ -81,7 +82,7 @@ export function family(ui: PluginUi, parent: HTMLElement, scope: Scope, id: stri
     current = new Scope(scope.signal);
     mount(body, current);
   };
-  button(ui, header, scope, `reset-${id}`, { label: "Reset", title: `Reset ${title.toLowerCase()} examples`, variant: "ghost", size: "xs", onClick: reset });
+  button(ui, header, scope, `reset-${id}`, { label: t("Reset"), title: `Reset ${title.toLowerCase()} examples`, variant: "ghost", size: "xs", onClick: reset });
   scope.own(() => current?.dispose());
   reset();
 }

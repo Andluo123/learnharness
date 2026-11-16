@@ -108,9 +108,10 @@ function isToolState(state: unknown): state is PluginToolRenderProps["state"] {
  * handling. Built-in cards and the hidden settled plan call remain exclusive;
  * only the generic fallback slot is extensible by plugins. */
 export function ToolPartRenderer({ part }: { part: LhViewPart }) {
+	const t = useT("pluginRenderers");
 	// Attempts/unreadable metadata must never fall through to raw payloads or
 	// validator error text, including when the renderer is missing.
-	if (part.pluginQuestion) return <p role="status" className="text-xs text-muted-foreground">Question unavailable</p>;
+	if (part.pluginQuestion) return <p role="status" className="text-xs text-muted-foreground">{t("questionUnavailable")}</p>;
 	const toolName = part.type.slice("tool-".length);
 	const Builtin = Object.hasOwn(artifactRenderers, toolName) ? artifactRenderers[toolName] : undefined;
 	const reserved = Builtin || toolName === "plan_init" || (QUESTION_TOOLS as readonly string[]).includes(toolName);

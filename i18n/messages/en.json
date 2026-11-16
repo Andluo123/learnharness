@@ -59,7 +59,7 @@
 	},
 	"settings": {
 		"title": "Settings",
-		"close": "Close settings",
+		"close": "Close",
 		"saved": "Saved",
 		"saving": "Saving…",
 		"sections": {
@@ -80,7 +80,10 @@
 		},
 		"keyboardHint": "Stored on this device",
 		"sectionsLabel": "Settings sections",
-		"loadError": "Settings could not be loaded — refresh to retry."
+		"loadError": "Settings could not be loaded — refresh to retry.",
+		"settingTitleAria": "Settings",
+		"loadingPlugins": "Loading plugins…",
+		"closeSettings": "Close settings"
 	},
 	"composer": {
 		"placeholder": "What do you want to learn?",
@@ -203,7 +206,8 @@
 		"theAnswer": "The answer",
 		"correct": "correct",
 		"incorrect": "incorrect",
-		"hideWhy": "Hide why"
+		"hideWhy": "Hide why",
+		"yourThinking": "YOUR THINKING"
 	},
 	"practice": {
 		"problem": "Problem",
@@ -219,7 +223,8 @@
 	"sourceTree": {
 		"folderNamePlaceholder": "Folder name",
 		"sourceOrFolderName": "Source or folder name",
-		"moveOutsideFolders": "Move outside folders"
+		"moveOutsideFolders": "Move outside folders",
+		"rename": "Rename"
 	},
 	"graph": {
 		"graphCostsHint": "Graph costs — click for details",
@@ -254,7 +259,8 @@
 		"startSessionToLearn": "Start a session to begin learning.",
 		"attachMaterial": "Attach your material with the paperclip or drag and drop.",
 		"sessions": "Sessions",
-		"noSessionsRecorded": "No sessions recorded."
+		"noSessionsRecorded": "No sessions recorded.",
+		"blur": "Blur"
 	},
 	"plan": {
 		"planDiagram": "Plan diagram",
@@ -321,7 +327,8 @@
 		"preparingQuestion": "Preparing question…",
 		"questionUnavailable": "Question unavailable",
 		"yourThinking": "Your thinking",
-		"submitAnswer": "Submit answer"
+		"submitAnswer": "Submit answer",
+		"dismissQuestion": "Dismiss question"
 	},
 	"questionDock": {
 		"checkUnderstanding": "Check your understanding",
@@ -340,16 +347,20 @@
 		"yourThinking": "YOUR THINKING",
 		"submitAnswer": "Submit answer",
 		"compactingSession": "compacting session…",
-		"enterSubmits": "↵ submits · ⇧↵ newline"
+		"enterSubmits": "↵ submits · ⇧↵ newline",
+		"probeAssessment": "Probe assessment"
 	},
 	"citationComment": {
 		"commentAria": "Comment on selected text",
 		"commentPlaceholder": "Add an optional comment...",
-		"commentLimit": "Comments can contain up to 8,000 characters."
+		"commentLimit": "Comments can contain up to 8,000 characters.",
+		"cancel": "Cancel",
+		"commentKeys": "Enter to save the citation comment; Command/Ctrl+Enter to save and send; Shift+Enter for a new line."
 	},
 	"pluginChrome": {
 		"graphActions": "Plugin graph actions",
-		"moreActions": "More plugin actions"
+		"moreActions": "More plugin actions",
+		"extract": "Extract"
 	},
 	"pluginView": {
 		"pluginSettings": "Plugin settings",
@@ -418,7 +429,8 @@
 		"imageNotAvailable": "Image not available"
 	},
 	"modelPicker": {
-		"thinking": "Thinking"
+		"thinking": "Thinking",
+		"levelsFooter": "Levels this model actually supports"
 	},
 	"pluginQuestionPart": {
 		"questionDismissed": "Question dismissed"
@@ -447,17 +459,20 @@
 		"closeSetup": "Close setup",
 		"loadingModels": "Loading models…",
 		"catalogFailed": "Model catalog could not be loaded. Check the connection and retry.",
-		"retry": "Retry"
+		"retry": "Retry",
+		"close": "Close"
 	},
 	"dictationLang": {
 		"language": "Language",
 		"searchLanguages": "Search languages…"
 	},
 	"notesImport": {
-		"extractHint": "Extract files into the graph"
+		"extractHint": "Extract files into the graph",
+		"attachInstead": "For lessons, attach material to a session instead."
 	},
 	"pluginKnowledgePicker": {
-		"pickNodes": "Pick nodes"
+		"pickNodes": "Pick nodes",
+		"searchNodes": "Search nodes"
 	},
 	"practiceSession": "Practice session",
 	"settingsAgent": {
@@ -509,7 +524,11 @@
 			"prober": "Prober",
 			"practice": "Practice",
 			"shared": "Shared"
-		}
+		},
+		"catalogFailed": "Model catalog could not be loaded. Check the connection and retry.",
+		"retry": "Retry",
+		"cacheDefault": "Cache: default",
+		"addFolder": "Add folder"
 	},
 	"settingsKeys": {
 		"pasteKey": "Paste key…",
@@ -538,7 +557,11 @@
 		"connect": "Connect",
 		"disconnect": "Disconnect",
 		"dictation": "Dictation",
-		"search": "Search"
+		"search": "Search",
+		"retry": "Retry",
+		"deepgramKey": "Deepgram API key",
+		"allowReuse": "Allow reuse of the effective existing key for this URL",
+		"reloadConfig": "Reload configuration"
 	},
 	"settingsAppearance": {
 		"typography": "Typography",
@@ -618,7 +641,8 @@
 		"autoHint": "Check at startup and every 24 hours. Turning this off does not stop updates already in progress or ready to install.",
 		"checkFailed": "Couldn’t check for updates. Try again later.",
 		"downloadingAria": "Downloading update",
-		"checkingAria": "Checking for updates"
+		"checkingAria": "Checking for updates",
+		"autoUpdateAria": "auto update"
 	},
 	"settingsKeyboard": {
 		"keyboard": "Keyboard",
@@ -680,14 +704,25 @@
 		"installHint": "Install and authenticate Claude Code",
 		"checksHint": "Checks installation/version only—not authentication, model access, or",
 		"externalCli": "External CLI",
-		"claudeCode": "Claude Code"
+		"claudeCode": "Claude Code",
+		"checkAgain": "Check again",
+		"setupLink": "Setup ↗",
+		"startsHint": "LearnHarness starts it when needed—no background process required.",
+		"verifyHint": "Verify AI claims independently—they may be inaccurate, incomplete, misleading, or outdated."
 	},
 	"settingsSubs": {
 		"manage": "Manage",
 		"manageEllipsis": "Manage…",
 		"connect": "Connect",
 		"disconnect": "Disconnect",
-		"allowBackground": "Allow background use"
+		"allowBackground": "Allow background use",
+		"enableBackground": "Enable background use",
+		"deviceCode": "Device code:",
+		"openBrowser": "Open browser",
+		"select": "Select…",
+		"continue": "Continue",
+		"retry": "Retry",
+		"signInAgain": "Sign in again"
 	},
 	"settingsChatgpt": {
 		"chatgpt": "ChatGPT",
@@ -700,7 +735,15 @@
 		"chatgptAccount": "ChatGPT account",
 		"disconnect": "Disconnect",
 		"manageBtn": "Manage…",
-		"edit": "Edit"
+		"edit": "Edit",
+		"dismiss": "Dismiss",
+		"disconnectAccount": "Disconnect account",
+		"openaiPrivacy": "OpenAI privacy",
+		"manageUsage": "Manage usage",
+		"addAccounts": "Add accounts",
+		"signInAgain": "Sign in again",
+		"enableBackground": "Enable background use",
+		"desktopOnly": "ChatGPT sign-in is available only in the desktop app. API-key connections remain available here."
 	},
 	"phase": {
 		"probe": "Probing",
@@ -727,5 +770,32 @@
 	},
 	"probeDone": {
 		"probeAssessment": "Probe assessment"
+	},
+	"artifacts": {
+		"figure": "Figure",
+		"image": "Image",
+		"sources": "Sources",
+		"invertLabel": "Invert figure brightness",
+		"invertTitle": "Invert colors",
+		"downloadAria": "Download figure as SVG",
+		"downloadTitle": "Download as SVG",
+		"downloadImage": "Download image",
+		"openFullscreenAria": "Open figure fullscreen",
+		"openFullscreenTitle": "Open fullscreen",
+		"demoError": "This demo threw an error",
+		"jobFailed": "Background job recovery/delivery failed",
+		"research": "Research",
+		"inputStreaming": "Input (streaming)",
+		"taskDetails": "Task details"
+	},
+	"message": {
+		"prevBranch": "Previous branch",
+		"nextBranch": "Next branch"
+	},
+	"pluginProblemSubmitted": {
+		"problemUnavailable": "Problem unavailable"
+	},
+	"settingsCacheRetention": {
+		"cacheRetention": "Cache retention"
 	}
 }

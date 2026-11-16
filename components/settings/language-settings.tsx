@@ -53,8 +53,8 @@ export function LanguageSettings({
 
 	return (
 		<SettingsRow
-			label="Language"
-			hint="The language of the interface and of the agent's teaching."
+			label={t("languageRow")}
+			hint={t("languageRowHint")}
 			testid="row-language"
 		>
 			<div role="radiogroup" aria-label={t("languageRow")} data-testid="language-picker" className="flex items-center gap-1">

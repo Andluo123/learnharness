@@ -28,7 +28,7 @@ const ZH: Record<string, string> = {
 	"Finish dictation": "结束语音",
 	"Cancel dictation": "取消语音",
 	"Standard composer": "标准输入框",
-	"Independent local draft": "独立的本地草稿",
+	"Independent local draft": "独立本地草稿",
 	"Host standard composer": "宿主标准输入框",
 	"Buttons": "按钮",
 	"Neutral": "中性",
@@ -42,8 +42,20 @@ const ZH: Record<string, string> = {
 	"A local boolean value.": "一个本地布尔值。",
 	"Text example": "文本示例",
 	"Cancel": "取消",
-	"Close": "关闭"
-};
+	"Close": "关闭",
+	"Reset": "重置",
+	"First option": "第一个选项",
+	"Select first example": "选择第一个示例",
+	"Disabled example": "禁用示例",
+	"Select second example": "选择第二个示例",
+	"Open child dialog": "打开子对话框",
+	"Retained text": "保留的文本",
+	"UI Showcase surface": "界面展示面板",
+	"Open nested surface": "打开嵌套面板",
+	"Nested UI Showcase surface": "嵌套界面展示面板",
+	"Enable selection": "启用选择",
+	"Directory example": "目录示例"
+};;
 
 /** The active UI language as the host declares it. */
 export function uiLocale(): "zh-CN" | "en" {

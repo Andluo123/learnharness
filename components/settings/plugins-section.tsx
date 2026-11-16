@@ -44,7 +44,7 @@ export function PluginsSection({ onOpenSettings, origin = "community" }: { onOpe
 		{snapshot.conflicts.map(conflict => <p role="alert" key={conflict.id} className="break-words text-xs text-destructive">{conflict.error}</p>)}
 		</>}
 		{snapshot.error && <p role="alert" className="text-xs text-destructive">{snapshot.error}</p>}
-		{snapshot.loading ? <p role="status" className="text-xs text-muted-foreground">Loading plugins…</p>
+		{snapshot.loading ? <p role="status" className="text-xs text-muted-foreground">{t("loadingPlugins")}</p>
 			: plugins.length === 0 ? <p className="text-xs text-muted-foreground">{core ? "No Core plugins available." : "No community plugins installed."}</p>
 				: plugins.map(plugin => <PluginRow key={plugin.info.id} plugin={plugin}
 					onSettings={() => onOpenSettings?.(plugin.info.id)} />)}

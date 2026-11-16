@@ -61,7 +61,7 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
     let value = ""; let busy = false; let sends = 0; let lastCallback = "none";
     const show = readout(body, "composer");
     const composer = life.widget(ui.mountComposer(example(body, "composer", "Independent composer"), {
-      value, placeholder: "Type a local draft", autoFocus: false, canSend: false,
+      value, placeholder: t("Type a local draft"), autoFocus: false, canSend: false,
       onChange(next) { if (!life.signal.aborted) { value = next; lastCallback = "onChange"; render(); } },
       onSend() { if (!life.signal.aborted && value.trim()) { busy = true; sends++; lastCallback = "onSend (local simulation)"; render(); } },
       onStop() { if (!life.signal.aborted) { busy = false; lastCallback = "onStop (local simulation)"; render(); } },
@@ -99,7 +99,7 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
     let complete: PluginWidgetHandle<PluginButtonProps>;
     const props = (): PluginStandardComposerProps => ({
       composer: {
-        value, busy, autoFocus: false, placeholder: "Independent local draft",
+        value, busy, autoFocus: false, placeholder: t("Independent local draft"),
         onChange(next) { if (!life.signal.aborted) { value = next; lastCallback = "composer.onChange"; render(); } },
         onSend() { if (!life.signal.aborted && value.trim()) { lastSent = value; busy = true; sends++; lastCallback = "composer.onSend (after final dictation; local simulation)"; render(); } },
         onStop() { if (!life.signal.aborted) { busy = false; lastCallback = "composer.onStop (local simulation)"; render(); } },
@@ -162,7 +162,7 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
     const schema = (): PluginSettingsSchema => ({ rows: [
       { key: "toggle", type: "toggle", label: t("Toggle example"), description: "A local boolean value.", value: enabled, onChange: value => update("toggle", () => { enabled = value; }) },
       { key: "text", type: "text", label: t("Text example"), description: "At least three non-space characters.", value: text, validate: value => value.trim().length < 3 ? "Enter at least three non-space characters." : undefined, onChange: value => update("text", () => { text = value; }) },
-      { key: "dropdown", type: "dropdown", label: t("Dropdown example"), description: "Choose one of two local options.", value: choice, options: [{ value: "first", label: "First option" }, { value: "second", label: "Second option" }], onChange: value => update("dropdown", () => { choice = value; }) },
+      { key: "dropdown", type: "dropdown", label: t("Dropdown example"), description: "Choose one of two local options.", value: choice, options: [{ value: "first", label: t("First option") }, { value: "second", label: "Second option" }], onChange: value => update("dropdown", () => { choice = value; }) },
       { key: "number", type: "number", label: t("Number example"), description: "Whole number from 1 to 10.", value: count, min: 1, max: 10, step: 1, validate: value => Number.isInteger(value) ? undefined : "Enter a whole number.", onChange: value => update("number", () => { count = value; }) },
       { key: "slider", type: "slider", label: t("Slider example"), description: "Whole number from 0 to 100.", value: amount, min: 0, max: 100, step: 1, validate: value => Number.isInteger(value) ? undefined : "Choose a whole number.", onChange: value => update("slider", () => { amount = value; }) },
       { key: "disabled", type: "text", label: t("Disabled example"), description: "This row cannot be edited.", value: "Unavailable", disabled: true, onChange() {} },

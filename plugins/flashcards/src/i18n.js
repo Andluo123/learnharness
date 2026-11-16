@@ -58,8 +58,13 @@ const ZH = {
 	"Close": "关闭",
 	"Search": "搜索",
 	"Loading…": "加载中…",
-	"Flashcards": "闪卡"
-};
+	"Flashcards": "闪卡",
+	"Decks…": "牌组…",
+	"Search decks, propositions, and cues": "搜索牌组、命题与提示",
+	"Delete selected": "删除所选",
+	"Converting file…": "正在转换文件…",
+	"Preparing generation…": "正在准备生成…"
+};;
 
 /** The active UI language as the host declares it. */
 export function uiLocale() {

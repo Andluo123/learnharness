@@ -557,7 +557,7 @@ function GraphSettingsControl({
 									}))}
 							/>
 							<SettingSlider
-								label="Blur"
+								label={t("blur")}
 								disabled={!regionTuning.enabled}
 								min={0}
 								max={100}

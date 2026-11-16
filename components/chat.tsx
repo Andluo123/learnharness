@@ -3008,7 +3008,7 @@ export function DockOverlay({
 				    mid-question unmount), and widening past the floor fades it
 				    back in. */}
 				{(pending || pluginQuestion) && plan && (
-					<Hint label="Open the full plan" side="bottom">
+					<Hint label={t("openFullPlan")} side="bottom">
 <button
 						type="button"
 						data-testid="plan-marginalia"

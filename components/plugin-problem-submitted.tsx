@@ -18,8 +18,9 @@ export function PluginProblemSubmitted(props: { data: unknown; snapshot?: Plugin
 export function PluginProblemSubmittedContent({ data, snapshot, chatId, registration }: {
   data: unknown; snapshot?: PluginProblemSnapshot | null; chatId: string; registration?: ProblemRendererRegistration;
 }) {
+	const t = useT("pluginProblemSubmitted");
   const submitted = readPluginProblemSubmission(data);
-  return submitted ? <SubmittedBody submitted={submitted} snapshot={snapshot} chatId={chatId} registration={registration} /> : <p role="status">Problem unavailable</p>;
+  return submitted ? <SubmittedBody submitted={submitted} snapshot={snapshot} chatId={chatId} registration={registration} /> : <p role="status">{t("problemUnavailable")}</p>;
 }
 function SubmittedBody({ submitted, snapshot, chatId, registration }: { submitted: PluginProblemSubmission; snapshot?: PluginProblemSnapshot | null; chatId: string; registration?: ProblemRendererRegistration }) {
 	const t = useT("pluginProblemSubmitted");

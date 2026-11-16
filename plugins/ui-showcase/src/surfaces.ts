@@ -1,5 +1,6 @@
 import type { PluginUi, PluginSurfaceTarget, PluginSurfaceProps, PluginWidgetHandle } from "learnharness-plugin-api";
 import { Scope, button, element, example, family, note, readout, row } from "./dom.ts";
+import { t } from "./i18n.ts";
 
 /** Shared ordinary overlays, always using the real host stack and keyboard policy. */
 export function mountOverlayExamples(ui: PluginUi, body: HTMLElement, life: Scope, kind: "menus" | "dialogs"): void {
@@ -19,9 +20,9 @@ export function mountOverlayExamples(ui: PluginUi, body: HTMLElement, life: Scop
         life.widget(ui.openMenu(anchor.querySelector("button") ?? anchor, {
           label: `Showcase menu (${preferredSide})`, preferredSide,
           items: [
-            { key: "first", label: "Select first example", onSelect() { selection = "first"; lastCallback = "first.onSelect"; render(); } },
-            { key: "disabled", label: "Disabled example", disabled: true, onSelect() { throw new Error("Disabled menu item must not run"); } },
-            { key: "second", label: "Select second example", onSelect() { selection = "second"; lastCallback = "second.onSelect"; render(); } },
+            { key: "first", label: t("Select first example"), onSelect() { selection = "first"; lastCallback = "first.onSelect"; render(); } },
+            { key: "disabled", label: t("Disabled example"), disabled: true, onSelect() { throw new Error("Disabled menu item must not run"); } },
+            { key: "second", label: t("Select second example"), onSelect() { selection = "second"; lastCallback = "second.onSelect"; render(); } },
           ],
           onClose() { if (!life.signal.aborted) { lastCallback = "menu.onClose"; render(); } },
         }, { signal: life.signal }));
@@ -58,7 +59,7 @@ function openDialog(ui: PluginUi, owner: Scope, mode: "ordinary" | "long" | "nes
         }
       }
       if (mode !== "ordinary") {
-        button(ui, root, life, `dialog-${mode}-child`, { label: "Open child dialog", onClick() { openDialog(ui, life, "ordinary", () => {}); } });
+        button(ui, root, life, `dialog-${mode}-child`, { label: t("Open child dialog"), onClick() { openDialog(ui, life, "ordinary", () => {}); } });
       }
       return life.dispose;
     },
@@ -70,7 +71,7 @@ function retainedField(ui: PluginUi, root: HTMLElement, life: Scope, id: string)
   let value = "Retained local text";
   let lastCallback = "none";
   const show = readout(root, id);
-  const schema = () => ({ rows: [{ key: "retained", type: "text" as const, label: "Retained text", description: "Edit this before opening a child. Closing the child does not remount this field.", value,
+  const schema = () => ({ rows: [{ key: "retained", type: "text" as const, label: t("Retained text"), description: "Edit this before opening a child. Closing the child does not remount this field.", value,
     onChange(next: string) { if (!life.signal.aborted) { value = next; lastCallback = "retained.onChange"; field.update(schema()); render(); } },
   }] });
   const field = life.widget(ui.mountSettingsRows(example(root, `${id}-retained-field`), schema(), { signal: life.signal }));
@@ -107,7 +108,7 @@ function openDemo(ui: PluginUi, signal: AbortSignal, target?: PluginSurfaceTarge
     : ui.openSurface(target, surface, { signal: lifetime });
   let handle: PluginWidgetHandle<PluginSurfaceProps> | undefined;
   handle = open({
-    title: "UI Showcase surface",
+    title: t("UI Showcase surface"),
     content(container, contentSignal) {
       const scope = new Scope(contentSignal);
       if (contentSignal.aborted) return scope.dispose;
@@ -130,11 +131,11 @@ function openDemo(ui: PluginUi, signal: AbortSignal, target?: PluginSurfaceTarge
             background = preset; handle?.update({ background }); lastCallback = `surface.update (${preset})`; render();
           } });
         }
-        button(ui, body, life, "surface-nested", { label: "Open nested surface", onClick() {
+        button(ui, body, life, "surface-nested", { label: t("Open nested surface"), onClick() {
           if (life.signal.aborted) return;
           opened++; lastCallback = target === undefined ? "openSurface (current page body)" : "openSurface (same opaque native target)"; render();
           life.widget(open({
-            title: "Nested UI Showcase surface",
+            title: t("Nested UI Showcase surface"),
             content(childContainer, childSignal) {
               const child = new Scope(childSignal);
               if (childSignal.aborted) return child.dispose;
