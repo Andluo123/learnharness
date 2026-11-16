@@ -52,7 +52,10 @@
 		"noMatches": "No sessions match.",
 		"noSessions": "No sessions yet.",
 		"openSidebar": "Open sidebar",
-		"practiceSession": "Practice session"
+		"practiceSession": "Practice session",
+		"rename": "Rename",
+		"exportMarkdown": "Export as Markdown…",
+		"deleteMenu": "Delete…"
 	},
 	"settings": {
 		"title": "Settings",
@@ -278,7 +281,13 @@
 		"messages": "Messages",
 		"chunkThreshold": "Chunk threshold",
 		"lastExtraction": "Last extraction",
-		"status": "Status"
+		"status": "Status",
+		"tokUncovered": "{tokens} tok uncovered",
+		"messagesUnextracted": "{count, plural, one {# message} other {# messages}} unextracted",
+		"extract": "Extract",
+		"running": "Running",
+		"extracting": "extracting…",
+		"fullyExtracted": "fully extracted"
 	},
 	"mdBlocks": {
 		"copyDiagramSource": "Copy diagram source",

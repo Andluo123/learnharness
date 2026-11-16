@@ -52,7 +52,10 @@
 		"noMatches": "没有匹配的会话。",
 		"noSessions": "还没有会话。",
 		"openSidebar": "展开侧边栏",
-		"practiceSession": "练习会话"
+		"practiceSession": "练习会话",
+		"rename": "重命名",
+		"exportMarkdown": "导出为 Markdown…",
+		"deleteMenu": "删除…"
 	},
 	"settings": {
 		"title": "设置",
@@ -278,7 +281,13 @@
 		"messages": "消息数",
 		"chunkThreshold": "分块阈值",
 		"lastExtraction": "上次提取",
-		"status": "状态"
+		"status": "状态",
+		"tokUncovered": "{tokens} token 未覆盖",
+		"messagesUnextracted": "{count} 条消息未提取",
+		"extract": "提取",
+		"running": "运行中",
+		"extracting": "提取中…",
+		"fullyExtracted": "已完全提取"
 	},
 	"mdBlocks": {
 		"copyDiagramSource": "复制图表源码",
