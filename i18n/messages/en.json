@@ -145,7 +145,8 @@
 		"refusalModels": "No model configured — set up your models first",
 		"refusalProviderKey": "No {provider} key is set — add one in Settings → Providers",
 		"agentThinking": "AGENT’S THINKING",
-		"retrying": "Retrying…"
+		"retrying": "Retrying…",
+		"planChip": "Plan"
 	},
 	"dialog": {
 		"deleteNodeAria": "Delete node",
@@ -227,7 +228,8 @@
 		"colCreated": "Created",
 		"selectionSummary": "{nodes, plural, one {# node} other {# nodes}} → {chains, plural, one {# chain} other {# chains}}",
 		"unlabeled": "unlabeled",
-		"notesBadge": "notes"
+		"notesBadge": "notes",
+		"noMatchingChains": "No matching chains."
 	},
 	"sourceTree": {
 		"folderNamePlaceholder": "Folder name",
@@ -269,7 +271,8 @@
 		"attachMaterial": "Attach your material with the paperclip or drag and drop.",
 		"sessions": "Sessions",
 		"noSessionsRecorded": "No sessions recorded.",
-		"blur": "Blur"
+		"blur": "Blur",
+		"chainsButton": "Chains"
 	},
 	"plan": {
 		"planDiagram": "Plan diagram",
@@ -280,7 +283,8 @@
 		"dragPanScrollZoom": "Drag to pan · scroll to zoom",
 		"zoomOut": "Zoom out",
 		"fitPlan": "Fit plan to screen",
-		"zoomIn": "Zoom in"
+		"zoomIn": "Zoom in",
+		"liveHint": "live — statuses derive from your check outcomes"
 	},
 	"overlay": {
 		"close": "Close",
@@ -604,7 +608,26 @@
 		"graphRendering": "Graph rendering",
 		"graphRenderingHint": "Off = home shows the chains view",
 		"graphRenderingEnabled": "graph rendering enabled",
-		"chunkBudget": "Extraction chunk budget"
+		"chunkBudget": "Extraction chunk budget",
+		"colorsHeading": "Colors",
+		"resetAll": "Reset all",
+		"emptyColor": "Empty = {hex}",
+		"colorHexAria": "{label} hex value",
+		"colorBackground": "Background",
+		"colorAccent": "Accent",
+		"colorAccentNote": "Focus rings, toggles, selection",
+		"colorSurface": "Surface",
+		"colorSurfaceNote": "Cards, inputs, sidebar",
+		"colorBold": "Bold",
+		"colorBorder": "Border",
+		"colorItalic": "Italic",
+		"colorText": "Text",
+		"colorCode": "Inline code",
+		"colorMutedText": "Muted text",
+		"colorError": "Error",
+		"colorSuccess": "Success",
+		"colorWarning": "Warning",
+		"colorsNote": "overrides on top of the theme, kept when you switch"
 	},
 	"settingsPlugins": {
 		"corePluginsTitle": "Core plugins",
@@ -855,5 +878,13 @@
 		"nodesSelected": "{count, plural, one {# node} other {# nodes}} selected",
 		"pickNodes": "Pick nodes",
 		"clear": "Clear"
+	},
+	"newSession": {
+		"newSession": "New session",
+		"newPracticeSession": "New practice session",
+		"teachDescription": "The teacher will open by probing what you already know.",
+		"practiceDescription": "Pick nodes from your knowledge graph, describe what you want to practice, or bring your own problem.",
+		"learnPlaceholder": "What do you want to learn?",
+		"practicePlaceholder": "What do you want to practice?"
 	}
 }

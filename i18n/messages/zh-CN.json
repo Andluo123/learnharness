@@ -145,7 +145,8 @@
 		"refusalModels": "尚未配置模型 —— 请先完成模型设置",
 		"refusalProviderKey": "尚未设置 {provider} 密钥 —— 请到「设置 → 服务提供商」中添加",
 		"agentThinking": "代理的思考",
-		"retrying": "正在重试…"
+		"retrying": "正在重试…",
+		"planChip": "计划"
 	},
 	"dialog": {
 		"deleteNodeAria": "删除节点",
@@ -227,7 +228,8 @@
 		"colCreated": "创建时间",
 		"selectionSummary": "{nodes} 个节点 → {chains} 条链路",
 		"unlabeled": "未命名",
-		"notesBadge": "笔记"
+		"notesBadge": "笔记",
+		"noMatchingChains": "没有匹配的链路。"
 	},
 	"sourceTree": {
 		"folderNamePlaceholder": "文件夹名称",
@@ -269,7 +271,8 @@
 		"attachMaterial": "用回形针附加你的材料，或直接拖放。",
 		"sessions": "会话",
 		"noSessionsRecorded": "尚未记录任何会话。",
-		"blur": "模糊"
+		"blur": "模糊",
+		"chainsButton": "链路"
 	},
 	"plan": {
 		"planDiagram": "计划图",
@@ -280,7 +283,8 @@
 		"dragPanScrollZoom": "拖动平移 · 滚轮缩放",
 		"zoomOut": "缩小",
 		"fitPlan": "适应屏幕",
-		"zoomIn": "放大"
+		"zoomIn": "放大",
+		"liveHint": "实时更新 —— 状态由你的检验结果推导"
 	},
 	"overlay": {
 		"close": "关闭",
@@ -604,7 +608,26 @@
 		"graphRendering": "图谱渲染",
 		"graphRenderingHint": "关闭 = 主页显示链路视图",
 		"graphRenderingEnabled": "图谱渲染已启用",
-		"chunkBudget": "提取分块预算"
+		"chunkBudget": "提取分块预算",
+		"colorsHeading": "配色",
+		"resetAll": "全部重置",
+		"emptyColor": "留空 = {hex}",
+		"colorHexAria": "{label} 十六进制值",
+		"colorBackground": "背景",
+		"colorAccent": "强调色",
+		"colorAccentNote": "焦点环、开关、选中态",
+		"colorSurface": "表面",
+		"colorSurfaceNote": "卡片、输入框、侧边栏",
+		"colorBold": "粗体",
+		"colorBorder": "边框",
+		"colorItalic": "斜体",
+		"colorText": "正文",
+		"colorCode": "行内代码",
+		"colorMutedText": "次要文字",
+		"colorError": "错误",
+		"colorSuccess": "成功",
+		"colorWarning": "警告",
+		"colorsNote": "在主题之上的覆盖值，切换主题时保留"
 	},
 	"settingsPlugins": {
 		"corePluginsTitle": "核心插件",
@@ -855,5 +878,13 @@
 		"nodesSelected": "已选 {count} 个节点",
 		"pickNodes": "选择节点",
 		"clear": "清除"
+	},
+	"newSession": {
+		"newSession": "新会话",
+		"newPracticeSession": "新练习会话",
+		"teachDescription": "教师会先探测你已掌握的内容，然后开始。",
+		"practiceDescription": "从知识图谱中选择节点、描述你想练习的内容，或带上你自己的题目。",
+		"learnPlaceholder": "你想学习什么？",
+		"practicePlaceholder": "你想练习什么？"
 	}
 }

@@ -887,7 +887,7 @@ export function PlanPopup({ messages, onClose }: { messages: readonly PopupMessa
 		>
 			<div className="mb-2 flex items-center gap-2">
 				<span className="text-sm font-medium">{t("thePlan")}</span>
-				<span className="text-xs text-muted-foreground">live — statuses derive from your check outcomes</span>
+				<span className="text-xs text-muted-foreground">{t("liveHint")}</span>
 				<Hint label={t("close")} binding="escape" side="left">
 <button
 					type="button"

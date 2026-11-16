@@ -95,20 +95,21 @@ export function composeFontFamily(
 	return { ...appearance, fontFamily: value === "" ? null : value };
 }
 
-/** The Colors grid's labels and the one hint that explains a key. */
-const COLOR_LABELS: Record<ThemeColorKey, { label: string; note?: string }> = {
-	background: { label: "Background" },
-	accent: { label: "Accent", note: "Focus rings, toggles, selection" },
-	surface: { label: "Surface", note: "Cards, inputs, sidebar" },
-	bold: { label: "Bold" },
-	border: { label: "Border" },
-	italic: { label: "Italic" },
-	text: { label: "Text" },
-	code: { label: "Inline code" },
-	textMuted: { label: "Muted text" },
-	error: { label: "Error" },
-	success: { label: "Success" },
-	warning: { label: "Warning" },
+/** The Colors grid's labels and notes, as message KEYS (the grid is UI copy,
+ *  not data — resolve through useT("settingsAppearance") at render time). */
+const COLOR_LABELS: Record<ThemeColorKey, { labelKey: string; noteKey?: string }> = {
+	background: { labelKey: "colorBackground" },
+	accent: { labelKey: "colorAccent", noteKey: "colorAccentNote" },
+	surface: { labelKey: "colorSurface", noteKey: "colorSurfaceNote" },
+	bold: { labelKey: "colorBold" },
+	border: { labelKey: "colorBorder" },
+	italic: { labelKey: "colorItalic" },
+	text: { labelKey: "colorText" },
+	code: { labelKey: "colorCode" },
+	textMuted: { labelKey: "colorMutedText" },
+	error: { labelKey: "colorError" },
+	success: { labelKey: "colorSuccess" },
+	warning: { labelKey: "colorWarning" },
 };
 
 /** The legacy test ids of the three pre-theme rows (kept stable). */
@@ -166,8 +167,11 @@ function ColorOverrideRow({
 	effective: string;
 	onCommit: (next: string) => boolean | Promise<boolean>;
 }) {
-	const { label, note } = COLOR_LABELS[colorKey];
-	const empty = `Empty = ${themeColor}`;
+	const t = useT("settingsAppearance");
+	const { labelKey, noteKey } = COLOR_LABELS[colorKey];
+	const label = t(labelKey);
+	const note = noteKey ? t(noteKey) : undefined;
+	const empty = t("emptyColor", { hex: themeColor });
 	return (
 		<SettingsRow label={label} hint={note ? `${note} · ${empty}` : empty} testid={`row-color-${colorKey}`}>
 			<span className="flex items-center gap-2">
@@ -180,7 +184,7 @@ function ColorOverrideRow({
 				<CommitInput
 					value={value}
 					placeholder={themeColor}
-					ariaLabel={`${label.toLowerCase()} hex`}
+					ariaLabel={t("colorHexAria", { label })}
 					testid={LEGACY_TESTIDS[colorKey] ?? `input-color-${colorKey}`}
 					onCommit={onCommit}
 				/>
@@ -300,9 +304,9 @@ export function AppearanceSection({
 			<div data-testid="group-colors" className="mt-5 flex flex-col gap-2">
 				<div className="flex items-end justify-between gap-4">
 					<p className="text-xs uppercase tracking-widest text-muted-foreground">
-						Colors{" "}
+						{t("colorsHeading")}{" "}
 						<span className="normal-case tracking-normal text-muted-foreground/70">
-							· overrides on top of the theme, kept when you switch
+							· {t("colorsNote")}
 						</span>
 					</p>
 					<button
@@ -311,7 +315,7 @@ export function AppearanceSection({
 						onClick={() => onSectionChange(clearColorOverrides(appearance))}
 						className="h-6 shrink-0 rounded-sm px-2 font-ui text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
 					>
-						Reset all
+						{t("resetAll")}
 					</button>
 				</div>
 				<div className="grid grid-cols-2 gap-x-10 gap-y-2">
