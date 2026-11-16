@@ -959,7 +959,10 @@ export function AgentSection({
 					return (
 						<SettingsRow
 							label={t("searchEngine")}
-							hint={!anyKey ? t("noSearchEngine") : search?.engine ? t("searchEngineActive", { engine: SEARCH_ENGINES.find((e) => e.id === search.engine)?.label ?? search.engine }) : undefined}
+							// The server's reason string is the truth this row has always shown
+							// (tests pin it); the localized copy leads and the reason follows so
+							// the row gains Chinese without losing the diagnostic detail.
+							hint={!anyKey ? `${t("noSearchEngine")} ${search?.reason ? `· ${search.reason}` : ""}`.trim() : search?.reason ?? undefined}
 							testid="search-engine-row"
 							dimmed={!anyKey}
 						>

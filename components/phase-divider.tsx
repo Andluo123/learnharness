@@ -68,7 +68,7 @@ export function PhaseDivider({ phase, nodeCount }: { phase: Phase3; nodeCount?: 
 	if (phase === "probe") return null;
 	const label =
 		phase === "plan" && nodeCount
-			? t("planWithCount", { count: nodeCount })
+			? t(nodeCount === 1 ? "planWithOneNode" : "planWithNodes").replace("{count}", String(nodeCount))
 			: t(CHIP_KEY[phase]);
 	return (
 		<div className="my-4 flex w-full items-center gap-3" data-testid={`phase-divider-${phase}`}>

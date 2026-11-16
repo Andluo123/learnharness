@@ -112,11 +112,18 @@ export function createAgnesProvider(): Provider<Api> {
 		id: AGNES_PROVIDER_ID,
 		name: AGNES_PROVIDER_NAME,
 		baseUrl: AGNES_BASE_URL,
+		// The resolver reads the AMBIENT env through pi's auth context rather
+		// than process.env directly: tests inject an isolated env object, and a
+		// direct process.env read would bypass it (the broad resolver contract
+		// in tests/provider-neutral-agents.test.ts pins exactly this).
 		auth: {
 			apiKey: {
 				name: "Agnes AI API key",
-				resolve: async () => {
-					const apiKey = process.env[AGNES_ENV_VAR];
+				resolve: async ({ ctx }) => {
+					// ctx.env(name) is pi's authoritative ambient-env read: it honors
+					// the injected auth context (tests pass an isolated env) and falls
+					// back to the process environment in production.
+					const apiKey = (await ctx.env(AGNES_ENV_VAR)) ?? process.env[AGNES_ENV_VAR];
 					if (!apiKey) return undefined;
 					return { auth: { apiKey }, source: AGNES_ENV_VAR };
 				},

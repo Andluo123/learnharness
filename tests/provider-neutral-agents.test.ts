@@ -20,6 +20,7 @@ import { runPdfReaderAgent } from "../src/agent/subagents/pdf-reader.ts";
 import type { HeadlessApi } from "../src/agent/subagents/headless.ts";
 import { AUTH_PROVIDER_KEYS } from "../src/core/auth-keys.ts";
 import { providerEventsDir } from "../src/agent/provider-events.ts";
+import { createAgnesProvider } from "../src/agent/agnes/provider.ts";
 
 const OR_KEY = "dummy-openrouter-MUST-NOT-REACH-other-endpoints";
 const SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="white"/></svg>';
@@ -245,7 +246,10 @@ describe("provider-neutral raw agent loops", { concurrency: false }, () => {
 		await isolated({}, async () => {
 			const env = Object.fromEntries(AUTH_PROVIDER_KEYS.map(({ envVar }) => [envVar, `dummy-resolver-${envVar}`]));
 			const models = createModels({ authContext: { env: async (name) => env[name], fileExists: async () => false } });
+			// App-provided providers are NOT in pi-ai's builtin catalog; register
+			// them alongside so the broad resolver contract covers every key row.
 			for (const provider of builtinProviders()) models.setProvider(provider);
+			models.setProvider(createAgnesProvider());
 			for (const { id, envVar } of AUTH_PROVIDER_KEYS) {
 				const resolved = await models.getAuth(id);
 				assert.ok(resolved, id);

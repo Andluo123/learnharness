@@ -897,7 +897,9 @@
 		"probe": "探测中",
 		"plan": "规划中",
 		"teach": "教学中",
-		"planWithCount": "计划 · {count} 个节点"
+		"planWithCount": "计划 · {count} 个节点",
+		"planWithOneNode": "计划 · {count} 个节点",
+		"planWithNodes": "计划 · {count} 个节点"
 	},
 	"thinking": {
 		"off": "关闭",

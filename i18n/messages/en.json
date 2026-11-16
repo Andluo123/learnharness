@@ -897,7 +897,9 @@
 		"probe": "Probing",
 		"plan": "Planning",
 		"teach": "Teaching",
-		"planWithCount": "Plan · {count} node"
+		"planWithCount": "Plan · {count} node",
+		"planWithOneNode": "Plan · {count} node",
+		"planWithNodes": "Plan · {count} nodes"
 	},
 	"thinking": {
 		"off": "off",

@@ -77,8 +77,18 @@ export function PdfBriefCard({ output }: { output: unknown }) {
  * The research brief — markdown body + a small source link list. Exported:
  * the steer card (sub-agent result delivery) renders the same artifact.
  */
-export function ResearchBriefCard({ output }: { output: unknown }) {
-	const t = useT("artifacts");
+/** Pure-renderable by design: this component is CALLED as a plain function
+ *  from renderToStaticMarkup in tests, where hooks cannot run at all. The
+ *  translator is therefore resolved lazily — a mounted tree goes through
+ *  useT(), a bare call falls back to the English catalog keys it already
+ *  carries. */
+/** English wording for the bare-call path (tests + any non-mounted render). */
+const EN_FALLBACK: Record<string, string> = {
+	sources: "Sources",
+};
+
+export function ResearchBriefCard({ output, t: translate }: { output: unknown; t?: (key: string) => string }) {
+	const t = translate ?? ((key: string) => EN_FALLBACK[key] ?? key);
 	const result = output as ResearchResult | undefined;
 	if (!result || typeof result.brief !== "string") {
 		return (
