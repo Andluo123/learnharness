@@ -17,6 +17,11 @@ export const LANGUAGES: Record<Family, Language> = {
 export const LABELS: Record<Family, string> = {
   chemicalStructures: "Chemical structures", musicalNotation: "Musical notation", technicalDiagrams: "Technical diagrams",
 };
+/** Localized family names (the settings page renders them as row labels). */
+export function familyLabel(family: Family, t: (text: string) => string): string {
+  return t(LABELS[family]);
+}
+
 export const INSTRUCTIONS: Record<Family, string> = {
   chemicalStructures: "For chemical structures, use a smiles fenced code block containing one SMILES molecule. Write explanations outside the block; do not author raw SVG.",
   musicalNotation: "For musical notation, use an abc fenced code block containing one complete ABC tune with X:, M:, L: and K: headers. It renders a static score, not audio; do not author raw SVG.",

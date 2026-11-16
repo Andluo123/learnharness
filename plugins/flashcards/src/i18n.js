@@ -63,7 +63,14 @@ const ZH = {
 	"Search decks, propositions, and cues": "搜索牌组、命题与提示",
 	"Delete selected": "删除所选",
 	"Converting file…": "正在转换文件…",
-	"Preparing generation…": "正在准备生成…"
+	"Preparing generation…": "正在准备生成…",
+	"Desired retention (%)": "期望记忆保持率（%）",
+	"Learning steps (minutes)": "学习步骤（分钟）",
+	"Relearning steps (minutes)": "重学步骤（分钟）",
+	"Day starts at (hour)": "每日起始时间（小时）",
+	"Generation chunk budget (estimated tokens)": "生成分块预算（估算 token 数）",
+	"Model": "模型",
+	"Follow cheap slot": "跟随「经济」槽位"
 };;
 
 /** The active UI language as the host declares it. */

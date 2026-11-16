@@ -370,11 +370,11 @@ export function activate(ctx) {
     const settingsRows = settings => {
       const row = (key, label, value, type, parse = value => value, extras = {}) => ({ key, label, value, type, ...extras, onChange: async value => { try { await save({ [key]: parse(value) }); } catch (cause) { showError(cause); throw cause; } } });
       return [
-        row('retention', 'Desired retention (%)', settings.retention * 100, 'number', value => Number(value) / 100, { min: 70, max: 99, step: 1 }),
-        row('learningSteps', 'Learning steps (minutes)', settings.learningSteps.map(value => `${value}m`).join(' '), 'text', parseSteps),
-        row('relearningSteps', 'Relearning steps (minutes)', settings.relearningSteps.map(value => `${value}m`).join(' '), 'text', parseSteps),
-        row('dayStart', 'Day starts at (hour)', settings.dayStart, 'number', Number, { min: 0, max: 23, step: 1 }),
-        row('chunkBudget', 'Generation chunk budget (estimated tokens)', settings.chunkBudget, 'number', Number, { min: 1, step: 1 }),
+        row('retention', t('Desired retention (%)'), settings.retention * 100, 'number', value => Number(value) / 100, { min: 70, max: 99, step: 1 }),
+        row('learningSteps', t('Learning steps (minutes)'), settings.learningSteps.map(value => `${value}m`).join(' '), 'text', parseSteps),
+        row('relearningSteps', t('Relearning steps (minutes)'), settings.relearningSteps.map(value => `${value}m`).join(' '), 'text', parseSteps),
+        row('dayStart', t('Day starts at (hour)'), settings.dayStart, 'number', Number, { min: 0, max: 23, step: 1 }),
+        row('chunkBudget', t('Generation chunk budget (estimated tokens)'), settings.chunkBudget, 'number', Number, { min: 1, step: 1 }),
       ];
     };
     const changeModels = async patch => {
@@ -383,7 +383,7 @@ export function activate(ctx) {
       try { await save(patch); if (!signal.aborted) overrideDraft = false; }
       finally { modelBusy = false; if (!signal.aborted) updateModels(snapshot.settings); }
     };
-    const followCheapRow = settings => ({ key: 'followCheapSlot', label: 'Model', description: 'Follow cheap slot', type: 'toggle', value: followingCheap(settings), disabled: modelBusy,
+    const followCheapRow = settings => ({ key: 'followCheapSlot', label: t('Model'), description: t('Follow cheap slot'), type: 'toggle', value: followingCheap(settings), disabled: modelBusy,
       onChange: async follow => {
         if (modelBusy || signal.aborted) return;
         if (follow) await changeModels({ modelOverride: null, thinkingOverride: null });
