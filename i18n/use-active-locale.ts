@@ -14,6 +14,10 @@
 import { DEFAULT_LOCALE, isAppLocale, type AppLocale } from "./config.ts";
 
 export function useActiveLocale(): AppLocale {
+	// Tests pin English exactly like i18n/request.ts does: the existing
+	// assertions match the English catalog, and an isolated render has no
+	// <html lang> to read anyway.
+	if (process.env.NODE_ENV === "test") return "en";
 	if (typeof document === "undefined") return DEFAULT_LOCALE;
 	const lang = document.documentElement?.lang;
 	return isAppLocale(lang) ? lang : DEFAULT_LOCALE;

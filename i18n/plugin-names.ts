@@ -36,11 +36,17 @@ export function pluginDisplayName(
 	// The manifest name is the plugin's own English identity; for English
 	// there is nothing to resolve.
 	if (locale === "en") return manifestName ?? id;
+	// A shipped catalogue entry wins: it is curated and cannot be missing.
+	// (Consulting the message catalog FIRST meant a test/third-party plugin
+	// whose id has no entry received the raw key path as its name.)
+	const shipped = PLUGIN_NAMES[id];
+	if (shipped) return shipped;
 	if (translate) {
-		const viaCatalog = translate(`plugin.${id}.name`);
-		// use-intl returns the key path itself when the message is missing —
-		// treat that as "no translation" and fall through.
-		if (viaCatalog && viaCatalog !== `plugin.${id}.name`) return viaCatalog;
+		const key = `plugin.${id}.name`;
+		const viaCatalog = translate(key);
+		// use-intl echoes the key path when the message is missing.
+		if (viaCatalog && viaCatalog !== key) return viaCatalog;
 	}
-	return PLUGIN_NAMES[id] ?? manifestName ?? id;
+	// Unknown plugin: its own manifest name is the honest answer.
+	return manifestName ?? id;
 }

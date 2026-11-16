@@ -559,7 +559,20 @@ export function AgentSection({
 					// on disk unused), "Your version is in use" when the
 					// switch is on. The switch's meaning becomes legible
 					// through this line.
-					hint={[info.usageHint ? t("usedBy", { users: info.usageHint.replace(/^Used by /, "") }) : undefined, info.enabled ? t("promptInUse") : undefined].filter(Boolean).join(" · ") || undefined}
+					hint={[
+										info.usageHint
+											? t("usedBy", {
+												users: info.usageHint
+													.replace(/^Used by /, "")
+													// The pure builder returns English agent names; resolve
+													// each one through the same section.* keys the headers use
+													// so "Teacher and Prober" reads "教师 and 探测者" → 和.
+													.replace(/\b(Teacher|Prober|Practice|Shared)\b/g, (n) => t(`section.${n.toLowerCase()}`))
+													.replace(/, and /, "和").replace(/ and /, "和").replace(/, /g, "、"),
+											})
+											: undefined,
+										info.enabled ? t("promptInUse") : undefined,
+									].filter(Boolean).join(" · ") || undefined}
 					testid={`prompt-row-${info.path}`}
 				>
 					{/* Graying ruling: ONLY the toggle dims without an
