@@ -59,10 +59,11 @@ import { useT } from "@/i18n/use-t.ts";
 
 /** The pickers' slot identity — same roster language as the Agent
  *  section's slot rows. */
-const SLOT_META: Record<ModelSlotName, { label: string; roster: string }> = {
-	strong: { label: "Strong", roster: "Prober, teacher" },
-	cheap: { label: "Cheap", roster: "Researcher, demo builder, extractor, auditor" },
-	vision: { label: "Vision", roster: "Visual maker + PDF reader" },
+/** Slot identity as message KEYS (the labels are UI copy; resolve at render). */
+const SLOT_META: Record<ModelSlotName, { labelKey: string; rosterKey: string }> = {
+	strong: { labelKey: "slotStrong", rosterKey: "slotStrongRoster" },
+	cheap: { labelKey: "slotCheap", rosterKey: "slotCheapRoster" },
+	vision: { labelKey: "slotVision", rosterKey: "slotVisionRoster" },
 };
 const SLOT_ORDER: readonly ModelSlotName[] = ["strong", "cheap", "vision"];
 
@@ -483,7 +484,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 							return (
 								<div key={slot} data-testid={`setup-slot-${slot}`} className="flex flex-col gap-1.5">
 									<span className="flex items-center gap-1.5">
-										<span className="font-ui text-sm text-foreground">{SLOT_META[slot].label}</span>
+										<span className="font-ui text-sm text-foreground">{t(SLOT_META[slot].labelKey)}</span>
 										{!catalog?.slots?.[slot]?.model && !picked[slot] && (
 											<span
 												data-testid={`setup-needed-${slot}`}
@@ -493,14 +494,14 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 											</span>
 										)}
 									</span>
-									<span className="text-xs text-muted-foreground/70">{SLOT_META[slot].roster}</span>
+									<span className="text-xs text-muted-foreground/70">{t(SLOT_META[slot].rosterKey)}</span>
 									{slot !== "strong" && <><ChatGPTBackgroundAccess provider={entry?.provider} /><NativeSubscriptionBackgroundAccess provider={entry?.provider} /></>}
 									<div className="flex items-center gap-2">
 										<div className="relative flex-1">
 											<Hint label={entry ? `${entry.provider}:${entry.id}` : "Pick a model…"}>
 											<button
 												type="button"
-												aria-label={`${SLOT_META[slot].label} model`}
+												aria-label={t("slotModelAria", { slot: t(SLOT_META[slot].labelKey) })}
 												data-testid={`setup-trigger-${slot}`}
 												aria-expanded={openMenu?.slot === slot && openMenu.kind === "model"}
 												onClick={() => setOpenMenu(openMenu?.slot === slot && openMenu.kind === "model" ? null : { slot, kind: "model" })}
@@ -558,7 +559,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 										<div className="relative">
 											<button
 												type="button"
-												aria-label={`${SLOT_META[slot].label} thinking`}
+												aria-label={t("slotThinkingAria", { slot: t(SLOT_META[slot].labelKey) })}
 												data-testid={`setup-thinking-${slot}`}
 												aria-expanded={openMenu?.slot === slot && openMenu.kind === "thinking"}
 												disabled={!entry}

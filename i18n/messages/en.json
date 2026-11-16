@@ -180,7 +180,11 @@
 		"discardProblemTitle": "Discard this problem?",
 		"discardProblemLine": "The problem is dropped — no solution is revealed.",
 		"discardAction": "Discard",
-		"workingTurnStops": " The working turn stops too."
+		"workingTurnStops": " The working turn stops too.",
+		"contributionsLine": "Removes these sources' contributions to propositions and reasoning chains. Knowledge supported by other sources survives; knowledge supported only by these sources is removed.",
+		"diskLine": "Imported source records are removed, but original files on disk are never changed. Selected folders are removed only when empty; folders needed by kept sessions remain.",
+		"alsoDeleteSessions": "Also delete the {count} selected {count, plural, one {session} other {sessions}}",
+		"sessionsNote": "Unchecked, conversations stay in their current folders and can be extracted again. Either way, their graph contributions and extraction coverage are cleared. Checking this also permanently deletes their messages and background jobs."
 	},
 	"activity": {
 		"totalRunningCost": "Total running cost (inferred)",
@@ -221,7 +225,15 @@
 		"correct": "correct",
 		"incorrect": "incorrect",
 		"hideWhy": "Hide why",
-		"yourThinking": "YOUR THINKING"
+		"yourThinking": "YOUR THINKING",
+		"probeLabel": "Probe",
+		"recallLabel": "Recall",
+		"predictionLabel": "Prediction",
+		"checkLabel": "Check",
+		"explainLabel": "Explain",
+		"questionLabel": "Question",
+		"didntKnow": "didn't know",
+		"selectAllThatApply": " · select all that apply"
 	},
 	"practice": {
 		"problem": "Problem",
@@ -386,7 +398,11 @@
 		"probeAssessment": "Probe assessment",
 		"explainLabel": "Explain",
 		"questionLabel": "Question",
-		"idk": "I don't know"
+		"idk": "I don't know",
+		"predictionLabel": "Prediction",
+		"checkLabel": "Check",
+		"didntKnow": "didn't know",
+		"selectAllThatApply": " · select all that apply"
 	},
 	"citationComment": {
 		"commentAria": "Comment on selected text",
@@ -447,7 +463,9 @@
 		"startDictation": "Start dictation",
 		"dictationFailed": "Dictation failed: {error}",
 		"language": "Language",
-		"searchLanguages": "Search languages…"
+		"searchLanguages": "Search languages…",
+		"micPermissionDenied": "Microphone permission denied",
+		"micUnavailable": "mic unavailable"
 	},
 	"shortcuts": {
 		"title": "Keyboard shortcuts",
@@ -483,7 +501,10 @@
 	},
 	"modelPicker": {
 		"thinking": "Thinking",
-		"levelsFooter": "Levels this model actually supports"
+		"levelsFooter": "Levels this model actually supports",
+		"noModelsHint": "No models — add a provider key in Keys",
+		"sessionModelFooter": "This session's model",
+		"strongTierFooter": "Strong tier — the default for new sessions"
 	},
 	"pluginQuestionPart": {
 		"questionDismissed": "Question dismissed",
@@ -518,7 +539,15 @@
 		"close": "Close",
 		"pickProvider": "Pick a provider…",
 		"saveKey": "Save key",
-		"saveModels": "Save models"
+		"saveModels": "Save models",
+		"slotStrong": "Strong",
+		"slotStrongRoster": "Prober, teacher",
+		"slotCheap": "Cheap",
+		"slotCheapRoster": "Researcher, demo builder, extractor, auditor",
+		"slotVision": "Vision",
+		"slotVisionRoster": "Visual maker + PDF reader",
+		"slotModelAria": "{slot} model",
+		"slotThinkingAria": "{slot} thinking"
 	},
 	"dictationLang": {
 		"language": "Language",
@@ -593,7 +622,11 @@
 		"graphDisabled": "Graph is disabled",
 		"includeReasoningHint": "Use saved output-token usage to account for replayed reasoning on matching OpenAI Responses models. Off uses the original text-based estimate.",
 		"noSearchEngine": "No search engine configured — set a Tavily, Brave, Exa, Firecrawl, or Ollama search API key",
-		"searchEngineActive": "Search engine: {engine}"
+		"searchEngineActive": "Search engine: {engine}",
+		"noModelsHint": "No models — add a provider key in Keys",
+		"tierFooter": "Runs every agent of this tier",
+		"usedBy": "Used by {users}",
+		"promptInUse": "In use"
 	},
 	"settingsKeys": {
 		"pasteKey": "Paste key…",
@@ -635,7 +668,9 @@
 		"saving": "Saving…",
 		"saveLimits": "Save limits",
 		"apiKeyMissing": "API key missing",
-		"leaveBlankKeepKey": "Leave blank to keep effective key"
+		"leaveBlankKeepKey": "Leave blank to keep effective key",
+		"budgetHelp": "Budget pins do not resize backend context. Blank uses reported limits, then fallback (8192 context / 4096 output). Custom pricing is unknown.",
+		"reasoningHelp": "Reasoning support is a capability declaration. The effort picker’s Off may not disable a custom backend’s default thinking."
 	},
 	"settingsAppearance": {
 		"typography": "Typography",
@@ -671,7 +706,10 @@
 		"colorError": "Error",
 		"colorSuccess": "Success",
 		"colorWarning": "Warning",
-		"colorsNote": "overrides on top of the theme, kept when you switch"
+		"colorsNote": "overrides on top of the theme, kept when you switch",
+		"fontCommonUnreadable": "Common families — installed fonts could not be read",
+		"fontCommonDesktopOnly": "Common families — your installed list needs the desktop app",
+		"fontInstalledList": "Your installed fonts"
 	},
 	"settingsPlugins": {
 		"corePluginsTitle": "Core plugins",

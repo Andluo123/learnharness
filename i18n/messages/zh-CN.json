@@ -180,7 +180,11 @@
 		"discardProblemTitle": "放弃此题目？",
 		"discardProblemLine": "题目将被丢弃 —— 不会显示解答。",
 		"discardAction": "放弃",
-		"workingTurnStops": " 正在运行的回合也会停止。"
+		"workingTurnStops": " 正在运行的回合也会停止。",
+		"contributionsLine": "将移除这些来源对命题与推理链的贡献。由其他来源共同支撑的知识会保留；仅由这些来源支撑的知识将被移除。",
+		"diskLine": "已导入的来源记录会被移除，但磁盘上的原始文件不受影响。所选文件夹仅在为空时移除；仍在使用的会话所需的文件夹会保留。",
+		"alsoDeleteSessions": "同时删除所选的 {count} 个会话",
+		"sessionsNote": "不勾选时，对话会保留在其当前文件夹中，可再次提取。无论是否勾选，它们在图谱中的贡献与提取覆盖记录都会被清除。勾选则还会永久删除其消息与后台任务。"
 	},
 	"activity": {
 		"totalRunningCost": "累计运行成本（估算）",
@@ -221,7 +225,15 @@
 		"correct": "正确",
 		"incorrect": "错误",
 		"hideWhy": "收起原因",
-		"yourThinking": "你的思考"
+		"yourThinking": "你的思考",
+		"probeLabel": "探测",
+		"recallLabel": "回忆",
+		"predictionLabel": "预测",
+		"checkLabel": "检验",
+		"explainLabel": "讲解",
+		"questionLabel": "问题",
+		"didntKnow": "不知道",
+		"selectAllThatApply": " · 选择所有适用项"
 	},
 	"practice": {
 		"problem": "题目",
@@ -386,7 +398,11 @@
 		"probeAssessment": "探测评估",
 		"explainLabel": "讲解",
 		"questionLabel": "问题",
-		"idk": "我不知道"
+		"idk": "我不知道",
+		"predictionLabel": "预测",
+		"checkLabel": "检验",
+		"didntKnow": "不知道",
+		"selectAllThatApply": " · 选择所有适用项"
 	},
 	"citationComment": {
 		"commentAria": "为选中的文字添加评论",
@@ -447,7 +463,9 @@
 		"startDictation": "开始语音输入",
 		"dictationFailed": "语音输入失败：{error}",
 		"language": "语言",
-		"searchLanguages": "搜索语言…"
+		"searchLanguages": "搜索语言…",
+		"micPermissionDenied": "麦克风权限被拒绝",
+		"micUnavailable": "麦克风不可用"
 	},
 	"shortcuts": {
 		"title": "键盘快捷键",
@@ -483,7 +501,10 @@
 	},
 	"modelPicker": {
 		"thinking": "思考",
-		"levelsFooter": "此模型实际支持的思考等级"
+		"levelsFooter": "此模型实际支持的思考等级",
+		"noModelsHint": "没有可用模型 —— 请先在「服务提供商」中添加密钥",
+		"sessionModelFooter": "本会话使用的模型",
+		"strongTierFooter": "「强」层级 —— 新会话的默认模型"
 	},
 	"pluginQuestionPart": {
 		"questionDismissed": "题目已忽略",
@@ -518,7 +539,15 @@
 		"close": "关闭",
 		"pickProvider": "选择服务提供商…",
 		"saveKey": "保存密钥",
-		"saveModels": "保存模型"
+		"saveModels": "保存模型",
+		"slotStrong": "强",
+		"slotStrongRoster": "探测者、教师",
+		"slotCheap": "经济",
+		"slotCheapRoster": "研究员、演示构建器、提取器、审核器",
+		"slotVision": "视觉",
+		"slotVisionRoster": "图形生成器 + PDF 阅读器",
+		"slotModelAria": "{slot}模型",
+		"slotThinkingAria": "{slot}思考等级"
 	},
 	"dictationLang": {
 		"language": "语言",
@@ -593,7 +622,11 @@
 		"graphDisabled": "知识图谱已禁用",
 		"includeReasoningHint": "使用已保存的输出 token 用量，为匹配的 OpenAI Responses 模型计入重放的推理内容。关闭时使用原先基于文本的估算。",
 		"noSearchEngine": "尚未配置搜索引擎 —— 请设置 Tavily、Brave、Exa、Firecrawl 或 Ollama 搜索 API 密钥",
-		"searchEngineActive": "搜索引擎：{engine}"
+		"searchEngineActive": "搜索引擎：{engine}",
+		"noModelsHint": "没有可用模型 —— 请先在「服务提供商」中添加密钥",
+		"tierFooter": "用于此层级的所有代理",
+		"usedBy": "使用方：{users}",
+		"promptInUse": "使用中"
 	},
 	"settingsKeys": {
 		"pasteKey": "粘贴密钥…",
@@ -635,7 +668,9 @@
 		"saving": "保存中…",
 		"saveLimits": "保存限制",
 		"apiKeyMissing": "API 密钥缺失",
-		"leaveBlankKeepKey": "留空则保留当前有效密钥"
+		"leaveBlankKeepKey": "留空则保留当前有效密钥",
+		"budgetHelp": "预算固定值不会改变后端的上下文大小。留空则使用上报的限制，再回退到默认值（8192 上下文 / 4096 输出）。自定义端点的价格未知。",
+		"reasoningHelp": "「支持推理」只是一项能力声明。在推理强度选择器中选择「关闭」，未必能关闭自定义后端默认的思考行为。"
 	},
 	"settingsAppearance": {
 		"typography": "排版",
@@ -671,7 +706,10 @@
 		"colorError": "错误",
 		"colorSuccess": "成功",
 		"colorWarning": "警告",
-		"colorsNote": "在主题之上的覆盖值，切换主题时保留"
+		"colorsNote": "在主题之上的覆盖值，切换主题时保留",
+		"fontCommonUnreadable": "常用字体 —— 无法读取已安装字体",
+		"fontCommonDesktopOnly": "常用字体 —— 需在桌面应用中查看已安装字体",
+		"fontInstalledList": "已安装的字体"
 	},
 	"settingsPlugins": {
 		"corePluginsTitle": "核心插件",

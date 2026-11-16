@@ -72,19 +72,19 @@ export function AnsweredCard({ answer: savedAnswer, input }: { answer: QuestionA
 			    cards label Probe/Recall — the phase boundary visible in the
 			    transcript. No `tool` on old records: kind labels as before. */}
 				{answer.tool === "probe"
-					? "Probe"
+					? t("probeLabel")
 					: answer.tool === "recall"
-						? "Recall"
+						? t("recallLabel")
 						: isQuiz
 								? answer.questionType === "predict"
-									? "Prediction"
-									: "Check"
+									? t("predictionLabel")
+									: t("checkLabel")
 									: isExplain
-										? "Explain"
-											: "Question"}
+										? t("explainLabel")
+											: t("questionLabel")}
 				{isQuiz &&
 					(answer.dontKnow ? (
-						<StatusBadge text="didn't know" />
+						<StatusBadge text={t("didntKnow")} />
 					) : answer.correct ? (
 						<StatusBadge text={t("correct")} color="var(--lh-success)" />
 					) : (

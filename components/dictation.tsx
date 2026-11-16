@@ -344,6 +344,7 @@ export function useDictation({ append, destination = "primary", disabled = false
 	destination?: "primary" | "explicit";
 	disabled?: boolean;
 }): Dictation {
+	const t = useT("dictation");
 	const primary = destination === "primary";
 	const owner = useRef(Symbol("dictation")).current;
 	const { getLanguage } = useDictationLanguage();
@@ -616,10 +617,10 @@ export function useDictation({ append, destination = "primary", disabled = false
 			if (gen !== genRef.current) return;
 			const msg =
 				e instanceof DOMException && (e.name === "NotAllowedError" || e.name === "SecurityError")
-					? "Microphone permission denied"
+					? t("micPermissionDenied")
 					: e instanceof Error
 						? e.message
-						: "mic unavailable";
+						: t("micUnavailable");
 			setError(msg);
 			cleanup();
 			return;

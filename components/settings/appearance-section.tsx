@@ -380,9 +380,9 @@ export function AppearanceSection({
 										? undefined
 										: localFonts === null
 											? enumEmpty
-												? "Common families — installed fonts could not be read"
-												: "Common families — your installed list needs the desktop app"
-											: "Your installed fonts"
+												? t("fontCommonUnreadable")
+												: t("fontCommonDesktopOnly")
+										: t("fontInstalledList")
 								}
 							/>
 						</MenuShell>

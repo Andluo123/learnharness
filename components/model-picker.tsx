@@ -322,10 +322,10 @@ export function ModelControl({ chatId, onModelChange }: { chatId?: string; onMod
 						onPick={pickModel}
 						footer={
 							catalog && catalog.models.length === 0
-								? "No models — add a provider key in Keys"
+								? t("noModelsHint")
 								: chatId
-									? "This session's model"
-									: "Strong tier — the default for new sessions"
+									? t("sessionModelFooter")
+									: t("strongTierFooter")
 						}
 					/>
 				</MenuShell>

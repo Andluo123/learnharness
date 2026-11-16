@@ -167,7 +167,7 @@ export function QuestionDock({
 					label={
 						(canonical === "quiz" || canonical === "explain") &&
 						normalizeQuizType((parsed as { type?: unknown }).type) === "predict"
-							? "Prediction"
+							? t("predictionLabel")
 							: undefined
 					}
 				/>
@@ -624,17 +624,17 @@ function QuestionDockForm({
 			<div data-dock-scroll-area="" data-session-find-root="" className="max-h-[var(--dock-max-h,55dvh)] overflow-y-auto px-4 pt-3">
 				<div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
 					{toolName === "probe"
-						? "Probe"
+						? t("probeLabel")
 						: toolName === "recall"
-							? "Recall"
+							? t("recallLabel")
 							: kind === "quiz"
 								? qd.questionType === "predict"
-									? "Prediction"
-									: "Check"
+									? t("predictionLabel")
+									: t("checkLabel")
 									: kind === "explain"
 										? t("explainLabel")
 											: t("questionLabel")}
-					{qd.mode === "multi-select" && " · select all that apply"}
+					{qd.mode === "multi-select" && t("selectAllThatApply")}
 				</div>
 				<div className="mb-3 font-medium">
 					<ToolContentResponse>{qd.question}</ToolContentResponse>

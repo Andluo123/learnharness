@@ -559,7 +559,7 @@ export function AgentSection({
 					// on disk unused), "Your version is in use" when the
 					// switch is on. The switch's meaning becomes legible
 					// through this line.
-					hint={[info.usageHint, info.enabled ? PROMPT_IN_USE_HINT : undefined].filter(Boolean).join(" · ") || undefined}
+					hint={[info.usageHint ? t("usedBy", { users: info.usageHint.replace(/^Used by /, "") }) : undefined, info.enabled ? t("promptInUse") : undefined].filter(Boolean).join(" · ") || undefined}
 					testid={`prompt-row-${info.path}`}
 				>
 					{/* Graying ruling: ONLY the toggle dims without an
@@ -765,8 +765,8 @@ export function AgentSection({
 											}}
 											footer={
 												catalog && catalog.length === 0
-													? "No models — add a provider key in Keys"
-													: "Runs every agent of this tier"
+													? t("noModelsHint")
+													: t("tierFooter")
 											}
 										/>
 									</MenuShell>
