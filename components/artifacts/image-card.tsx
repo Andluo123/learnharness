@@ -61,8 +61,9 @@ export function ImageCard({ part }: ArtifactPartProps) {
 }
 
 function StoredImageCard({ details }: { details: ShowImageDetails }) {
+	const t = useT("artifacts");
 	const { image, failed } = useImageSnapshot(details.snapshotId);
-	if (!image) return <div className="my-4 text-sm text-muted-foreground" role="status">{failed ? "Image snapshot could not be loaded." : "Loading image…"}</div>;
+	if (!image) return <div className="my-4 text-sm text-muted-foreground" role="status">{failed ? t("snapshotLoadFailed") : t("loadingImage")}</div>;
 	return <ImagePresentation image={{ ...image, path: details.path, caption: details.caption }} />;
 }
 

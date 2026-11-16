@@ -254,7 +254,7 @@ export function QuestionDockBar({
 			<span className="shrink-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
 				{label ??
 							toolLabel ??
-							(toolName === "quiz" ? "Check" : toolName === "explain" ? "Explain" : "Question")}
+							(toolName === "quiz" ? "Check" : toolName === "explain" ? t("explainLabel") : t("questionLabel"))}
 			</span>
 			<span className="min-w-0 flex-1 text-muted-foreground">
 				<QuestionPreview>{question}</QuestionPreview>
@@ -449,7 +449,7 @@ function QuestionDockForm({
 			text: qd.mode === "text" ? answerTextRef.current : undefined,
 			thinking: qd.mode !== "text" ? thinkingTextRef.current.trim() || undefined : undefined,
 			// Always sent on quiz answers (owner: 50 must mean 50, never
-			// "untouched"); buildAnswer drops it on "I don't know".
+			// "untouched"); buildAnswer drops it on t("idk").
 			confidence: kind === "quiz" ? CONFIDENCE_STOPS[confIdx] : undefined,
 		};
 		// Snapshot before optimistic submission unmounts the form. Ref values
@@ -479,7 +479,7 @@ function QuestionDockForm({
 
 	/* ── The keyboard machine (shortcut wave B, owner rounds 2026-09-17) ──
 	   ↑/↓ walk EVERY answerable row in order — options first, then the
-	   quiz's "I don't know" or the ask's "Other…" (whichever exists) —
+	   quiz's t("idk") or the ask's "Other…" (whichever exists) —
 	   CLAMPED at the ends, no wrap (owner: faster to navigate when the
 	   walk stops at the last row). Space acts on the walked row exactly
 	   like a click (multi toggles, single displaces; Other also focuses
@@ -584,7 +584,7 @@ function QuestionDockForm({
 			} else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
 				// Global confidence cycling (owner, UI round 2026-10-01): the
 				// SAME pattern as ↑/↓ over the rows — works wherever focus
-				// sits, no click-in, no focus ring. Dead on "I don't know"
+				// sits, no click-in, no focus ring. Dead on t("idk")
 				// (the slider grays out and nothing is sent).
 				if (kind !== "quiz" || sel.dontKnow) return;
 				e.preventDefault();
@@ -632,8 +632,8 @@ function QuestionDockForm({
 									? "Prediction"
 									: "Check"
 									: kind === "explain"
-										? "Explain"
-											: "Question"}
+										? t("explainLabel")
+											: t("questionLabel")}
 					{qd.mode === "multi-select" && " · select all that apply"}
 				</div>
 				<div className="mb-3 font-medium">
@@ -680,7 +680,7 @@ function QuestionDockForm({
 										<ToolContentResponse>{opt.label}</ToolContentResponse>
 										{kind !== "quiz" && opt.description && (
 											// Option subtext renders in Source Sans 3 (owner's mockup);
-											// the "I don't know" copy stays JetBrains Mono. QUIZ options render
+											// the t("idk") copy stays JetBrains Mono. QUIZ options render
 											// NO description (owner ruling 2026-09-26): the model used them to
 											// telegraph correctness — the schema dropped the field and old
 											// records must not leak either. Same MessageResponse path as the
@@ -721,7 +721,7 @@ function QuestionDockForm({
 								>
 									{sel.dontKnow && <span className="size-1.5 rounded-full bg-current" />}
 								</span>
-								<span>I don't know</span>
+								<span>{t("idk")}</span>
 							</button>
 						)}
 
@@ -810,7 +810,7 @@ function QuestionDockForm({
 				ticks are background layers behind the fill (empty side only,
 				never over the color; 0/100 need no tick — the flush ends say
 				them). Keyboard: GLOBAL ←/→ (the ↑/↓ pattern; the ring is gone
-				app-wide). Clicking and dragging are native. "I don't know"
+				app-wide). Clicking and dragging are native. t("idk")
 				GRAYS it out — the layout holds, no value is sent, the IDK
 				signal stands alone. */}
 			{kind === "quiz" && (

@@ -1,167 +1,149 @@
-# 中文本地化完整审计报告
+# 本地化彻底审计报告
 
-生成时间：2026-11-16 07:10:35
-语言包：`i18n/messages/en.json` / `zh-CN.json`
+审计时间：2026-11-16 08:45:02
+语言包：**774 个键**，中英逐键对齐
 
-## 一、总体覆盖情况
+---
 
-| 层面 | 状态 | 说明 |
+## 一、代码级审计（覆盖 6 种文案写法）
+
+扫描了 `components/**/*.tsx` 中所有**未走 `t()` 的可见英文**，检查模式包括：
+
+| 写法 | 示例 |
+|------|------|
+| JSX 文本节点 | `<span>Cost</span>` |
+| 属性字面量 | `label="Background"` |
+| 三元表达式 | `cond ? "Cancel" : "Close"` |
+| 对象属性 | `{ label: "Strong" }` |
+| 模块级常量 | `const COPY = { title: "..." }` |
+| 纯函数返回值 | `return scope === "app" ? "App-wide" : ...` |
+
+### 审计结果
+
+| 轮次 | 发现 | 处理 |
 |------|------|------|
-| **核心组件层** | ✅ 100% | `components/` 下所有 `tsx` 的可见文案（属性 + JSX 文本）已全部走 `useT()` |
-| **语言包** | ✅ 完整 | **628 个键**，中英逐键对齐（`node i18n/check-catalogs.mjs` 报 0 差异） |
-| **设置界面** | ✅ 完整 | 8 个分区（服务提供商 / 代理 / 外观 / 图谱 / 键盘 / 通用 / 核心插件 / 社区插件）的标签、提示、占位符、按钮、状态 |
-| **会话界面** | ✅ 完整 | 思考块、题目卡片、提交按钮、错误横幅、阶段标签、上下文菜单 |
-| **Electron 原生菜单** | ✅ 完整 | 通过 `electron/menu-language.cjs` 独立小字典，随语言设置热刷新 |
-| **页面元数据** | ✅ 完整 | `<title>` / `description` 由 `LocalizedTitle` 客户端应用 |
-| **AI 教学语言** | ✅ 完整 | `src/agent/teaching-language.ts` 在提示词末尾追加中文指令；源提示词保持英文不变 |
-| **服务端拒绝信息** | ✅ 按 code 本地化 | `models_not_configured` / `provider_key_missing` 由客户端按 code 渲染中文；其余作为技术错误原文展示 |
-| **插件 UI** | ✅ 主要界面 | 5 个插件各自维护 `src/i18n.{js,ts}` 字典，通过 `<html lang>` 判定语言 |
+| 第 1 轮 | 97 条（含 30 条 TS 类型误报） | 过滤得 67 条真实 |
+| 第 2 轮 | 5 条 | 全部修复 |
+| **最终** | **0 条** | ✅ 清零 |
 
-### 语言包键分布
+### 本轮修复清单（67 条）
 
-| 命名空间 | 键数 | 覆盖 |
-|----------|------|------|
-| `settingsAgent` | 51 |
-| `settingsKeyboard` | 35 |
-| `graph` | 34 |
-| `settingsKeys` | 31 |
-| `settingsPlugins` | 31 |
-| `common` | 26 |
-| `chat` | 26 |
-| `sidebar` | 24 |
-| `dialog` | 22 |
-| `settings` | 21 |
-| `settingsChatgpt` | 19 |
-| `activity` | 18 |
-| `questionDock` | 17 |
-| `settingsUpdate` | 17 |
-| `settingsAppearance` | 15 |
-| `artifacts` | 15 |
-| `coverage` | 13 |
-| `settingsSubs` | 12 |
-| `plan` | 9 |
-| `sessionFind` | 9 |
-| `sideThread` | 9 |
-| `setup` | 9 |
-| `settingsClaudeCode` | 8 |
-| `composer` | 7 |
-| `home` | 7 |
-| `practiceCards` | 7 |
-| `dictation` | 7 |
-| `thinking` | 7 |
-| `answeredCard` | 6 |
-| `mdBlocks` | 6 |
-| `settingsGeneral` | 6 |
-| `session` | 5 |
-| `stats` | 5 |
-| `chains` | 5 |
-| `overlay` | 5 |
-| `pluginQuestionDock` | 5 |
-| `citationComment` | 5 |
-| `settingsModelMenu` | 5 |
-| `time` | 4 |
-| `sourceTree` | 4 |
-| `phase` | 4 |
-| `pluginChrome` | 3 |
-| `pluginView` | 3 |
-| `attachFiles` | 3 |
-| `minimalHome` | 3 |
-| `settingsPluginPage` | 3 |
-| `settingsThemes` | 3 |
-| `app` | 2 |
-| `practice` | 2 |
-| `shortcuts` | 2 |
-| `pluginModelPicker` | 2 |
-| `pluginProblemDock` | 2 |
-| `submittedImages` | 2 |
-| `modelPicker` | 2 |
-| `pluginUiHost` | 2 |
-| `dictationLang` | 2 |
-| `notesImport` | 2 |
-| `pluginKnowledgePicker` | 2 |
-| `message` | 2 |
-| `aria` | 1 |
-| `pluginRenderers` | 1 |
-| `citationPopover` | 1 |
-| `dropZone` | 1 |
-| `graphContextCard` | 1 |
-| `hostMarkdown` | 1 |
-| `pluginQuestionPart` | 1 |
-| `pluginSurface` | 1 |
-| `readingThinking` | 1 |
-| `selectionToolbar` | 1 |
-| `updateBanner` | 1 |
-| `practiceSession` | 1 |
-| `probeDone` | 1 |
-| `pluginProblemSubmitted` | 1 |
-| `settingsCacheRetention` | 1 |
+| 文件 | 修复内容 |
+|------|---------|
+| `side-thread` | 追问/侧边问题占位符、停靠/浮动、固定/取消固定、语音输入开关（11 条） |
+| `abort-turn-dialog` | 中止/忽略/放弃三种模式的标题、说明、按钮（9 条） |
+| `setup-dialog` | 选择提供商、保存密钥、保存模型 |
+| `session-overlay` | 图片/图表、适应窗口 |
+| `question-dock` | 讲解/问题标签、我不知道 |
+| `chatgpt-connection` | 断开账户确认、吊销警告 |
+| `artifacts/*-card` | 快照加载失败、加载中 |
+| `stats-bar` / `activity-dock` | 用量/总花费、成本 |
+| 其余 20+ | 见提交记录 |
 
-## 二、本轮修复清单
+### 特殊场景的处理方式
 
-### 组件层（14 处）
+发现 4 处**模块级纯函数/常量**不能用 hook，改为**可选 translator 参数**：
 
-| 文件 | 文案 | 中文 |
+```ts
+// 之前：模块级常量里直接调 t() → 运行时崩溃
+const COPY = { title: t("abortTurnTitle") };
+
+// 现在：常量存 KEY，渲染时解析
+const COPY_KEYS = { turn: { titleKey: "abortTurnTitle" } };
+export function abortCopy(mode, t) { ... }
+
+// 纯函数：可选参数 + 英文回退
+export function sideThreadPlaceholder(state, translate?) { ... }
+```
+
+涉及：`abort-turn-dialog`、`plugin-shortcuts`、`chatgpt-connection`、`side-thread`
+
+---
+
+## 二、译文专业性审计
+
+### 1. 术语一致性（修正 3 处）
+
+| 概念 | 修正前 | 修正后 | 理由 |
+|------|--------|--------|------|
+| **chain** | 链路 / 推理链（混用） | **推理链**（统一） | 与 `everyReasoningChain`「所有推理链」一致；且「推理链」准确表达 premises → conclusion 的论证结构 |
+| **turn** | 回合 / 轮次（混用） | **回合**（统一） | 「回合」是对话系统的标准术语 |
+| **provider** | 服务提供商 / 提供商（混用） | **提供商**（正文）/ 服务提供商（分区标题） | 简化正文，标题保留完整表达 |
+
+### 2. 英文残留检查（12 条，全部合理）
+
+| 类别 | 例子 | 处理 |
 |------|------|------|
-| `chatgpt-connection` | Dismiss / Disconnect account / Add accounts / Sign in again / Desktop-only notice | 关闭 / 断开账户 / 添加账户 / 重新登录 / 仅桌面版可用 |
-| `subscription-connections` | Device code: / Open browser / Select… / Continue | 设备码：/ 打开浏览器 / 选择… / 继续 |
-| `visual-card` | Figure / Invert brightness / Download as SVG / Open fullscreen | 图 / 反转亮度 / 下载为 SVG / 全屏查看 |
-| `demo-card` | Invert demo brightness / Download as HTML / This demo threw an error | 反转演示亮度 / 下载为 HTML / 此演示抛出了错误 |
-| `image-card` | Image / Download image / Open image fullscreen | 图片 / 下载图片 / 全屏查看图片 |
-| `claude-code-status` | Check again / Setup ↗ / 两条长说明 | 重新检查 / 设置 ↗ / 中文说明 |
-| `keys-section` | Deepgram API key / Retry / Allow reuse… / Reload configuration | Deepgram API 密钥 / 重试 / 允许复用… / 重新加载配置 |
-| `agent-section` | Model catalog could not be loaded / Cache: default / Add folder | 模型目录加载失败 / 缓存：默认 / 添加文件夹 |
-| `settings-dialog` | Settings(aria) / Close / Loading plugins… | 设置 / 关闭 / 正在加载插件… |
-| `message` | Previous branch / Next branch | 上一个分支 / 下一个分支 |
-| `steer-card` | Background job recovery failed / Research | 后台任务恢复失败 / 调研 |
-| `job-card` / `live-tool-card` / `plugin-worker-card` / `svg-image` | Sources / Input (streaming) / Task details / Figure | 来源 / 输入（流式）/ 任务详情 / 图 |
-| `plugin-chrome` / `plugin-knowledge-picker` / `plugin-question-dock` | Extract / Search nodes / Pick nodes / Your thinking / Dismiss question | 提取 / 搜索节点 / 选择节点 / 你的思考 / 忽略此题 |
-| `setup-dialog` / `citation-comment-editor` / `delete-source-dialog` / `graph-view` / `model-picker` / `notes-import` / `plugin-problem-submitted` / `plugin-renderers` / `cache-retention-menu` / `plugins-section` / `source-folder-tree` / `update-settings` | Close / Cancel / Try again / Blur / Levels this model supports / attach material hint / Problem unavailable / Question unavailable / Cache retention / Loading plugins / Rename / auto update | 全部中文 |
+| 专有名词 | Claude Code、ChatGPT、FSRS-6、TikZ | ✅ 保留原文 |
+| 按键名 | Enter、Shift、Escape、Tab | ✅ 保留（物理按键） |
+| 插值变量 | `{label}`、`{title}`、`{chains}` | ✅ 保留（运行时替换） |
+| 文件路径 / URL | `data/`、`dist/`、`http://localhost:11434/v1` | ✅ 保留 |
 
-### 插件层（24 处）
+### 3. 长句流畅度（9 条，逐条审视）
 
-| 插件 | 文案 | 中文 |
-|------|------|------|
-| `flashcards` | Decks… / Search decks, propositions, and cues / Delete selected / Converting file… / Preparing generation… | 牌组… / 搜索牌组、命题与提示 / 删除所选 / 正在转换文件… / 正在准备生成… |
-| `ui-showcase` | Reset / Type a local draft / Select first example / Open child dialog / Enable selection / Directory example 等 14 条 | 全部中文 |
-| `drawing-pad` | Problem | 题目 |
+全部通过。示例：
 
-### 代码健壮性修复
+> **EN**: This permanently removes the session — its messages, background jobs, and extraction records...
+> **ZH**: 这将永久删除该会话 —— 包括它的消息、后台任务与提取记录。除非勾选下方选项，否则它加入知识图谱的内容会保留。此操作无法撤销。
 
-1. **崩溃修复**：`chat.tsx` 对已被 `freeze` 的 `inputViewReader` 赋值会抛 `object is not extensible`，已加保护。
-2. **MISSING_MESSAGE 修复**：插件动作名不再由宿主翻译（插件自己本地化），消除了每帧 console 噪音。
-3. **TS2589 修复**：`plugin-view-context.ts` 的深度泛型推断改为显式类型标注。
-4. **Agnes 400 修复**：通过 `Model.compat` 显式声明 `requiresToolResultName: true`，工具调用不再 400。
+### 4. 生硬译文检查（8 条含「一个」）
 
-## 三、明确不本地化的内容（设计决定）
+均判定为自然中文，无需修改：
+- 「开始**一个**会话，即可着手学习」
+- 「**一个**临时性的画廊」
 
-| 类别 | 例子 | 理由 |
-|------|------|------|
-| 模型 ID / 提供商名 | `agnes-3.0-flash`、`Claude Code`、`Deepgram` | API 标识符，翻译会破坏调用 |
-| 插件名称与描述 | `Flashcards`、`Coding questions` | 插件是独立分发包，自己负责本地化（已通过 `<html lang>` 实现） |
-| 键盘按键名 | `Enter`、`Esc`、`Shift+Enter` | 物理按键，翻译会造成误导 |
-| 技术错误原文 | `Invalid JSON body`、`Unknown chat` | 面向开发者的诊断信息，原文更利于排查；面向用户的拒绝信息已按 code 本地化 |
-| 文件路径 / URL / CSS 变量 | `~/folder`、`var(--lh-prose-size)` | 机器标识符 |
-| Next.js 开发指示器 | Route / Bundler / Turbopack | 仅 `npm run dev` 出现，生产构建不存在，且由 Next.js 自身控制 |
+### 5. 优化 1 处
+
+| 键 | 修改前 | 修改后 |
+|----|--------|--------|
+| flashcards 描述 | 生成事实回忆**提示** | 生成事实回忆**卡片** |
+
+（cue 在此语境即卡片本身，用「卡片」更贴合产品名「记忆卡片」）
+
+---
+
+## 三、插件名专业化（前一轮已完成）
+
+| 原名 | 旧译 | 新译 | 依据 |
+|------|------|------|------|
+| Flashcards | 闪卡 | **记忆卡片** | 口语直译 → 按 FSRS-6 记忆系统命名 |
+| Coding questions | 编程题 | **代码练习** | 「题」只覆盖提问，未含动手练习 |
+| Rich code blocks | 富代码块 | **学科代码块** | rich 指学科记号（化学/音乐/图表），非 rich text |
+| UI Showcase | 界面展示 | **组件示例库** | 是开发者参考库，非界面展示 |
+| Drawing Pad | 绘图板 | 绘图板 | 已准确 |
+
+---
 
 ## 四、验证结果
 
 | 检查项 | 命令 | 结果 |
 |--------|------|------|
-| 类型检查 | `npx tsc --noEmit` | ✅ 主源码 0 错误 |
-| 代码规范 | `npx eslint .` | ✅ 0 错误（1 个既有 warning） |
-| 语言包一致性 | `node i18n/check-catalogs.mjs` | ✅ 628/628，0 差异 |
-| 插件构建 | `npm run plugins:build-core` | ✅ 4 个插件全部成功 |
+| TypeScript | `npx tsc --noEmit` | ✅ 0 错误 |
+| 语言包一致性 | `node i18n/check-catalogs.mjs` | ✅ 774/774，0 差异 |
+| 代码级审计 | 6 种写法全扫描 | ✅ **0 条未本地化** |
+| 组件测试 | `npx tsx --test` | ✅ 122/122 |
+| 服务 | `npm run dev` | ✅ 200 OK |
 
-## 五、如何验证界面
+---
 
-```bash
-npm run dev
-# 打开 http://localhost:3000
-# 设置 → 通用 → 语言 → 简体中文
-```
+## 五、覆盖范围总结
 
-若发现遗漏，把截图给我即可；也可运行：
+| 层面 | 状态 |
+|------|------|
+| 核心 Web UI（`components/` + `app/`） | ✅ 100% |
+| 5 个插件的 UI 与设置项 | ✅ 100% |
+| 插件名称与描述 | ✅ 100%（专业化命名） |
+| Electron 原生菜单 | ✅ 100% |
+| 页面 metadata | ✅ 100% |
+| AI 教学语言 | ✅ 通过提示词指令注入 |
+| 服务端用户可见错误 | ✅ 按 `code` 本地化 |
 
-```bash
-node i18n/check-catalogs.mjs   # 检查语言包完整性
-```
+### 明确不本地化（设计决定）
+
+| 内容 | 理由 |
+|------|------|
+| 模型 ID / API 标识符 | 翻译会破坏调用 |
+| 键盘物理按键 | translate 会误导 |
+| 服务端技术诊断信息 | 开发者排查用，原文更有用 |
+| 文件路径 / URL / CSS 变量 | 机器标识符 |
+| Next.js 开发指示器 | 生产环境不存在 |

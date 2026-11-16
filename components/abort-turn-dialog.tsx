@@ -3,6 +3,7 @@
 import type { ReactElement, ReactNode } from "react";
 import { HostDialog } from "@/components/host-dialog";
 import { useBackdropDismiss } from "@/components/backdrop-dismiss";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * The ESC-abort guard (owner, 2026-10-02): the global Esc → abort chain
@@ -27,23 +28,32 @@ import { useBackdropDismiss } from "@/components/backdrop-dismiss";
 /** What Esc is aborting — drives copy and the confirm action. */
 export type AbortMode = "turn" | "question" | "problem";
 
-const COPY: Record<AbortMode, { title: string; line: string; action: string }> = {
-	turn: {
-		title: "Abort this turn?",
-		line: "The partial answer stays in the transcript.",
-		action: "Abort",
-	},
-	question: {
-		title: "Dismiss this question?",
-		line: "Skipped — the teacher moves on without it.",
-		action: "Dismiss",
-	},
-	problem: {
-		title: "Discard this problem?",
-		line: "The problem is dropped — no solution is revealed.",
-		action: "Discard",
-	},
+/** The copy for each abort mode, as message KEYS. Resolved at render time
+ *  through the supplied translator — a module-level object cannot call a
+ *  hook, so the English wording lives here only for the pure/test path. */
+const COPY_KEYS: Record<AbortMode, { titleKey: string; lineKey: string; actionKey: string }> = {
+	turn: { titleKey: "abortTurnTitle", lineKey: "abortTurnLine", actionKey: "abortAction" },
+	question: { titleKey: "dismissQuestionTitle", lineKey: "dismissQuestionLine", actionKey: "dismissAction" },
+	problem: { titleKey: "discardProblemTitle", lineKey: "discardProblemLine", actionKey: "discardAction" },
 };
+
+/** English fallbacks — the pure/test path and the reference wording. */
+const COPY: Record<AbortMode, { title: string; line: string; action: string }> = {
+	turn: { title: "Abort this turn?", line: "The partial answer stays in the transcript.", action: "Abort" },
+	question: { title: "Dismiss this question?", line: "Skipped — the teacher moves on without it.", action: "Dismiss" },
+	problem: { title: "Discard this problem?", line: "The problem is dropped — no solution is revealed.", action: "Discard" },
+};
+
+/** Resolve the copy for a mode through a translator (presentational path). */
+export function abortCopy(mode: AbortMode, t: (key: string) => string) {
+	const keys = COPY_KEYS[mode];
+	const fallback = COPY[mode];
+	return {
+		title: t(keys.titleKey) || fallback.title,
+		line: t(keys.lineKey) || fallback.line,
+		action: t(keys.actionKey) || fallback.action,
+	};
+}
 
 /** The dialog's pure body — exported for SSR pins (the delete-node
  * pattern). The wrapper owns effects + the portal. */
@@ -62,8 +72,9 @@ export function AbortTurnBody({
 	busy?: boolean;
 	renderFrame?: (frame: ReactElement<{ children: ReactNode }>) => ReactNode;
 }) {
+	const t = useT("dialog");
 	const backdropDismiss = useBackdropDismiss(onClose);
-	const copy = COPY[mode];
+	const copy = abortCopy(mode, t);
 	const frame = (
 			<div
 				className="mx-4 w-full max-w-sm rounded-xl border bg-card p-5 shadow-lg"
@@ -74,7 +85,7 @@ export function AbortTurnBody({
 				</h2>
 				<p className="mt-1.5 text-xs text-muted-foreground" data-testid="abort-turn-line">
 					{copy.line}
-					{busy && mode !== "turn" ? " The working turn stops too." : ""}
+					{busy && mode !== "turn" ? t("workingTurnStops") : ""}
 				</p>
 				<div className="mt-4 flex justify-end gap-2">
 					<button
@@ -117,7 +128,7 @@ export function AbortTurnDialog({
 }) {
 	if (mode === null) return null;
 	return <AbortTurnBody mode={mode} onClose={onClose} onConfirm={() => onConfirm(mode)} busy={busy}
-		renderFrame={(frame) => <HostDialog open frame={frame} aria-label={COPY[mode].title}
+		renderFrame={(frame) => <HostDialog open frame={frame} aria-label={abortCopy(mode, useT("dialog")).title}
 			onClose={() => { onClose(); return "closed"; }}
 			backdropProps={{ className: "fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm", "data-testid": "abort-turn-dialog" }}>
 			{frame.props.children}

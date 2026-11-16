@@ -147,8 +147,8 @@ export function MermaidOverlay({
 	}, []);
 
 	const box = useMemo(() => image ? { w: image.width, h: image.height } : svg ? chartSize(svg) : { w: 0, h: 0 }, [svg, image]);
-	const mediaName = image ? "Image" : "Diagram";
-	const fitLabel = image ? "Fit image to view" : "Fit diagram to view";
+	const mediaName = image ? t("image") : t("diagram");
+	const fitLabel = image ? t("fitImage") : t("fitDiagram");
 	const fitZoom = useMemo(() => fitZoomFor(box, size), [box, size]);
 
 	const [view, setView] = useState<Viewport>({ x: 0, y: 0, zoom: 1 });

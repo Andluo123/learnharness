@@ -100,7 +100,7 @@ export function PluginThinkingPicker({ model, value, onChange, disabled, onError
 			{value === undefined ? "—" : thinkingLabelOf(value)}
 		</ModelPickerPill>
 		{open && !disabled && <MenuShell anchorRef={root} preferredSide="up" testid="plugin-thinking-menu" onClose={() => { close(); return "closed"; }} menuClass="flex w-44 flex-col gap-0.5 rounded-xl border bg-card p-2 text-xs shadow-xl">
-			<ThinkingMenuList levels={levels} effectiveLevel={value} onPick={(level) => pick(level as ThinkingLevel)} empty={catalog ? "No thinking levels." : "Loading…"} />
+			<ThinkingMenuList levels={levels} effectiveLevel={value} onPick={(level) => pick(level as ThinkingLevel)} empty={catalog ? t("noThinkingLevels") : "Loading…"} />
 			{error && <div role="alert" className="text-destructive">{error}</div>}
 		</MenuShell>}
 	</div>;

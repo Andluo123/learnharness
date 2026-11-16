@@ -114,7 +114,7 @@ export function UpdateSettings({
 					<Button type="button" size="xs" className="cursor-pointer" data-testid="update-restart" onClick={() => window.lh?.installUpdate?.()}>{t("restart")}</Button>
 				) : (
 					<Button type="button" size="xs" variant="outline" className="cursor-pointer disabled:cursor-not-allowed" data-testid="update-check" disabled={busy} aria-busy={busy} onClick={check}>
-						{busy && <BrailleSpinner label={state.status === "downloading" ? "Downloading update" : "Checking for updates"} />}
+						{busy && <BrailleSpinner label={state.status === "downloading" ? t("downloadingUpdate") : t("checkingUpdates")} />}
 						Check for updates
 					</Button>
 				))}

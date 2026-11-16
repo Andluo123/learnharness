@@ -31,8 +31,18 @@ export function createSideQuestionActions({ open }: { open: (args: SideThreadOpe
 		},
 	}];
 }
-export function sideThreadPlaceholder(state: SideThreadState): string {
-	return state.pendingPassage ? "Ask about this passage…" : state.messages.length ? "Ask a follow-up…" : "Ask a side question…";
+/** The composer placeholder. Pure — an optional translator keeps the English
+ *  wording for tests while the UI passes its hook. */
+export function sideThreadPlaceholder(
+	state: SideThreadState,
+	translate?: (key: string) => string,
+): string {
+	const t = translate ?? ((key: string) => ({
+		askFollowUp: "Ask a follow-up…",
+		askSideQuestion: "Ask a side question…",
+		askAboutPassage: "Ask about this passage…",
+	}[key] ?? key));
+	return state.pendingPassage ? t("askAboutPassage") : state.messages.length ? t("askFollowUp") : t("askSideQuestion");
 }
 export interface SideThreadHandlers {
 	dictation?: { phase: DictationPhase; active: boolean; blocked: boolean; error: string | null; levelRef?: { current: number }; toggle: () => void; finish: () => Promise<void> };
@@ -124,8 +134,8 @@ export function SideThreadBody({ state, chatId, draft, readDraft, dictation, onD
 				{onDragStart && <GripVertical aria-hidden="true" className="-ml-1 size-3.5 text-muted-foreground" />}
 				<MessageCircleQuestion aria-hidden="true" className="size-3.5 text-muted-foreground" />
 				<span className="flex-1 font-ui text-xs text-muted-foreground">{t("sideQuestion")}</span>
-				<Button type="button" size="icon-xs" variant="ghost" aria-label={state.mode === "popover" ? "Dock side conversation" : "Float side conversation"}
-					title={state.mode === "popover" ? "Pin to side" : "Unpin to float"} onClick={state.mode === "popover" ? onExpand : onFloat}>
+				<Button type="button" size="icon-xs" variant="ghost" aria-label={state.mode === "popover" ? t("dockSideChat") : t("floatSideChat")}
+					title={state.mode === "popover" ? t("pinToSide") : t("unpinToFloat")} onClick={state.mode === "popover" ? onExpand : onFloat}>
 					{state.mode === "popover" ? <Pin aria-hidden="true" /> : <PinOff aria-hidden="true" />}
 				</Button>
 				<Button type="button" size="icon-xs" variant="ghost" aria-label={t("closeSideChat")} title={t("close")} onClick={onClose}><X aria-hidden="true" /></Button>
@@ -165,14 +175,14 @@ export function SideThreadBody({ state, chatId, draft, readDraft, dictation, onD
 					{dictation && <div className="absolute right-1 bottom-1 flex h-7 items-center gap-1">
 						{dictation.phase === "recording" && <SideInputMeter levelRef={dictation.levelRef} />}
 						<button type="button" data-testid="side-dictation-toggle"
-						aria-label={dictation.active ? "Stop side dictation" : "Start side dictation"} aria-pressed={dictation.active}
-						title={dictation.error ?? (dictation.active ? "Stop side dictation" : "Dictate side question")}
+						aria-label={dictation.active ? t("stopSideDictation") : t("startSideDictation")} aria-pressed={dictation.active}
+						title={dictation.error ?? (dictation.active ? t("stopSideDictation") : t("dictateSideQuestion"))}
 						disabled={dictation.blocked || dictation.phase === "stopping"} onClick={dictation.toggle}
 						className={`flex size-7 items-center justify-center rounded-md transition-colors disabled:opacity-40 ${dictation.active ? "bg-error/15 text-error" : "text-muted-foreground hover:bg-accent hover:text-foreground"}`}>
 						<Mic aria-hidden="true" className="size-3.5" />
 					</button></div>}
 					</div>
-					<button type="button" aria-label={state.answering ? "Stop side answer" : "Send side question"}
+					<button type="button" aria-label={state.answering ? t("stopSideAnswer") : t("sendSideQuestion")}
 						disabled={!state.answering && !question.trim() && !dictation?.active} onClick={state.answering ? onStop : () => void submit()}
 						className={`flex size-9 shrink-0 items-center justify-center rounded-[10px] transition-colors ${state.answering ? "bg-secondary text-foreground hover:bg-accent" : "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-40"}`}>
 						{state.answering ? <Square aria-hidden="true" className="size-4" /> : <CornerDownLeft aria-hidden="true" className="size-5" />}

@@ -170,7 +170,17 @@
 		"tracesBody": "This session's topics, links, and events leave the graph too. Topics other sessions or imported notes also cover survive; topics only this session created are removed entirely.",
 		"tryAgain": "Try again",
 		"cancel": "Cancel",
-		"delete": "Delete"
+		"delete": "Delete",
+		"abortTurnTitle": "Abort this turn?",
+		"abortTurnLine": "The partial answer stays in the transcript.",
+		"abortAction": "Abort",
+		"dismissQuestionTitle": "Dismiss this question?",
+		"dismissQuestionLine": "Skipped — the teacher moves on without it.",
+		"dismissAction": "Dismiss",
+		"discardProblemTitle": "Discard this problem?",
+		"discardProblemLine": "The problem is dropped — no solution is revealed.",
+		"discardAction": "Discard",
+		"workingTurnStops": " The working turn stops too."
 	},
 	"activity": {
 		"totalRunningCost": "Total running cost (inferred)",
@@ -192,14 +202,17 @@
 			"running": "running",
 			"extracting": "extracting",
 			"idle": "idle"
-		}
+		},
+		"cost": "Cost"
 	},
 	"stats": {
 		"contextLastCall": "Context (last call)",
 		"claudeCodeWindow": "Window reported by Claude Code; may be lower for auto-compaction.",
 		"cacheHitRate": "Cache hit rate",
 		"manageChatGptUsage": "Manage ChatGPT usage",
-		"unpricedTurns": "Unpriced turns"
+		"unpricedTurns": "Unpriced turns",
+		"usage": "Usage",
+		"totalCost": "Total cost"
 	},
 	"answeredCard": {
 		"answeredDontKnow": "Answered “I don't know”.",
@@ -214,7 +227,9 @@
 		"problem": "Problem",
 		"workHerePlaceholder": "Work here, think out loud.",
 		"compactingSession": "compacting session…",
-		"enterSubmits": "↵ submits · ⇧↵ newline"
+		"enterSubmits": "↵ submits · ⇧↵ newline",
+		"submitThinking": "Submit thinking",
+		"submit": "Submit"
 	},
 	"chains": {
 		"addFolder": "Add folder",
@@ -291,7 +306,11 @@
 		"submittedImage": "Submitted image",
 		"dragPanScrollZoom": "Drag to pan · scroll to zoom",
 		"zoomOut": "Zoom out",
-		"zoomIn": "Zoom in"
+		"zoomIn": "Zoom in",
+		"image": "Image",
+		"diagram": "Diagram",
+		"fitImage": "Fit image to view",
+		"fitDiagram": "Fit diagram to view"
 	},
 	"coverage": {
 		"unmappedHint": "How much of this session isn't mapped yet",
@@ -335,7 +354,8 @@
 		"hintRung": "Hint rung",
 		"missClass": "Miss class",
 		"retest": "Retest",
-		"yourThinking": "YOUR THINKING"
+		"yourThinking": "YOUR THINKING",
+		"mode": "Mode"
 	},
 	"pluginQuestionDock": {
 		"preparingQuestion": "Preparing question…",
@@ -363,7 +383,10 @@
 		"submitAnswer": "Submit answer",
 		"compactingSession": "compacting session…",
 		"enterSubmits": "↵ submits · ⇧↵ newline",
-		"probeAssessment": "Probe assessment"
+		"probeAssessment": "Probe assessment",
+		"explainLabel": "Explain",
+		"questionLabel": "Question",
+		"idk": "I don't know"
 	},
 	"citationComment": {
 		"commentAria": "Comment on selected text",
@@ -380,7 +403,9 @@
 	"pluginView": {
 		"pluginSettings": "Plugin settings",
 		"loadingPlugin": "Loading plugin…",
-		"backTo": "Back to"
+		"backTo": "Back to",
+		"pluginDisabled": "This plugin is disabled.",
+		"viewUnavailable": "This plugin view is not available."
 	},
 	"attachFiles": {
 		"attachFiles": "Attach files",
@@ -402,7 +427,18 @@
 		"close": "Close",
 		"stopped": "Stopped",
 		"answering": "Answering",
-		"retryAnswer": "Retry answer"
+		"retryAnswer": "Retry answer",
+		"askFollowUp": "Ask a follow-up…",
+		"askSideQuestion": "Ask a side question…",
+		"dockSideChat": "Dock side conversation",
+		"floatSideChat": "Float side conversation",
+		"pinToSide": "Pin to side",
+		"unpinToFloat": "Unpin to float",
+		"stopSideDictation": "Stop side dictation",
+		"startSideDictation": "Start side dictation",
+		"dictateSideQuestion": "Dictate side question",
+		"stopSideAnswer": "Stop side answer",
+		"sendSideQuestion": "Send side question"
 	},
 	"dictation": {
 		"stopDictationHint": "Stop dictation (Esc)",
@@ -419,7 +455,8 @@
 	},
 	"pluginModelPicker": {
 		"modelSelector": "Model selector",
-		"thinking": "Thinking"
+		"thinking": "Thinking",
+		"noThinkingLevels": "No thinking levels."
 	},
 	"pluginProblemDock": {
 		"preparingProblem": "Preparing problem…",
@@ -449,7 +486,9 @@
 		"levelsFooter": "Levels this model actually supports"
 	},
 	"pluginQuestionPart": {
-		"questionDismissed": "Question dismissed"
+		"questionDismissed": "Question dismissed",
+		"questionUnavailable": "Question unavailable",
+		"preparingQuestion": "Preparing question…"
 	},
 	"pluginSurface": {
 		"close": "Close"
@@ -476,7 +515,10 @@
 		"loadingModels": "Loading models…",
 		"catalogFailed": "Model catalog could not be loaded. Check the connection and retry.",
 		"retry": "Retry",
-		"close": "Close"
+		"close": "Close",
+		"pickProvider": "Pick a provider…",
+		"saveKey": "Save key",
+		"saveModels": "Save models"
 	},
 	"dictationLang": {
 		"language": "Language",
@@ -591,7 +633,9 @@
 		"cancel": "Cancel",
 		"delete": "Delete",
 		"saving": "Saving…",
-		"saveLimits": "Save limits"
+		"saveLimits": "Save limits",
+		"apiKeyMissing": "API key missing",
+		"leaveBlankKeepKey": "Leave blank to keep effective key"
 	},
 	"settingsAppearance": {
 		"typography": "Typography",
@@ -694,7 +738,9 @@
 		"checkFailed": "Couldn’t check for updates. Try again later.",
 		"downloadingAria": "Downloading update",
 		"checkingAria": "Checking for updates",
-		"autoUpdateAria": "auto update"
+		"autoUpdateAria": "auto update",
+		"downloadingUpdate": "Downloading update",
+		"checkingUpdates": "Checking for updates"
 	},
 	"settingsKeyboard": {
 		"keyboard": "Keyboard",
@@ -751,7 +797,9 @@
 		"noProvidersMatch": "No providers match.",
 		"searchFonts": "Search fonts…",
 		"loadingFonts": "Loading fonts…",
-		"noThinkingLevels": "No thinking levels."
+		"noThinkingLevels": "No thinking levels.",
+		"priceLabel": "USD per 1M tokens in/out",
+		"priceUnavailable": "Price unavailable"
 	},
 	"settingsClaudeCode": {
 		"installHint": "Install and authenticate Claude Code",
@@ -776,7 +824,9 @@
 		"continue": "Continue",
 		"retry": "Retry",
 		"signInAgain": "Sign in again",
-		"cancel": "Cancel"
+		"cancel": "Cancel",
+		"desktopOnly": "Subscription sign-in requires the desktop app's private server connection. API-key connections remain available here.",
+		"backgroundHint": "Allow LearnHarness helper agents and automatic follow-ups to use this connection."
 	},
 	"settingsChatgpt": {
 		"chatgpt": "ChatGPT",
@@ -799,7 +849,11 @@
 		"enableBackground": "Enable background use",
 		"desktopOnly": "ChatGPT sign-in is available only in the desktop app. API-key connections remain available here.",
 		"manageEllipsis": "Manage…",
-		"connect": "Connect"
+		"connect": "Connect",
+		"disconnectAccountTitle": "Disconnect account?",
+		"disconnectAccountBody": "This removes the saved account and its credentials from this device.",
+		"disconnectAccountBodyWeb": "This removes the saved account and its credentials from the machine running LearnHarness.",
+		"revocationWarning": "Account disconnected locally. Remote revocation could not be confirmed."
 	},
 	"phase": {
 		"probe": "Probing",
@@ -842,7 +896,9 @@
 		"jobFailed": "Background job recovery/delivery failed",
 		"research": "Research",
 		"inputStreaming": "Input (streaming)",
-		"taskDetails": "Task details"
+		"taskDetails": "Task details",
+		"snapshotLoadFailed": "Image snapshot could not be loaded.",
+		"loadingImage": "Loading image…"
 	},
 	"message": {
 		"prevBranch": "Previous branch",
@@ -886,5 +942,15 @@
 		"practiceDescription": "Pick nodes from your knowledge graph, describe what you want to practice, or bring your own problem.",
 		"learnPlaceholder": "What do you want to learn?",
 		"practicePlaceholder": "What do you want to practice?"
+	},
+	"citationChip": {
+		"editComment": "Edit citation comment",
+		"addComment": "Add comment to citation"
+	},
+	"pluginShortcuts": {
+		"teaching": "Teaching",
+		"practice": "Practice",
+		"appWide": "App-wide",
+		"views": "Views"
 	}
 }

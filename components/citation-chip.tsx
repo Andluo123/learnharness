@@ -6,6 +6,7 @@ import { MenuShell } from "./menu-shell";
 import { citationLabel, type TutorCitation } from "@/src/core";
 import { useOptionalInteractionLayers } from "./interaction-layers";
 import { isInteractionScopeEligible } from "./plugin-input-focus";
+import { useT } from "@/i18n/use-t.ts";
 
 /** Where a composer chip's link sits in the draft (for comment edits). */
 export type ComposerCitationSource = { start: number; end: number; link: string; host: HTMLElement };
@@ -41,6 +42,7 @@ export function CitationQuoteCard({ citation, onOpenSource }: { citation: TutorC
 }
 
 export function CitationChip({ citation, variant, contentEditable, source }: CitationChipProps) {
+	const t = useT("citationChip");
 	const actions = useContext(CitationActionsContext);
 	const controller = useOptionalInteractionLayers();
 	const label = citationLabel(citation);
@@ -81,7 +83,7 @@ export function CitationChip({ citation, variant, contentEditable, source }: Cit
 			{variant === "composer" ? (
 				<button
 					type="button"
-					aria-label={citation.comment ? "Edit citation comment" : "Add comment to citation"}
+					aria-label={citation.comment ? t("editComment") : t("addComment")}
 					className="shrink-0 rounded p-0.5 text-muted-foreground hover:text-foreground"
 					onPointerDown={(event) => event.preventDefault()}
 					onClick={() => { if (source) actions?.editComment?.(citation, source); }}

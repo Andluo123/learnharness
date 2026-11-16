@@ -40,9 +40,16 @@ export function usePluginShortcutPage(pathname: string, read: () => PluginPageAc
 	const latest = useRef(read); latest.current = read;
 	useLayoutEffect(() => manager?.registerShortcutPage(pathname, () => latest.current()), [manager, pathname]);
 }
-export function pluginShortcutScopeLabel(candidate: PluginShortcutCandidate): string {
+/** A shortcut's scope, human-readable. Pure — `t` is optional so module-level
+ *  callers and tests keep the English wording while the UI passes its hook. */
+export function pluginShortcutScopeLabel(
+	candidate: PluginShortcutCandidate,
+	translate?: (key: string) => string,
+): string {
 	const scope = candidate.shortcut.scope;
-	return scope === "app" ? "App-wide" : [...(scope.sessions ?? []).map(kind => kind === "teaching" ? "Teaching" : "Practice"), ...(scope.views?.length ? [`Views: ${scope.views.join(", ")}`] : [])].join(" · ");
+	const t = translate ?? ((key: string) => (key === "teaching" ? "Teaching" : key === "practice" ? "Practice" : key));
+	const appWide = translate ? t("appWide") : "App-wide";
+	return scope === "app" ? appWide : [...(scope.sessions ?? []).map(kind => kind === "teaching" ? t("teaching") : t("practice")), ...(scope.views?.length ? [`${translate ? t("views") : "Views"}: ${scope.views.join(", ")}`] : [])].join(" · ");
 }
 
 /** Window-bubble fallback only; never an independent low-level plugin listener. */

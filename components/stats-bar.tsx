@@ -156,7 +156,7 @@ export function StatsBar({
 								<p>{t("claudeCodeWindow")}</p>
 							)}
 							<div className="flex justify-between gap-2">
-								<span>{subscription ? "Usage" : "Total cost"}</span>
+								<span>{subscription ? t("usage") : t("totalCost")}</span>
 								<span className="tabular-nums text-card-foreground">{costLabel}</span>
 							</div>
 							{cacheHitRate !== null && (

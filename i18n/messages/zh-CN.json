@@ -170,7 +170,17 @@
 		"tracesBody": "该会话的主题、连线与事件也会从图谱中移除。其他会话或导入笔记同样涵盖的主题会保留；仅由该会话创建的主题将被彻底移除。",
 		"tryAgain": "重试",
 		"cancel": "取消",
-		"delete": "删除"
+		"delete": "删除",
+		"abortTurnTitle": "中止本轮？",
+		"abortTurnLine": "已产生的部分回答会保留在对话记录中。",
+		"abortAction": "中止",
+		"dismissQuestionTitle": "忽略此问题？",
+		"dismissQuestionLine": "将跳过 —— 教师会继续后续内容。",
+		"dismissAction": "忽略",
+		"discardProblemTitle": "放弃此题目？",
+		"discardProblemLine": "题目将被丢弃 —— 不会显示解答。",
+		"discardAction": "放弃",
+		"workingTurnStops": " 正在运行的回合也会停止。"
 	},
 	"activity": {
 		"totalRunningCost": "累计运行成本（估算）",
@@ -192,14 +202,17 @@
 			"running": "进行中",
 			"extracting": "提取中",
 			"idle": "空闲"
-		}
+		},
+		"cost": "花费"
 	},
 	"stats": {
 		"contextLastCall": "上下文（上次调用）",
 		"claudeCodeWindow": "窗口由 Claude Code 上报；因自动压缩可能更小。",
 		"cacheHitRate": "缓存命中率",
 		"manageChatGptUsage": "管理 ChatGPT 用量",
-		"unpricedTurns": "未计价轮次"
+		"unpricedTurns": "未计价回合",
+		"usage": "用量",
+		"totalCost": "总花费"
 	},
 	"answeredCard": {
 		"answeredDontKnow": "已回答“我不知道”。",
@@ -214,22 +227,24 @@
 		"problem": "题目",
 		"workHerePlaceholder": "在此作答，把思路说出来。",
 		"compactingSession": "正在压缩会话…",
-		"enterSubmits": "↵ 提交 · ⇧↵ 换行"
+		"enterSubmits": "↵ 提交 · ⇧↵ 换行",
+		"submitThinking": "提交思考",
+		"submit": "提交"
 	},
 	"chains": {
 		"addFolder": "新建文件夹",
 		"searchNodesPlaceholder": "搜索节点…",
 		"searchNodes": "搜索节点",
-		"closeChains": "关闭链路视图",
+		"closeChains": "关闭推理链视图",
 		"deleteSources": "删除选中的来源与文件夹",
-		"counts": "{chains} 条链路 · {nodes} 个节点",
+		"counts": "{chains} 条推理链 · {nodes} 个节点",
 		"colName": "名称",
 		"colProps": "属性",
 		"colCreated": "创建时间",
-		"selectionSummary": "{nodes} 个节点 → {chains} 条链路",
+		"selectionSummary": "{nodes} 个节点 → {chains} 条推理链",
 		"unlabeled": "未命名",
 		"notesBadge": "笔记",
-		"noMatchingChains": "没有匹配的链路。"
+		"noMatchingChains": "没有匹配的推理链。"
 	},
 	"sourceTree": {
 		"folderNamePlaceholder": "文件夹名称",
@@ -272,7 +287,7 @@
 		"sessions": "会话",
 		"noSessionsRecorded": "尚未记录任何会话。",
 		"blur": "模糊",
-		"chainsButton": "链路"
+		"chainsButton": "推理链"
 	},
 	"plan": {
 		"planDiagram": "计划图",
@@ -291,7 +306,11 @@
 		"submittedImage": "已提交的图片",
 		"dragPanScrollZoom": "拖动平移 · 滚轮缩放",
 		"zoomOut": "缩小",
-		"zoomIn": "放大"
+		"zoomIn": "放大",
+		"image": "图片",
+		"diagram": "图表",
+		"fitImage": "图片适应窗口",
+		"fitDiagram": "图表适应窗口"
 	},
 	"coverage": {
 		"unmappedHint": "本次会话还有多少内容尚未映射",
@@ -335,7 +354,8 @@
 		"hintRung": "提示层级",
 		"missClass": "错误类型",
 		"retest": "重测",
-		"yourThinking": "你的思考"
+		"yourThinking": "你的思考",
+		"mode": "模式"
 	},
 	"pluginQuestionDock": {
 		"preparingQuestion": "正在准备题目…",
@@ -363,7 +383,10 @@
 		"submitAnswer": "提交答案",
 		"compactingSession": "正在压缩会话…",
 		"enterSubmits": "↵ 提交 · ⇧↵ 换行",
-		"probeAssessment": "探测评估"
+		"probeAssessment": "探测评估",
+		"explainLabel": "讲解",
+		"questionLabel": "问题",
+		"idk": "我不知道"
 	},
 	"citationComment": {
 		"commentAria": "为选中的文字添加评论",
@@ -380,7 +403,9 @@
 	"pluginView": {
 		"pluginSettings": "插件设置",
 		"loadingPlugin": "正在加载插件…",
-		"backTo": "返回"
+		"backTo": "返回",
+		"pluginDisabled": "此插件已禁用。",
+		"viewUnavailable": "此插件视图不可用。"
 	},
 	"attachFiles": {
 		"attachFiles": "附加文件",
@@ -391,7 +416,7 @@
 		"startSessionToLearn": "开始一个会话，即可着手学习。",
 		"attachMaterial": "用回形针附加你的材料，或直接拖放。",
 		"everyReasoningChain": "所有推理链",
-		"chainsButton": "链路"
+		"chainsButton": "推理链"
 	},
 	"sideThread": {
 		"showQuotedText": "显示所引用的教师原文",
@@ -402,7 +427,18 @@
 		"close": "关闭",
 		"stopped": "已停止",
 		"answering": "正在回答",
-		"retryAnswer": "重试回答"
+		"retryAnswer": "重试回答",
+		"askFollowUp": "继续追问…",
+		"askSideQuestion": "提一个侧边问题…",
+		"dockSideChat": "停靠侧边对话",
+		"floatSideChat": "浮动侧边对话",
+		"pinToSide": "固定到侧边",
+		"unpinToFloat": "取消固定以浮动",
+		"stopSideDictation": "停止侧边语音输入",
+		"startSideDictation": "开始侧边语音输入",
+		"dictateSideQuestion": "用语音输入侧边问题",
+		"stopSideAnswer": "停止侧边回答",
+		"sendSideQuestion": "发送侧边问题"
 	},
 	"dictation": {
 		"stopDictationHint": "停止语音输入（Esc）",
@@ -419,7 +455,8 @@
 	},
 	"pluginModelPicker": {
 		"modelSelector": "模型选择",
-		"thinking": "思考"
+		"thinking": "思考",
+		"noThinkingLevels": "没有可用的思考等级。"
 	},
 	"pluginProblemDock": {
 		"preparingProblem": "正在准备题目…",
@@ -449,7 +486,9 @@
 		"levelsFooter": "此模型实际支持的思考等级"
 	},
 	"pluginQuestionPart": {
-		"questionDismissed": "题目已忽略"
+		"questionDismissed": "题目已忽略",
+		"questionUnavailable": "题目不可用",
+		"preparingQuestion": "正在准备题目…"
 	},
 	"pluginSurface": {
 		"close": "关闭"
@@ -476,7 +515,10 @@
 		"loadingModels": "正在加载模型…",
 		"catalogFailed": "模型目录加载失败。请检查网络连接后重试。",
 		"retry": "重试",
-		"close": "关闭"
+		"close": "关闭",
+		"pickProvider": "选择服务提供商…",
+		"saveKey": "保存密钥",
+		"saveModels": "保存模型"
 	},
 	"dictationLang": {
 		"language": "语言",
@@ -591,7 +633,9 @@
 		"cancel": "取消",
 		"delete": "删除",
 		"saving": "保存中…",
-		"saveLimits": "保存限制"
+		"saveLimits": "保存限制",
+		"apiKeyMissing": "API 密钥缺失",
+		"leaveBlankKeepKey": "留空则保留当前有效密钥"
 	},
 	"settingsAppearance": {
 		"typography": "排版",
@@ -606,7 +650,7 @@
 		"extractionHint": "关闭 = 知识图谱停止增长",
 		"extractionEnabled": "提取已启用",
 		"graphRendering": "图谱渲染",
-		"graphRenderingHint": "关闭 = 主页显示链路视图",
+		"graphRenderingHint": "关闭 = 主页显示推理链视图",
 		"graphRenderingEnabled": "图谱渲染已启用",
 		"chunkBudget": "提取分块预算",
 		"colorsHeading": "配色",
@@ -654,7 +698,7 @@
 		"plugin": {
 			"flashcards": {
 				"name": "记忆卡片",
-				"description": "从你的知识图谱生成事实回忆提示，并用 FSRS-6 安排复习。生成过程使用你配置的模型，可能产生费用。仅支持原生应用，不集成 Anki。"
+				"description": "从你的知识图谱生成事实回忆卡片，并用 FSRS-6 安排复习。生成过程使用你配置的模型，可能产生费用。仅支持原生应用，不集成 Anki。"
 			},
 			"coding-questions": {
 				"name": "代码练习",
@@ -694,7 +738,9 @@
 		"checkFailed": "无法检查更新，请稍后再试。",
 		"downloadingAria": "正在下载更新",
 		"checkingAria": "正在检查更新",
-		"autoUpdateAria": "自动更新"
+		"autoUpdateAria": "自动更新",
+		"downloadingUpdate": "正在下载更新",
+		"checkingUpdates": "正在检查更新"
 	},
 	"settingsKeyboard": {
 		"keyboard": "键盘",
@@ -751,7 +797,9 @@
 		"noProvidersMatch": "没有匹配的提供商。",
 		"searchFonts": "搜索字体…",
 		"loadingFonts": "正在加载字体…",
-		"noThinkingLevels": "没有可用的思考等级。"
+		"noThinkingLevels": "没有可用的思考等级。",
+		"priceLabel": "每百万 token 输入/输出价格（美元）",
+		"priceUnavailable": "价格未知"
 	},
 	"settingsClaudeCode": {
 		"installHint": "安装并登录 Claude Code",
@@ -776,7 +824,9 @@
 		"continue": "继续",
 		"retry": "重试",
 		"signInAgain": "重新登录",
-		"cancel": "取消"
+		"cancel": "取消",
+		"desktopOnly": "订阅登录需要桌面应用的私有服务器连接。此处仍可使用 API 密钥连接。",
+		"backgroundHint": "允许 LearnHarness 的辅助代理与自动跟进使用此连接。"
 	},
 	"settingsChatgpt": {
 		"chatgpt": "ChatGPT",
@@ -799,7 +849,11 @@
 		"enableBackground": "启用后台使用",
 		"desktopOnly": "ChatGPT 登录仅桌面应用可用。此处仍可使用 API 密钥连接。",
 		"manageEllipsis": "管理…",
-		"connect": "连接"
+		"connect": "连接",
+		"disconnectAccountTitle": "断开账户？",
+		"disconnectAccountBody": "这将从本机移除已保存的账户及其凭据。",
+		"disconnectAccountBodyWeb": "这将从运行 LearnHarness 的机器上移除已保存的账户及其凭据。",
+		"revocationWarning": "账户已在本地断开，但无法确认远端吊销是否成功。"
 	},
 	"phase": {
 		"probe": "探测中",
@@ -842,7 +896,9 @@
 		"jobFailed": "后台任务恢复/投递失败",
 		"research": "调研",
 		"inputStreaming": "输入（流式）",
-		"taskDetails": "任务详情"
+		"taskDetails": "任务详情",
+		"snapshotLoadFailed": "图片快照加载失败。",
+		"loadingImage": "正在加载图片…"
 	},
 	"message": {
 		"prevBranch": "上一个分支",
@@ -886,5 +942,15 @@
 		"practiceDescription": "从知识图谱中选择节点、描述你想练习的内容，或带上你自己的题目。",
 		"learnPlaceholder": "你想学习什么？",
 		"practicePlaceholder": "你想练习什么？"
+	},
+	"citationChip": {
+		"editComment": "编辑引用评论",
+		"addComment": "为引用添加评论"
+	},
+	"pluginShortcuts": {
+		"teaching": "教学",
+		"practice": "练习",
+		"appWide": "全应用",
+		"views": "视图"
 	}
 }

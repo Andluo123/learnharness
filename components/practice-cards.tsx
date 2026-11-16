@@ -262,7 +262,7 @@ function MetadataPopover({
 						className="w-80 max-w-[calc(100vw-1rem)] rounded-xl border bg-card p-4 text-left shadow-lg"
 					>
 				<dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs">
-						<dt className="text-muted-foreground">Mode</dt>
+						<dt className="text-muted-foreground">{t("mode")}</dt>
 						<dd className="font-mono">{mode || "—"}</dd>
 						<dt className="text-muted-foreground">{t("targets")}</dt>
 						<dd className="font-mono">

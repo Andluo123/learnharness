@@ -210,7 +210,7 @@ export function PracticeDock({ viewReader, problemCallId, input, expanded, onExp
 						onClick={() => submit()}
 						className="ml-auto h-9 rounded-[6px] px-3.5 text-sm font-medium"
 					>
-						{customInput ? "Submit" : "Submit thinking"}
+						{customInput ? t("submit") : t("submitThinking")}
 					</Button>
 				</div>
 			</div>

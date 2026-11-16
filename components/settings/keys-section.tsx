@@ -711,7 +711,7 @@ function CustomEndpointRow({
 }) {
 	const t = useT("settingsKeys");
 	const count = status.models.length;
-	const line = `${status.baseUrl} · ${count} model${count === 1 ? "" : "s"} · ${status.authMode === "keyless" ? "keyless" : status.keyPresent ? "API key" : "API key missing"}`;
+	const line = `${status.baseUrl} · ${count} model${count === 1 ? "" : "s"} · ${status.authMode === "keyless" ? "keyless" : status.keyPresent ? "API key" : t("apiKeyMissing")}`;
 	return (
 		<div data-testid="custom-endpoint-row">
 			<button
@@ -942,7 +942,7 @@ function CustomEndpointEditor({
 						setKeyTouched(true);
 						if (!e.target.value.trim()) setAuthMode("keyless");
 					}}
-					placeholder={keyPresent ? "Leave blank to keep effective key" : "API key"}
+					placeholder={keyPresent ? t("leaveBlankKeepKey") : "API key"}
 					aria-label={t("customApiKey")}
 					data-testid="custom-key-input"
 					disabled={busy || pinsBusy || keySource === "env"}
