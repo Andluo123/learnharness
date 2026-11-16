@@ -52,27 +52,28 @@ export const AGNES_MODELS: readonly AgnesModelSpec[] = [
 ];
 
 /**
- * Agnes's OpenAI-compatibility quirks, pinned explicitly.
+ * Agnes's OpenAI-compatibility flags.
  *
- * pi-ai's detectCompat() decides these from a provider/base-URL allowlist.
- * Agnes is not on that list, so the defaults were used — and the endpoint
- * rejected every tool round with:
+ * MEASURED against the live endpoint (2026-11-16), not inferred:
  *
- *   400 ... missing field `tool_call_id` at line 1 column 43951 ...
+ *   tool message WITH name            -> 200
+ *   tool message WITHOUT name         -> 200   <-- name is NOT required
+ *   tool message missing tool_call_id -> 400 "missing field `tool_call_id`"
  *
- * The cause: pi-ai only stamps the `name` field on a role:"tool" message
- * when compat.requiresToolResultName is true, but Agnes validates against a
- * schema that REQUIRES it alongside tool_call_id.
+ * The 400 that started this investigation is therefore NOT about `name`.
+ * pi-ai always emits tool_call_id (openai-completions.js builds it from
+ * toolMsg.toolCallId), so the real failure is an upstream toolCallId that
+ * arrived undefined — JSON.stringify then DROPS the key and the endpoint
+ * rejects the message. requiresToolResultName stays false: we do not ship a
+ * field the endpoint never asked for.
  *
- * Model.compat is the documented override seam, so the provider states its
- * needs here instead of being inferred:
- *  - requiresToolResultName: the 400 above (the field Agnes demands)
- *  - maxTokensField "max_tokens": the endpoint documents max_tokens
+ * The rest is the endpoint's documented behaviour:
+ *  - maxTokensField "max_tokens": the docs specify max_tokens
  *  - supportsReasoningEffort: Agnes documents a Thinking mode
  *  - supportsStore/DeveloperRole off: plain Chat Completions, no /responses
  */
 const AGNES_COMPAT = {
-	requiresToolResultName: true,
+	requiresToolResultName: false,
 	requiresAssistantAfterToolResult: false,
 	requiresThinkingAsText: false,
 	requiresReasoningContentOnAssistantMessages: false,

@@ -100,6 +100,7 @@ export function ReadingThinkingField({
 					// (and the universal ⌘/Ctrl+Enter) opens it — the dictation
 					// flush lands HERE first via the caller's finishDictation,
 					// so spoken thoughts ride along. Shift+Enter stays a newline.
+		if (e.nativeEvent?.isComposing || e.nativeEvent?.keyCode === 229) return;
 					if (e.key === "Enter" && onOpen !== undefined && (!e.shiftKey || e.metaKey || e.ctrlKey)) {
 						e.preventDefault();
 						e.stopPropagation();
@@ -109,6 +110,7 @@ export function ReadingThinkingField({
 					// The dock's dumping convention: plain Enter is a newline.
 					// No submit button here — the check's own submit is this
 					// field's carrier — so ⌘↵ just blurs.
+		if (e.nativeEvent?.isComposing || e.nativeEvent?.keyCode === 229) return;
 					if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
 						e.preventDefault();
 						e.currentTarget.blur();

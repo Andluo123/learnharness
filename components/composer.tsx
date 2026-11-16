@@ -191,6 +191,12 @@ export function Composer({
 					// Chat convention: Enter sends, Shift+Enter is a newline.
 					// ⌘/Ctrl+Enter also sends — the universal submit shortcut
 					// across every input in the app (thinking field, answers).
+					// IME SAFETY (zh-CN wave): while a Chinese/Japanese/Korean input
+					// method is composing, Enter CONFIRMS the candidate and must never
+					// submit. Two signals, both needed in practice: `isComposing`
+					// (standard) and `keyCode === 229` (the legacy Windows/Android
+					// path — the same guard path-input.tsx already applies).
+					if (e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) return;
 					if (e.key === "Enter" && (e.metaKey || e.ctrlKey || !e.shiftKey)) {
 						e.preventDefault();
 						act();

@@ -185,6 +185,7 @@ export function PracticeDock({ viewReader, problemCallId, input, expanded, onExp
 						}
 						// Enter SENDS — the single lane (owner round 2, 2026-10-05);
 						// Shift+Enter is the newline, ⌘/Ctrl+Enter the chord too.
+		if (e.nativeEvent?.isComposing || e.nativeEvent?.keyCode === 229) return;
 						if (e.key === "Enter" && (!e.shiftKey || e.metaKey || e.ctrlKey)) {
 							e.preventDefault();
 							submit();

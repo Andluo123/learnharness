@@ -272,6 +272,7 @@ export function Home({
 								dictation.cancel();
 								return;
 							}
+			if (e.nativeEvent?.isComposing || e.nativeEvent?.keyCode === 229) return;
 							if (e.key === "Enter" && !e.shiftKey) {
 								e.preventDefault();
 								void start();
