@@ -34,7 +34,9 @@ const ZH: Record<string, string> = {
 	"Redo": "重做",
 	"Close": "关闭",
 	"Problem": "题目",
-	"Export percentage (default 50%). Applied before the fixed 2000 × 2000 pixel cap. Does not change the drawing surface.": "导出百分比（默认 50%）。在固定的 2000 × 2000 像素上限之前应用。不改变绘图表面。"
+	"Export percentage (default 50%). Applied before the fixed 2000 × 2000 pixel cap. Does not change the drawing surface.": "导出百分比（默认 50%）。在固定的 2000 × 2000 像素上限之前应用。不改变绘图表面。",
+	"Drawing sheet": "绘图画布",
+	"Draw with a mouse or pen; pan with Hand or a right mouse drag": "用鼠标或手写笔绘制；使用「平移」工具或按住右键拖动来平移"
 };;
 
 /** The active UI language as the host declares it. */

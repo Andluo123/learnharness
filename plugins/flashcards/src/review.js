@@ -146,7 +146,9 @@ export function createReviewController({ ctx, signal, button, markdown, onRated 
           if (pending.aborted) return;
           const cs = reset();
           if (!result.ticket) {
-            footer.append(el("p", "fc-review-meta", result.nextDue ? `No cards ready. Next due ${new Date(result.nextDue).toLocaleString()}.` : "No cards due in this selection."));
+            footer.append(el("p", "fc-review-meta", result.nextDue
+			? t("No cards ready. Next due {when}.").replace("{when}", new Date(result.nextDue).toLocaleString())
+			: t("No cards due in this selection.")));
             if (result.nextDue) {
               const arm = () => {
                 if (cs.aborted) return;

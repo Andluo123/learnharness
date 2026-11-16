@@ -7,6 +7,7 @@ import { referenceBounds, viewOrigin } from "./geometry.ts";
 import { paintInk, paintSegment, type Point, type Stroke } from "./strokes.ts";
 import type { SessionSheet, Sheets } from "./state.ts";
 import { appPalette } from "./theme.ts";
+import { t } from "./i18n.ts";
 
 export interface MountedSheet {
   flush(): void;
@@ -24,12 +25,12 @@ export function mountSheet(container: HTMLElement, ctx: PluginFrontendContext, s
   toolbar.setAttribute("role", "group");
   const viewport = document.createElement("div"); viewport.className = "drawing-pad-viewport";
   viewport.tabIndex = -1; viewport.dataset.pluginInitialFocus = "";
-  viewport.setAttribute("role", "group"); viewport.setAttribute("aria-label", "Drawing sheet");
+  viewport.setAttribute("role", "group"); viewport.setAttribute("aria-label", t("Drawing sheet"));
   const paper = document.createElement("div"); paper.className = "drawing-pad-paper";
   const background = document.createElement("img"); background.alt = "Frozen question reference";
   background.className = "drawing-pad-background"; background.draggable = false;
   const canvas = document.createElement("canvas"); canvas.className = "drawing-pad-ink";
-  canvas.setAttribute("aria-label", "Draw with a mouse or pen; pan with Hand or a right mouse drag");
+  canvas.setAttribute("aria-label", t("Draw with a mouse or pen; pan with Hand or a right mouse drag"));
   const status = document.createElement("div"); status.className = "drawing-pad-status"; status.setAttribute("role", "status");
   paper.append(background, canvas); viewport.append(paper, status); root.append(toolbar, viewport); container.append(root);
   const buttons: PluginWidgetHandle<PluginButtonProps>[] = [];

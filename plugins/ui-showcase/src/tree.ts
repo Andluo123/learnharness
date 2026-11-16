@@ -29,7 +29,7 @@ export function mountTreeDemo(ui: PluginUi, body: HTMLElement, life: Scope): voi
     root.append(element("div", "Draft note", "ui-showcase-label font-ui text-xs"));
     const input = element("input", undefined, "font-ui text-sm");
     input.type = "text";
-    input.setAttribute("aria-label", "Directory draft");
+    input.setAttribute("aria-label", t("Directory draft"));
     input.value = draft;
     const change = () => {
       if (life.signal.aborted || content.signal.aborted) return;

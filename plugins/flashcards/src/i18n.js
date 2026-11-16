@@ -86,7 +86,25 @@ const ZH = {
 	"{count} selected": "已选 {count} 项",
 	"Name": "名称",
 	"Due": "到期",
-	"notes": "笔记"
+	"notes": "笔记",
+	"No cards ready. Next due {when}.": "没有到期的卡片。下次到期：{when}。",
+	"Start": "开始",
+	"Question (Markdown)": "问题（Markdown）",
+	"Answer (Markdown)": "答案（Markdown）",
+	"Edit cue": "编辑提示",
+	"Delete flashcards?": "删除记忆卡片？",
+	"Edit": "编辑",
+	"Deck memberships": "牌组成员关系",
+	"Memberships share the same cues, schedule, and history. Keep at least one deck.": "成员关系共享相同的提示、复习计划与历史。至少保留一个牌组。",
+	"Save memberships": "保存成员关系",
+	"Delete deck…": "删除牌组…",
+	"Choose a file for flashcards": "选择记忆卡片文件",
+	"Decks": "牌组",
+	"No flashcards were generated from this file.": "未能从该文件生成任何记忆卡片。",
+	"Cancel generation": "取消生成",
+	"Retry failed…": "重试失败项…",
+	"Retry saving": "重试保存",
+	"Chunk {id}: {error}": "分块 {id}：{error}"
 };;
 
 /** The active UI language as the host declares it. */

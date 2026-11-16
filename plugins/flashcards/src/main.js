@@ -112,7 +112,7 @@ export function activate(ctx) {
       const requestId = uuid();
       dialog(t('Generate flashcards'), signal, ({ root, actions, signal: ds, run, close }) => {
         root.append(el('p', 'fc-muted', generationSummary(`${preflight.propositionCount} propositions`, preflight.estimatedTokens)));
-        button(actions, 'Start', run(async () => { if (await mutate('start-generation', { preflightId: preflight.id, requestId }, ds)) close(); }), ds, { variant: 'default' });
+        button(actions, t('Start'), run(async () => { if (await mutate('start-generation', { preflightId: preflight.id, requestId }, ds)) close(); }), ds, { variant: 'default' });
       });
     } catch (error) { if (!signal.aborted) showError(message(error)); }
   }
@@ -121,7 +121,7 @@ export function activate(ctx) {
     dialog(t('Generate flashcards'), signal, ({ root, actions, signal: ds, run, close }) => {
       root.append(el('p', 'fc-muted fc-file-name', generationSummary(preflight.name, preflight.estimatedTokens)));
       for (const notice of notices) root.append(el('p', 'fc-muted', notice));
-      button(actions, 'Start', run(async () => {
+      button(actions, t('Start'), run(async () => {
         const state = await ctx.call('start-generation', { preflightId: preflight.id, requestId });
         if (ds.aborted) return;
         publish(state); close(); onStarted(state);
@@ -130,16 +130,16 @@ export function activate(ctx) {
   }
   function cueFields(root, cue = {}) {
     return {
-      question: field(root, 'Question (Markdown)', cue.question, 'textarea'),
-      answer: field(root, 'Answer (Markdown)', cue.answer, 'textarea'),
+      question: field(root, t('Question (Markdown)'), cue.question, 'textarea'),
+      answer: field(root, t('Answer (Markdown)'), cue.answer, 'textarea'),
     };
   }
   function createCard(deck, proposition, signal, onCreated) {
     const requestId = uuid();
     dialog(proposition ? t('Add cue') : t('Create card'), signal, ({ root, actions, signal: ds, run, close }) => {
-      const name = proposition ? null : field(root, 'Name', '');
+      const name = proposition ? null : field(root, t('Name'), '');
       const { question, answer } = cueFields(root);
-      button(actions, 'Save', run(async () => {
+      button(actions, t('Save'), run(async () => {
         const created = await ctx.call(proposition ? 'create-cue' : 'create-card', {
           ...(proposition ? { propositionId: proposition.id } : { deckId: deck.id, name: name.value }),
           question: question.value, answer: answer.value, requestId,
@@ -150,9 +150,9 @@ export function activate(ctx) {
     });
   }
   function editCue(proposition, cue, signal) {
-    dialog('Edit cue', signal, ({ root, actions, signal: ds, run, close }) => {
+    dialog(t('Edit cue'), signal, ({ root, actions, signal: ds, run, close }) => {
       const { question, answer } = cueFields(root, cue);
-      button(actions, 'Save', run(async () => { if (await mutate('save-cue', { propositionId: proposition.id, cueId: cue.id, question: question.value, answer: answer.value, version: proposition.version }, ds)) close(); }), ds, { variant: 'default' });
+      button(actions, t('Save'), run(async () => { if (await mutate('save-cue', { propositionId: proposition.id, cueId: cue.id, question: question.value, answer: answer.value, version: proposition.version }, ds)) close(); }), ds, { variant: 'default' });
     });
   }
   function deleteContents(scope, signal) {
@@ -163,14 +163,14 @@ export function activate(ctx) {
     const selected = new Set(scope.cueIds ?? []);
     const count = state.propositions.reduce((n, p) => n + p.cues.filter(c => !c.deleted && (whole.has(p.id) || selected.has(c.id))).length, 0);
     const request = { ...structuredClone(scope), revision: state.revision, requestId: uuid() };
-    dialog('Delete flashcards?', signal, ({ root, actions, signal: ds, run, close }) => {
+    dialog(t('Delete flashcards?'), signal, ({ root, actions, signal: ds, run, close }) => {
       const description = el('div', 'fc-muted fc-delete-description'); root.append(description);
       markdown(description, `${count} ${count === 1 ? 'cue' : 'cues'} will be deleted from every deck. Targets with no remaining cues and their schedules will be removed. Past review statistics are kept. Learning-graph data is unchanged.`, ds);
       const label = el('label', 'fc-check'), emptyDecks = el('input'); emptyDecks.type = 'checkbox'; emptyDecks.checked = true;
       label.append(emptyDecks, document.createTextNode('Delete empty decks too')); root.append(label);
       const note = el('p', 'fc-muted'); root.append(note);
       let submitted;
-      const confirm = button(actions, 'Delete', run(async () => {
+      const confirm = button(actions, t('Delete'), run(async () => {
         submitted ??= { ...request, deleteEmptyDecks: emptyDecks.checked };
         emptyDecks.disabled = true;
         if (await mutate('delete-content', submitted, ds)) close();
@@ -191,20 +191,20 @@ export function activate(ctx) {
       markdown(card, cue.question, ds); markdown(answer, cue.answer, ds);
       card.append(answer); root.append(card);
       if (!archive) {
-        button(actions, 'Edit', () => { close(); editCue(proposition, cue, signal); }, ds);
-        const deletion = button(actions, 'Delete', () => { close(); deleteCue(proposition, cue, signal); }, ds, { variant: 'destructive' });
+        button(actions, t('Edit'), () => { close(); editCue(proposition, cue, signal); }, ds);
+        const deletion = button(actions, t('Delete'), () => { close(); deleteCue(proposition, cue, signal); }, ds, { variant: 'destructive' });
         observe(current => { if (!current) return; const blocked = !!activeBatch(current.batch); deletion.update({ disabled: blocked, title: blocked ? deletionBlocked : undefined }); }, ds);
       }
     }, 'Close');
   }
   function memberships(proposition, state, signal) {
-    dialog('Deck memberships', signal, ({ root, actions, signal: ds, run, close }) => {
-      root.append(el('p', 'fc-muted', 'Memberships share the same cues, schedule, and history. Keep at least one deck.'));
+    dialog(t('Deck memberships'), signal, ({ root, actions, signal: ds, run, close }) => {
+      root.append(el('p', 'fc-muted', t('Memberships share the same cues, schedule, and history. Keep at least one deck.')));
       const choices = state.decks.map(deck => {
         const label = el('label', 'fc-check'), input = el('input'); input.type = 'checkbox'; input.checked = proposition.memberships.includes(deck.id);
         label.append(input, document.createTextNode(deck.name)); root.append(label); return { id: deck.id, input };
       });
-      button(actions, 'Save memberships', run(async () => {
+      button(actions, t('Save memberships'), run(async () => {
         const deckIds = choices.filter(choice => choice.input.checked).map(choice => choice.id);
         if (!deckIds.length) throw new Error('Choose at least one deck.');
         if (await mutate('set-memberships', { propositionId: proposition.id, deckIds }, ds)) close();
@@ -215,13 +215,13 @@ export function activate(ctx) {
     dialog(deck ? t('Deck settings') : t('Create deck'), signal, ({ root, actions, signal: ds, run, close }) => {
       const name = field(root, t('Deck name'), deck?.name || ''), limit = deck ? field(root, t('New propositions per day'), deck.newLimit, 'number') : null;
       if (limit) { limit.min = '0'; limit.step = '1'; }
-      button(actions, deck ? 'Save' : 'Create', run(async () => {
+      button(actions, deck ? t('Save') : 'Create', run(async () => {
         if (!name.value.trim()) throw new Error('Enter a deck name.');
         const input = deck ? { id: deck.id, name: name.value, newLimit: Number(limit.value) } : { name: name.value };
         if (await mutate(deck ? 'save-deck' : 'create-deck', input, ds)) close();
       }), ds, { variant: 'default' });
       if (deck) {
-        const deletion = button(actions, 'Delete deck…', () => { close(); deleteContents({ deckIds: [deck.id] }, signal); }, ds, { variant: 'destructive' });
+        const deletion = button(actions, t('Delete deck…'), () => { close(); deleteContents({ deckIds: [deck.id] }, signal); }, ds, { variant: 'destructive' });
         observe(current => { if (!current) return; const blocked = !!activeBatch(current.batch); deletion.update({ disabled: blocked, title: blocked ? deletionBlocked : undefined }); }, ds);
       }
     });
@@ -237,7 +237,7 @@ export function activate(ctx) {
     const practice = scope => review.openPractice(buildPracticeCards(snapshot, scope));
     const pickerSlot = el('div', 'fc-picker'), fileInput = el('input'), fileStatus = el('p', 'fc-muted fc-file-status');
     const canConvertFiles = typeof ctx.documents?.toMarkdown === 'function';
-    fileInput.type = 'file'; fileInput.multiple = false; fileInput.hidden = true; fileInput.setAttribute('aria-label', 'Choose a file for flashcards');
+    fileInput.type = 'file'; fileInput.multiple = false; fileInput.hidden = true; fileInput.setAttribute('aria-label', t('Choose a file for flashcards'));
     fileStatus.setAttribute('role', 'status');
     let generationIds = [], generationButton, fileButton, filePreparing = false, cleanupMessage = null;
     function updateGenerationButtons() {
@@ -253,7 +253,7 @@ export function activate(ctx) {
     fileButton = button(toolbar, t('Generate from file…'), () => fileInput.click(), signal, { disabled: !canConvertFiles, title: canConvertFiles ? undefined : 'Update LearnHarness to generate flashcards from files.' });
     toolbar.append(fileInput);
     const deckPanel = el('section', 'fc-deck-panel'), deckToolbar = el('div', 'fc-deck-toolbar');
-    deckPanel.setAttribute('aria-label', 'Decks');
+    deckPanel.setAttribute('aria-label', t('Decks'));
     const searchLabel = el('label', 'fc-search'), search = el('input', 'fc-input');
     search.type = 'search'; search.placeholder = t('Search decks, propositions, and cues'); search.setAttribute('aria-label', 'Search flashcards'); searchLabel.append(search);
     const batchArea = el('div'), selectionActions = el('div', 'fc-actions fc-selection-actions'), selectionCount = el('span', 'fc-muted'), treeSlot = el('div', 'fc-tree');
@@ -335,13 +335,13 @@ export function activate(ctx) {
       const bs = batchScope.signal, panel = el('section', 'fc-batch'); batchArea.append(panel);
       if (batch.kind === 'file') panel.append(el('p', 'fc-muted fc-file-name', batch.name));
       panel.append(el('p', '', `Generation: ${batch.status} · ${batch.completed}/${batch.total} chunks · ${batch.added} cues added`));
-      if (emptyFileResult) panel.append(el('p', '', 'No flashcards were generated from this file.'));
-      for (const chunk of batch.chunks.filter(chunk => chunk.error)) panel.append(el('p', 'fc-error', `Chunk ${chunk.id}: ${chunk.error}`));
+      if (emptyFileResult) panel.append(el('p', '', t('No flashcards were generated from this file.')));
+      for (const chunk of batch.chunks.filter(chunk => chunk.error)) panel.append(el('p', 'fc-error', t('Chunk {id}: {error}').replace('{id}', String(chunk.id)).replace('{error}', String(chunk.error))));
       if (batch.error) panel.append(el('p', 'fc-error', batch.error));
       const controls = el('div', 'fc-actions'); panel.append(controls);
-      if (activeBatch(batch)) button(controls, 'Cancel generation', guarded(() => mutate('cancel-generation', { batchId: batch.id }, signal)), bs);
-      if (!activeBatch(batch) && (batch.kind === 'file' ? batch.failedChunkIds?.length : batch.failedTargetIds?.length)) button(controls, 'Retry failed…', () => batch.kind === 'file' ? retryFileGeneration(batch.id) : confirmGeneration(batch.failedTargetIds, signal, showError), bs);
-      if (batch.error) button(controls, 'Retry saving', guarded(() => mutate('resume-results', {}, signal)), bs);
+      if (activeBatch(batch)) button(controls, t('Cancel generation'), guarded(() => mutate('cancel-generation', { batchId: batch.id }, signal)), bs);
+      if (!activeBatch(batch) && (batch.kind === 'file' ? batch.failedChunkIds?.length : batch.failedTargetIds?.length)) button(controls, t('Retry failed…'), () => batch.kind === 'file' ? retryFileGeneration(batch.id) : confirmGeneration(batch.failedTargetIds, signal, showError), bs);
+      if (batch.error) button(controls, t('Retry saving'), guarded(() => mutate('resume-results', {}, signal)), bs);
     }
     search.addEventListener('input', () => { if (snapshot) tree.update(snapshot, search.value); }, { signal });
     observe((state, loadError) => {

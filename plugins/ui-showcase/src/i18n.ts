@@ -55,7 +55,8 @@ const ZH: Record<string, string> = {
 	"Nested UI Showcase surface": "嵌套组件示例库面板",
 	"Enable selection": "启用选择",
 	"Directory example": "目录示例",
-	"UI Showcase": "组件示例库"
+	"UI Showcase": "组件示例库",
+	"Directory draft": "目录草稿"
 };;
 
 /** The active UI language as the host declares it. */
