@@ -38,7 +38,8 @@ describe("resolveSettings", () => {
 
 	it("null record (first boot): non-model knobs land on factory defaults; every model view is EMPTY", () => {
 		const eff = resolveSettings(null);
-		assert.deepEqual(eff.general, { autoUpdate: true });
+		// zh-CN i18n wave: the factory UI language is 简体中文.
+		assert.deepEqual(eff.general, { autoUpdate: true, language: "zh-CN" });
 		assert.deepEqual(eff.agent.tools, {});
 		assert.deepEqual(eff.agent.prompts, {});
 		assert.deepEqual(eff.agent.search, {});

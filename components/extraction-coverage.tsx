@@ -9,6 +9,7 @@ import { formatTokens } from "@/components/usage-format";
 import { Hint } from "@/components/ui/hint";
 import { timeAgo } from "@/components/sidebar";
 import { resolveSettings } from "@/src/core";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * The extraction-coverage surfaces (extraction-UX redesign, owner-locked
@@ -242,6 +243,7 @@ export function ringFill(uncoveredTokens: number, chunkTokens: number): number {
  * threshold/kill-switch re-read live).
  */
 export function CoverageRing({ chatId, refreshKey = 0 }: { chatId: string; refreshKey?: number }) {
+	const t = useT("coverage");
 	const [graph, setGraph] = useState<GraphRead | null>(null);
 	const [coverage, setCoverage] = useState<SessionCoverage | null>(null);
 	const [open, setOpen] = useState(false);
@@ -303,7 +305,7 @@ export function CoverageRing({ chatId, refreshKey = 0 }: { chatId: string; refre
 		<div ref={rootRef} className="lh-no-drag relative shrink-0">
 			<Hint
 				// Trimmed (owner, subtlety round 2026-09-25).
-				label="How much of this session isn't mapped yet"
+				label={t("unmappedHint")}
 				side="bottom"
 			>
 				<button
@@ -363,6 +365,7 @@ export function CoverageRingGlyph({ fill, running }: { fill: number; running: bo
  *  covered/uncovered tokens, message coverage, the threshold, the last
  *  fold's age. */
 export function CoverageRingDetail({ coverage, chunkTokens }: { coverage: SessionCoverage; chunkTokens: number }) {
+	const t = useT("coverage");
 	return (
 		<>
 			<div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -370,38 +373,38 @@ export function CoverageRingDetail({ coverage, chunkTokens }: { coverage: Sessio
 			</div>
 			<div className="flex flex-col gap-1 text-muted-foreground">
 				<div className="flex justify-between gap-2">
-					<span>Uncovered</span>
+					<span>{t("uncovered")}</span>
 					<span className="tabular-nums text-card-foreground">
 						{formatTokens(coverage.uncoveredTokens)} tokens
 					</span>
 				</div>
 				<div className="flex justify-between gap-2">
-					<span>Covered</span>
+					<span>{t("covered")}</span>
 					<span className="tabular-nums text-card-foreground">
 						{formatTokens(coverage.coveredTokens)} tokens
 					</span>
 				</div>
 				<div className="flex justify-between gap-2">
-					<span>Messages</span>
+					<span>{t("messages")}</span>
 					<span className="tabular-nums text-card-foreground">
 						{coverage.coveredCount} / {coverage.totalMessages}
 					</span>
 				</div>
 				<div className="flex justify-between gap-2">
-					<span>Chunk threshold</span>
+					<span>{t("chunkThreshold")}</span>
 					<span className="tabular-nums text-card-foreground">
 						{formatTokens(chunkTokens)} tokens
 					</span>
 				</div>
 				<div className="flex justify-between gap-2">
-					<span>Last extraction</span>
+					<span>{t("lastExtraction")}</span>
 					<span className="tabular-nums text-card-foreground">
 						{coverage.lastFoldedAt ? timeAgo(coverage.lastFoldedAt) : "—"}
 					</span>
 				</div>
 				{coverage.running && (
 					<div className="flex justify-between gap-2" data-testid="coverage-ring-running">
-						<span>Status</span>
+						<span>{t("status")}</span>
 						<span className="text-card-foreground">extracting…</span>
 					</div>
 				)}

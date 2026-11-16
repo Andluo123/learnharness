@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import type { NextConfig } from "next";
 import { MAX_IMPORT_BODY_BYTES } from "./lib/notes-import-limits.ts";
+import withNextIntl from "./i18n/plugin.ts";
 
 const pkg = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as { version: string; homepage: string };
 
@@ -124,4 +125,4 @@ const nextConfig: NextConfig = {
 	],
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

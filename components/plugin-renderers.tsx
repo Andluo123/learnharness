@@ -9,6 +9,7 @@ import { LiveToolCard } from "@/components/artifacts/live-tool-card";
 import { ToolCallCard } from "@/components/artifacts/tool-call-card";
 import { DispatchCard } from "@/components/artifacts/dispatch-card";
 import { JobsContext } from "@/components/jobs-context";
+import { useT } from "@/i18n/use-t.ts";
 
 /** The Markdown dispatch uses this same exclusive built-in language. */
 export const BUILTIN_MERMAID_LANGUAGE = "mermaid";
@@ -67,6 +68,7 @@ export function toolFallbackPart(part: LhViewPart): ArtifactPartProps["part"] {
  * the native dispatch/status card. Custom renderers replace either default body.
  * Disabled, failed, or uninstalled renderers never make native results vanish. */
 export function PluginToolRenderer({ part, fallback: suppliedFallback }: { part: LhViewPart; fallback?: ReactNode }) {
+	const t = useT("pluginRenderers");
 	const { snapshot } = usePlugins();
 	const jobs = useContext(JobsContext);
 	const toolName = part.type.slice("tool-".length);
@@ -90,7 +92,7 @@ export function PluginToolRenderer({ part, fallback: suppliedFallback }: { part:
 		jobs.some(job => job.kind === "plugin" && job.toolCallId === part.toolCallId) ||
 		(ack !== null && typeof ack === "object" && typeof ack.jobId === "string" && ack.dispatched === true)
 	);
-	if (part.pluginQuestion) return <p role="status" className="text-xs text-muted-foreground">Question unavailable</p>;
+	if (part.pluginQuestion) return <p role="status" className="text-xs text-muted-foreground">{t("questionUnavailable")}</p>;
 	const fallback = suppliedFallback ?? (dispatched
 		? <DispatchCard kind="plugin" toolCallId={part.toolCallId ?? ""} />
 		: <ToolCallCard part={toolFallbackPart(part)} />);

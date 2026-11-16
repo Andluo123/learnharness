@@ -14,9 +14,11 @@
 import { useState } from "react";
 import { XIcon } from "lucide-react";
 import { useUpdateState } from "@/components/settings/update-settings.tsx";
+import { useT } from "@/i18n/use-t.ts";
 
 export default function UpdateBanner() {
 	const { state: ready } = useUpdateState();
+	const t = useT("updateBanner");
 	const [dismissedVersion, setDismissedVersion] = useState<string | null>();
 	if (ready?.status !== "downloaded" || ready.version === dismissedVersion) return null;
 	return (
@@ -37,7 +39,7 @@ export default function UpdateBanner() {
 			</button>
 			<button
 				type="button"
-				aria-label="Dismiss update notification"
+				aria-label={t("dismissUpdate")}
 				onClick={() => setDismissedVersion(ready.version)}
 				className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 			>

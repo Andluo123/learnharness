@@ -38,6 +38,7 @@ import { isSearchEngineId, type SearchEngineId } from "./search.ts";
 import { isDictationLanguage, type DictationLanguage } from "./dictation.ts";
 import { parseFileAccessSettings, type FileAccessSettings } from "./file-access.ts";
 import { COLOR_OVERRIDE_KEYS, isThemeId, type AppearanceColorOverrides } from "./themes.ts";
+import { DEFAULT_LOCALE, isAppLocale, type AppLocale } from "../../i18n/config.ts";
 
 /** The schema version this code understands. Bump ONLY for breaking shape
  *  changes (a field renamed/meaning changed); pure additions never bump. */
@@ -340,6 +341,10 @@ export const ROLE_SLOT: Readonly<Record<ModelRole, ModelSlotName>> = {
 export interface GeneralSettings {
 	/** Automatic startup/24h update checks (default ON). Manual checks bypass this. */
 	autoUpdate?: boolean;
+	/** The UI language (zh-CN i18n wave). Absent = factory default (简体中文);
+	 *  one of i18n/config.ts's LOCALES. Drives the <html lang>, every message
+	 *  catalog, and the agent's teaching-language instruction. */
+	language?: AppLocale;
 }
 
 /** One app-wide dictation preference, shared by every composer. */
@@ -538,7 +543,7 @@ export interface FactorySettings {
 export const FACTORY_SETTINGS: FactorySettings = {
 	version: CURRENT_SETTINGS_VERSION,
 	agent: { workerRequestConcurrency: 8 },
-	general: { autoUpdate: true },
+	general: { autoUpdate: true, language: DEFAULT_LOCALE },
 	dictation: { language: "en" },
 	appearance: {
 		theme: "default",
@@ -586,6 +591,9 @@ function sanitizeGeneral(raw: Record<string, unknown>): GeneralSettings {
 	const out: GeneralSettings = {};
 	const autoUpdate = boolOrDrop(raw.autoUpdate);
 	if (autoUpdate !== undefined) out.autoUpdate = autoUpdate;
+	// Language: unknown ids DROP (resolve to factory default), never throw —
+	// the same graceful-degradation discipline as every other known field.
+	if (isAppLocale(raw.language)) out.language = raw.language;
 	return out;
 }
 

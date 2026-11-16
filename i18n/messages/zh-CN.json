@@ -1,0 +1,411 @@
+{
+	"common": {
+		"close": "关闭",
+		"cancel": "取消",
+		"save": "保存",
+		"delete": "删除",
+		"confirm": "确认",
+		"loading": "加载中…",
+		"retry": "重试",
+		"search": "搜索",
+		"settings": "设置",
+		"copy": "复制",
+		"copied": "已复制",
+		"done": "完成",
+		"edit": "编辑",
+		"add": "添加",
+		"remove": "移除",
+		"back": "返回",
+		"next": "下一步",
+		"yes": "是",
+		"no": "否",
+		"ok": "确定",
+		"or": "或",
+		"and": "和",
+		"more": "更多",
+		"less": "收起",
+		"all": "全部",
+		"none": "无"
+	},
+	"app": {
+		"title": "Learning Harness",
+		"description": "一位拥有记忆的教师代理 —— 会话、测验，以及关于你所掌握知识的知识图谱。"
+	},
+	"sidebar": {
+		"newSession": "新建会话",
+		"sessions": "会话",
+		"knowledgeGraph": "知识图谱",
+		"settings": "设置",
+		"collapse": "收起侧边栏",
+		"expand": "展开侧边栏",
+		"waitingForInput": "等待输入",
+		"home": "主页",
+		"closeSidebar": "收起侧边栏",
+		"teaching": "教学",
+		"practice": "练习",
+		"newTeachingSession": "创建新的教学会话",
+		"newPracticeSession": "创建新的练习会话",
+		"searchSessions": "搜索会话",
+		"searchPlaceholder": "搜索…",
+		"all": "全部",
+		"loading": "加载中…",
+		"noMatches": "没有匹配的会话。",
+		"noSessions": "还没有会话。",
+		"openSidebar": "展开侧边栏",
+		"practiceSession": "练习会话"
+	},
+	"settings": {
+		"title": "设置",
+		"close": "关闭设置",
+		"saved": "已保存",
+		"saving": "保存中…",
+		"sections": {
+			"keys": "服务提供商",
+			"agent": "代理",
+			"appearance": "外观",
+			"graph": "图谱",
+			"keyboard": "键盘",
+			"general": "通用",
+			"corePlugins": "核心插件",
+			"plugins": "社区插件"
+		},
+		"general": {
+			"title": "通用",
+			"language": "语言",
+			"languageDescription": "界面与代理教学所使用的语言。",
+			"autoUpdate": "自动检查更新"
+		},
+		"keyboardHint": "保存在本机",
+		"sectionsLabel": "设置分区",
+		"loadError": "设置加载失败 —— 请刷新重试。"
+	},
+	"composer": {
+		"placeholder": "你想学习什么？",
+		"send": "发送",
+		"stop": "停止",
+		"attach": "附加文件",
+		"dictation": "语音输入",
+		"defaultPlaceholder": "提问、作答，或引导课程方向…",
+		"nextProblem": "下一题"
+	},
+	"home": {
+		"whatDoYouWantToLearn": "你想学习什么？",
+		"startSession": "开始会话",
+		"setupRequired": "请先配置模型以开始",
+		"learnPlaceholder": "你想学习什么？",
+		"practicePlaceholder": "你想练习什么？",
+		"teach": "教学",
+		"practice": "练习"
+	},
+	"time": {
+		"justNow": "刚刚",
+		"minutesAgo": "{count} 分钟前",
+		"hoursAgo": "{count} 小时前",
+		"daysAgo": "{count} 天前"
+	},
+	"session": {
+		"compacting": "正在压缩上下文",
+		"waiting": "等待输入",
+		"problemWaiting": "题目等待作答",
+		"working": "处理中…",
+		"practiceSession": "练习会话"
+	},
+	"aria": {
+		"renameSession": "重命名会话"
+	},
+	"chat": {
+		"evaluating": "评估中",
+		"thinking": "思考中",
+		"evaluatingUpper": "评估中…",
+		"thinkingUpper": "思考中…",
+		"sessionTitle": "会话标题",
+		"renameThisSession": "重命名此会话",
+		"renameSession": "重命名会话",
+		"newSession": "新会话",
+		"newSessionDescription": "教师会先探测你已掌握的内容，然后开始。",
+		"compactingContext": "正在压缩上下文",
+		"compactingContextUpper": "正在压缩上下文…",
+		"nextReadyPlaceholder": "可以随意提问，或按 Enter 进入下一题。",
+		"syncFailed": "无法同步已保存的会话。",
+		"retrySync": "重试同步",
+		"preparingQuestion": "正在准备题目…",
+		"questionUnavailable": "题目不可用",
+		"dismissQuestion": "忽略此题",
+		"openSideChat": "打开侧边对话",
+		"askSideQuestion": "提一个侧边问题",
+		"openFullPlan": "打开完整计划",
+		"somethingWentWrong": "出现问题",
+		"retry": "重试",
+		"refusalModels": "尚未配置模型 —— 请先完成模型设置",
+		"refusalProviderKey": "尚未设置 {provider} 密钥 —— 请到「设置 → 服务提供商」中添加"
+	},
+	"dialog": {
+		"deleteNodeAria": "删除节点",
+		"deleteSessionAria": "删除会话",
+		"deleteSessionTitle": "删除会话？",
+		"deleteSourcesAria": "删除来源",
+		"deleteSourcesTitle": "删除选中的来源与文件夹？",
+		"deleteNodesAndFolders": "删除节点并移除空文件夹？",
+		"removeEmptyFolders": "移除空文件夹？",
+		"deleteNodeQuestion": "删除节点？",
+		"deleteNodesQuestion": "删除 {count} 个节点？",
+		"deleteNodePermanent": "这将永久删除该节点 —— 无法撤销。",
+		"deleteNodesPermanent": "这将永久删除全部 {count} 个节点 —— 无法撤销。",
+		"onlyNamedFolders": "仅移除所列出的空文件夹。",
+		"keptNote": "会话、已导入的来源记录以及非空文件夹都会保留。",
+		"emptyFolders": "空文件夹：",
+		"deleting": "正在删除…",
+		"deleteButton": "删除"
+	},
+	"activity": {
+		"totalRunningCost": "累计运行成本（估算）",
+		"context": "上下文",
+		"model": "模型",
+		"steps": "步数"
+	},
+	"stats": {
+		"contextLastCall": "上下文（上次调用）",
+		"claudeCodeWindow": "窗口由 Claude Code 上报；因自动压缩可能更小。",
+		"cacheHitRate": "缓存命中率",
+		"manageChatGptUsage": "管理 ChatGPT 用量",
+		"unpricedTurns": "未计价轮次"
+	},
+	"answeredCard": {
+		"answeredDontKnow": "已回答“我不知道”。",
+		"why": "原因",
+		"theAnswer": "答案"
+	},
+	"practice": {
+		"problem": "题目",
+		"workHerePlaceholder": "在此作答，把思路说出来。"
+	},
+	"chains": {
+		"addFolder": "新建文件夹",
+		"searchNodesPlaceholder": "搜索节点…",
+		"searchNodes": "搜索节点",
+		"closeChains": "关闭链路视图",
+		"deleteSources": "删除选中的来源与文件夹"
+	},
+	"sourceTree": {
+		"folderNamePlaceholder": "文件夹名称",
+		"sourceOrFolderName": "来源或文件夹名称",
+		"moveOutsideFolders": "移到文件夹之外"
+	},
+	"graph": {
+		"graphCostsHint": "图谱成本 —— 点击查看详情",
+		"displaySettingsHint": "图谱显示设置",
+		"nodeSize": "节点大小",
+		"edgeWidth": "连线宽度",
+		"arrowheadSize": "箭头大小",
+		"labelSize": "标签大小",
+		"labelsUntilZoom": "标签显示至缩放级别",
+		"backgroundColors": "背景配色",
+		"dilation": "膨胀度",
+		"edgeAlpha": "连透明度",
+		"bitmapResolution": "位图分辨率",
+		"clusterLabels": "集群标签",
+		"clusterLabelSize": "集群标签大小",
+		"nodeRepulsion": "节点斥力",
+		"edgeAttraction": "连线引力",
+		"edgeLength": "连线长度",
+		"centralPull": "中心引力",
+		"clusterPull": "集群引力",
+		"friction": "摩擦力",
+		"verticalUp": "垂直（向上）",
+		"radialOutward": "放射（向外）",
+		"depthStrength": "深度强度",
+		"depthSpacing": "深度间距",
+		"baseRingRadius": "基础环半径",
+		"searchNodes": "搜索节点",
+		"searchNodesPlaceholder": "搜索节点…",
+		"noMatchingNodes": "没有匹配的节点。",
+		"everyReasoningChain": "所有推理链",
+		"knowledgeGraph": "知识图谱",
+		"startSessionToLearn": "开始一个会话，即可着手学习。",
+		"attachMaterial": "用回形针附加你的材料，或直接拖放。",
+		"sessions": "会话",
+		"noSessionsRecorded": "尚未记录任何会话。"
+	},
+	"plan": {
+		"planDiagram": "计划图",
+		"openFullPlan": "打开完整计划",
+		"theFullPlan": "完整计划",
+		"thePlan": "计划",
+		"close": "关闭",
+		"dragPanScrollZoom": "拖动平移 · 滚轮缩放",
+		"zoomOut": "缩小",
+		"fitPlan": "适应屏幕",
+		"zoomIn": "放大"
+	},
+	"overlay": {
+		"close": "关闭",
+		"submittedImage": "已提交的图片",
+		"dragPanScrollZoom": "拖动平移 · 滚轮缩放",
+		"zoomOut": "缩小",
+		"zoomIn": "放大"
+	},
+	"coverage": {
+		"unmappedHint": "本次会话还有多少内容尚未映射",
+		"uncovered": "未覆盖",
+		"covered": "已覆盖",
+		"messages": "消息数",
+		"chunkThreshold": "分块阈值",
+		"lastExtraction": "上次提取",
+		"status": "状态"
+	},
+	"mdBlocks": {
+		"copyDiagramSource": "复制图表源码",
+		"openFullScreen": "全屏打开",
+		"expandDiagram": "展开图表",
+		"copyCode": "复制代码",
+		"copyTable": "复制表格",
+		"copyEquationSource": "复制公式源码"
+	},
+	"sessionFind": {
+		"sessionFind": "会话内查找",
+		"findInSession": "在会话中查找",
+		"findPlaceholder": "在会话中查找…",
+		"prevMatch": "上一处匹配",
+		"prevMatchTitle": "上一处匹配（Shift+Enter）",
+		"nextMatch": "下一处匹配",
+		"nextMatchTitle": "下一处匹配（Enter）",
+		"closeFind": "关闭查找",
+		"closeFindTitle": "关闭查找（Esc）"
+	},
+	"practiceCards": {
+		"problem": "题目",
+		"modelSolution": "参考解法",
+		"targets": "考查目标",
+		"outcome": "结果",
+		"hintRung": "提示层级",
+		"missClass": "错误类型",
+		"retest": "重测"
+	},
+	"pluginQuestionDock": {
+		"preparingQuestion": "正在准备题目…",
+		"questionUnavailable": "题目不可用",
+		"yourThinking": "你的思考",
+		"submitAnswer": "提交答案"
+	},
+	"questionDock": {
+		"checkUnderstanding": "检验你的理解",
+		"typeOwnAnswer": "输入你自己的答案…",
+		"confidenceAria": "信心 —— 你认为所选答案正确的概率",
+		"confidenceTitle": "你认为所选答案正确的概率 —— 50% 相当于抛硬币。用 ←/→ 调整。",
+		"typeAnswer": "输入你的答案…",
+		"whyAnswer": "为什么选这个答案？想到什么就写什么。"
+	},
+	"citationComment": {
+		"commentAria": "为选中的文字添加评论",
+		"commentPlaceholder": "可添加可选评论…",
+		"commentLimit": "评论最多 8,000 个字符。"
+	},
+	"pluginChrome": {
+		"graphActions": "插件图谱操作",
+		"moreActions": "更多插件操作"
+	},
+	"pluginView": {
+		"pluginSettings": "插件设置",
+		"loadingPlugin": "正在加载插件…",
+		"backTo": "返回"
+	},
+	"attachFiles": {
+		"attachFiles": "附加文件",
+		"files": "文件",
+		"folder": "文件夹"
+	},
+	"minimalHome": {
+		"startSessionToLearn": "开始一个会话，即可着手学习。",
+		"attachMaterial": "用回形针附加你的材料，或直接拖放。",
+		"everyReasoningChain": "所有推理链"
+	},
+	"sideThread": {
+		"showQuotedText": "显示所引用的教师原文",
+		"showInLesson": "在课程中显示",
+		"micLevel": "麦克风输入音量",
+		"sideQuestion": "侧边提问",
+		"closeSideChat": "关闭侧边对话",
+		"close": "关闭",
+		"stopped": "已停止",
+		"answering": "正在回答",
+		"retryAnswer": "重试回答"
+	},
+	"dictation": {
+		"stopDictationHint": "停止语音输入（Esc）",
+		"stopDictation": "停止语音输入"
+	},
+	"shortcuts": {
+		"title": "键盘快捷键",
+		"escToClose": "按 Esc 关闭"
+	},
+	"pluginModelPicker": {
+		"modelSelector": "模型选择",
+		"thinking": "思考"
+	},
+	"pluginProblemDock": {
+		"preparingProblem": "正在准备题目…",
+		"problemUnavailable": "题目不可用"
+	},
+	"pluginRenderers": {
+		"questionUnavailable": "题目不可用"
+	},
+	"submittedImages": {
+		"submittedImage": "已提交的图片",
+		"openFullscreen": "全屏查看已提交的图片"
+	},
+	"citationPopover": {
+		"editComment": "编辑引用评论"
+	},
+	"dropZone": {
+		"dismissNotice": "关闭附件提示"
+	},
+	"graphContextCard": {
+		"graphContext": "图谱上下文"
+	},
+	"hostMarkdown": {
+		"imageNotAvailable": "图片不可用"
+	},
+	"modelPicker": {
+		"thinking": "思考"
+	},
+	"pluginQuestionPart": {
+		"questionDismissed": "题目已忽略"
+	},
+	"pluginSurface": {
+		"close": "关闭"
+	},
+	"pluginUiHost": {
+		"closeDialog": "关闭对话框",
+		"close": "关闭"
+	},
+	"readingThinking": {
+		"readingPlaceholder": "阅读时想到什么就写什么。"
+	},
+	"selectionToolbar": {
+		"selectionActions": "选中文字操作"
+	},
+	"updateBanner": {
+		"dismissUpdate": "关闭更新通知"
+	},
+	"setup": {
+		"provider": "服务提供商",
+		"pasteKey": "粘贴密钥…",
+		"subscriptions": "订阅",
+		"setupTitle": "配置你的模型",
+		"closeSetup": "关闭设置向导",
+		"loadingModels": "正在加载模型…",
+		"catalogFailed": "模型目录加载失败。请检查网络连接后重试。",
+		"retry": "重试"
+	},
+	"dictationLang": {
+		"language": "语言",
+		"searchLanguages": "搜索语言…"
+	},
+	"notesImport": {
+		"extractHint": "从文件提取到知识图谱"
+	},
+	"pluginKnowledgePicker": {
+		"pickNodes": "选择节点"
+	},
+	"practiceSession": "练习会话"
+}

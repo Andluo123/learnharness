@@ -1,0 +1,411 @@
+{
+	"common": {
+		"close": "Close",
+		"cancel": "Cancel",
+		"save": "Save",
+		"delete": "Delete",
+		"confirm": "Confirm",
+		"loading": "Loading…",
+		"retry": "Retry",
+		"search": "Search",
+		"settings": "Settings",
+		"copy": "Copy",
+		"copied": "Copied",
+		"done": "Done",
+		"edit": "Edit",
+		"add": "Add",
+		"remove": "Remove",
+		"back": "Back",
+		"next": "Next",
+		"yes": "Yes",
+		"no": "No",
+		"ok": "OK",
+		"or": "or",
+		"and": "and",
+		"more": "More",
+		"less": "Less",
+		"all": "All",
+		"none": "None"
+	},
+	"app": {
+		"title": "Learning Harness",
+		"description": "A teacher agent with a memory — sessions, quizzes, and a knowledge graph of what you know."
+	},
+	"sidebar": {
+		"newSession": "New session",
+		"sessions": "Sessions",
+		"knowledgeGraph": "Knowledge graph",
+		"settings": "Settings",
+		"collapse": "Collapse sidebar",
+		"expand": "Expand sidebar",
+		"waitingForInput": "Waiting for input",
+		"home": "Home",
+		"closeSidebar": "Close sidebar",
+		"teaching": "Teaching",
+		"practice": "Practice",
+		"newTeachingSession": "create a new teaching session",
+		"newPracticeSession": "create a new practice session",
+		"searchSessions": "Search sessions",
+		"searchPlaceholder": "Search…",
+		"all": "All",
+		"loading": "Loading…",
+		"noMatches": "No sessions match.",
+		"noSessions": "No sessions yet.",
+		"openSidebar": "Open sidebar",
+		"practiceSession": "Practice session"
+	},
+	"settings": {
+		"title": "Settings",
+		"close": "Close settings",
+		"saved": "Saved",
+		"saving": "Saving…",
+		"sections": {
+			"keys": "Providers",
+			"agent": "Agent",
+			"appearance": "Appearance",
+			"graph": "Graph",
+			"keyboard": "Keyboard",
+			"general": "General",
+			"corePlugins": "Core plugins",
+			"plugins": "Community plugins"
+		},
+		"general": {
+			"title": "General",
+			"language": "Language",
+			"languageDescription": "The language of the interface and of the agent's teaching.",
+			"autoUpdate": "Check for updates automatically"
+		},
+		"keyboardHint": "Stored on this device",
+		"sectionsLabel": "Settings sections",
+		"loadError": "Settings could not be loaded — refresh to retry."
+	},
+	"composer": {
+		"placeholder": "What do you want to learn?",
+		"send": "Send",
+		"stop": "Stop",
+		"attach": "Attach files",
+		"dictation": "Dictation",
+		"defaultPlaceholder": "Ask, answer, or steer the lesson…",
+		"nextProblem": "Next problem"
+	},
+	"home": {
+		"whatDoYouWantToLearn": "What do you want to learn?",
+		"startSession": "Start session",
+		"setupRequired": "Set up your models to start",
+		"learnPlaceholder": "What do you want to learn?",
+		"practicePlaceholder": "What do you want to practice?",
+		"teach": "Teach",
+		"practice": "Practice"
+	},
+	"time": {
+		"justNow": "just now",
+		"minutesAgo": "{count}m ago",
+		"hoursAgo": "{count}h ago",
+		"daysAgo": "{count}d ago"
+	},
+	"session": {
+		"compacting": "Compacting context",
+		"waiting": "Waiting for input",
+		"problemWaiting": "Problem waiting",
+		"working": "Working…",
+		"practiceSession": "Practice session"
+	},
+	"aria": {
+		"renameSession": "Rename session"
+	},
+	"chat": {
+		"evaluating": "Evaluating",
+		"thinking": "Thinking",
+		"evaluatingUpper": "EVALUATING…",
+		"thinkingUpper": "THINKING…",
+		"sessionTitle": "Session title",
+		"renameThisSession": "Rename this session",
+		"renameSession": "Rename session",
+		"newSession": "New session",
+		"newSessionDescription": "The teacher will open by probing what you already know.",
+		"compactingContext": "Compacting context",
+		"compactingContextUpper": "COMPACTING CONTEXT…",
+		"nextReadyPlaceholder": "Ask anything, or press Enter for the next one.",
+		"syncFailed": "Could not sync the saved session.",
+		"retrySync": "Retry syncing",
+		"preparingQuestion": "Preparing question…",
+		"questionUnavailable": "Question unavailable",
+		"dismissQuestion": "Dismiss question",
+		"openSideChat": "Open side conversation",
+		"askSideQuestion": "Ask a side question",
+		"openFullPlan": "Open the full plan",
+		"somethingWentWrong": "Something went wrong",
+		"retry": "Retry",
+		"refusalModels": "No model configured — set up your models first",
+		"refusalProviderKey": "No {provider} key is set — add one in Settings → Providers"
+	},
+	"dialog": {
+		"deleteNodeAria": "Delete node",
+		"deleteSessionAria": "Delete session",
+		"deleteSessionTitle": "Delete session?",
+		"deleteSourcesAria": "Delete sources",
+		"deleteSourcesTitle": "Delete selected sources and folders?",
+		"deleteNodesAndFolders": "Delete nodes and remove empty folders?",
+		"removeEmptyFolders": "Remove empty folders?",
+		"deleteNodeQuestion": "Delete node?",
+		"deleteNodesQuestion": "Delete {count} nodes?",
+		"deleteNodePermanent": "This permanently deletes the node — this cannot be undone.",
+		"deleteNodesPermanent": "This permanently deletes all {count} nodes — this cannot be undone.",
+		"onlyNamedFolders": "Only the named empty folders are removed.",
+		"keptNote": "Sessions, imported source records, and non-empty folders are kept.",
+		"emptyFolders": "Empty folders:",
+		"deleting": "Deleting…",
+		"deleteButton": "Delete"
+	},
+	"activity": {
+		"totalRunningCost": "Total running cost (inferred)",
+		"context": "Context",
+		"model": "Model",
+		"steps": "Steps"
+	},
+	"stats": {
+		"contextLastCall": "Context (last call)",
+		"claudeCodeWindow": "Window reported by Claude Code; may be lower for auto-compaction.",
+		"cacheHitRate": "Cache hit rate",
+		"manageChatGptUsage": "Manage ChatGPT usage",
+		"unpricedTurns": "Unpriced turns"
+	},
+	"answeredCard": {
+		"answeredDontKnow": "Answered “I don't know”.",
+		"why": "Why",
+		"theAnswer": "The answer"
+	},
+	"practice": {
+		"problem": "Problem",
+		"workHerePlaceholder": "Work here, think out loud."
+	},
+	"chains": {
+		"addFolder": "Add folder",
+		"searchNodesPlaceholder": "Search nodes…",
+		"searchNodes": "Search nodes",
+		"closeChains": "Close chains",
+		"deleteSources": "Delete selected sources and folders"
+	},
+	"sourceTree": {
+		"folderNamePlaceholder": "Folder name",
+		"sourceOrFolderName": "Source or folder name",
+		"moveOutsideFolders": "Move outside folders"
+	},
+	"graph": {
+		"graphCostsHint": "Graph costs — click for details",
+		"displaySettingsHint": "Graph display settings",
+		"nodeSize": "Node size",
+		"edgeWidth": "Edge width",
+		"arrowheadSize": "Arrowhead size",
+		"labelSize": "Label size",
+		"labelsUntilZoom": "Labels until zoom",
+		"backgroundColors": "Background colors",
+		"dilation": "Dilation",
+		"edgeAlpha": "Edge alpha",
+		"bitmapResolution": "Bitmap resolution",
+		"clusterLabels": "Cluster labels",
+		"clusterLabelSize": "Cluster label size",
+		"nodeRepulsion": "Node repulsion",
+		"edgeAttraction": "Edge attraction",
+		"edgeLength": "Edge length",
+		"centralPull": "Central pull",
+		"clusterPull": "Cluster pull",
+		"friction": "Friction",
+		"verticalUp": "Vertical (up)",
+		"radialOutward": "Radial (outward)",
+		"depthStrength": "Depth strength",
+		"depthSpacing": "Depth spacing",
+		"baseRingRadius": "Base ring radius",
+		"searchNodes": "Search nodes",
+		"searchNodesPlaceholder": "Search nodes…",
+		"noMatchingNodes": "No matching nodes.",
+		"everyReasoningChain": "Every reasoning chain",
+		"knowledgeGraph": "Knowledge graph",
+		"startSessionToLearn": "Start a session to begin learning.",
+		"attachMaterial": "Attach your material with the paperclip or drag and drop.",
+		"sessions": "Sessions",
+		"noSessionsRecorded": "No sessions recorded."
+	},
+	"plan": {
+		"planDiagram": "Plan diagram",
+		"openFullPlan": "Open the full plan",
+		"theFullPlan": "The full plan",
+		"thePlan": "The plan",
+		"close": "Close",
+		"dragPanScrollZoom": "Drag to pan · scroll to zoom",
+		"zoomOut": "Zoom out",
+		"fitPlan": "Fit plan to screen",
+		"zoomIn": "Zoom in"
+	},
+	"overlay": {
+		"close": "Close",
+		"submittedImage": "Submitted image",
+		"dragPanScrollZoom": "Drag to pan · scroll to zoom",
+		"zoomOut": "Zoom out",
+		"zoomIn": "Zoom in"
+	},
+	"coverage": {
+		"unmappedHint": "How much of this session isn't mapped yet",
+		"uncovered": "Uncovered",
+		"covered": "Covered",
+		"messages": "Messages",
+		"chunkThreshold": "Chunk threshold",
+		"lastExtraction": "Last extraction",
+		"status": "Status"
+	},
+	"mdBlocks": {
+		"copyDiagramSource": "Copy diagram source",
+		"openFullScreen": "Open full-screen",
+		"expandDiagram": "Expand diagram",
+		"copyCode": "Copy code",
+		"copyTable": "Copy table",
+		"copyEquationSource": "Copy equation source"
+	},
+	"sessionFind": {
+		"sessionFind": "Session Find",
+		"findInSession": "Find in session",
+		"findPlaceholder": "Find in session…",
+		"prevMatch": "Previous match",
+		"prevMatchTitle": "Previous match (Shift+Enter)",
+		"nextMatch": "Next match",
+		"nextMatchTitle": "Next match (Enter)",
+		"closeFind": "Close Find",
+		"closeFindTitle": "Close Find (Esc)"
+	},
+	"practiceCards": {
+		"problem": "Problem",
+		"modelSolution": "Model solution",
+		"targets": "Targets",
+		"outcome": "Outcome",
+		"hintRung": "Hint rung",
+		"missClass": "Miss class",
+		"retest": "Retest"
+	},
+	"pluginQuestionDock": {
+		"preparingQuestion": "Preparing question…",
+		"questionUnavailable": "Question unavailable",
+		"yourThinking": "Your thinking",
+		"submitAnswer": "Submit answer"
+	},
+	"questionDock": {
+		"checkUnderstanding": "Check your understanding",
+		"typeOwnAnswer": "Type your own answer…",
+		"confidenceAria": "Confidence — the probability your selected answer is correct",
+		"confidenceTitle": "The probability your selected answer is correct — 50% is a coin flip. Adjust with ←/→.",
+		"typeAnswer": "Type your answer…",
+		"whyAnswer": "Why this answer? Whatever comes to mind."
+	},
+	"citationComment": {
+		"commentAria": "Comment on selected text",
+		"commentPlaceholder": "Add an optional comment...",
+		"commentLimit": "Comments can contain up to 8,000 characters."
+	},
+	"pluginChrome": {
+		"graphActions": "Plugin graph actions",
+		"moreActions": "More plugin actions"
+	},
+	"pluginView": {
+		"pluginSettings": "Plugin settings",
+		"loadingPlugin": "Loading plugin…",
+		"backTo": "Back to"
+	},
+	"attachFiles": {
+		"attachFiles": "Attach files",
+		"files": "Files",
+		"folder": "Folder"
+	},
+	"minimalHome": {
+		"startSessionToLearn": "Start a session to begin learning.",
+		"attachMaterial": "Attach your material with the paperclip or drag and drop.",
+		"everyReasoningChain": "Every reasoning chain"
+	},
+	"sideThread": {
+		"showQuotedText": "Show the quoted tutor text",
+		"showInLesson": "Show in the lesson",
+		"micLevel": "Microphone input level",
+		"sideQuestion": "Side question",
+		"closeSideChat": "Close side conversation",
+		"close": "Close",
+		"stopped": "Stopped",
+		"answering": "Answering",
+		"retryAnswer": "Retry answer"
+	},
+	"dictation": {
+		"stopDictationHint": "Stop dictation (Esc)",
+		"stopDictation": "Stop dictation"
+	},
+	"shortcuts": {
+		"title": "Keyboard shortcuts",
+		"escToClose": "Esc to close"
+	},
+	"pluginModelPicker": {
+		"modelSelector": "Model selector",
+		"thinking": "Thinking"
+	},
+	"pluginProblemDock": {
+		"preparingProblem": "Preparing problem…",
+		"problemUnavailable": "Problem unavailable"
+	},
+	"pluginRenderers": {
+		"questionUnavailable": "Question unavailable"
+	},
+	"submittedImages": {
+		"submittedImage": "Submitted image",
+		"openFullscreen": "Open submitted image fullscreen"
+	},
+	"citationPopover": {
+		"editComment": "Edit citation comment"
+	},
+	"dropZone": {
+		"dismissNotice": "Dismiss attachment notice"
+	},
+	"graphContextCard": {
+		"graphContext": "Graph context"
+	},
+	"hostMarkdown": {
+		"imageNotAvailable": "Image not available"
+	},
+	"modelPicker": {
+		"thinking": "Thinking"
+	},
+	"pluginQuestionPart": {
+		"questionDismissed": "Question dismissed"
+	},
+	"pluginSurface": {
+		"close": "Close"
+	},
+	"pluginUiHost": {
+		"closeDialog": "Close dialog",
+		"close": "Close"
+	},
+	"readingThinking": {
+		"readingPlaceholder": "Whatever comes to mind as you read."
+	},
+	"selectionToolbar": {
+		"selectionActions": "Selection actions"
+	},
+	"updateBanner": {
+		"dismissUpdate": "Dismiss update notification"
+	},
+	"setup": {
+		"provider": "Provider",
+		"pasteKey": "Paste key…",
+		"subscriptions": "Subscriptions",
+		"setupTitle": "Set up your models",
+		"closeSetup": "Close setup",
+		"loadingModels": "Loading models…",
+		"catalogFailed": "Model catalog could not be loaded. Check the connection and retry.",
+		"retry": "Retry"
+	},
+	"dictationLang": {
+		"language": "Language",
+		"searchLanguages": "Search languages…"
+	},
+	"notesImport": {
+		"extractHint": "Extract files into the graph"
+	},
+	"pluginKnowledgePicker": {
+		"pickNodes": "Pick nodes"
+	},
+	"practiceSession": "Practice session"
+}

@@ -67,6 +67,8 @@ it("native glyphs contrast against final paint, not the theme's mode label", () 
 it("external desktop development reads the server's directory rather than the shell's -dev profile", () => {
 	const base = { packagedDataDir: "/fixture/packaged/data", repoRoot: "/fixture/repo", env: {} };
 	assert.equal(serverDataDir(base), base.packagedDataDir);
-	assert.equal(serverDataDir({ ...base, devUrl: "http://127.0.0.1:9000" }), "/fixture/repo/data");
+	// path.join is platform-specific: normalize separators so one assertion
+	// reads the same on Windows and Unix (the behavior is identical).
+	assert.equal(serverDataDir({ ...base, devUrl: "http://127.0.0.1:9000" }).replace(/\\/g, "/"), "/fixture/repo/data");
 	assert.equal(serverDataDir({ ...base, devUrl: "http://127.0.0.1:9000", env: { LH_DATA_DIR: data } }), data);
 });

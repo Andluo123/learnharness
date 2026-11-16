@@ -5,7 +5,9 @@ import { providerEventObserver } from "./provider-events.ts";
 import type { Usage } from "@earendil-works/pi-ai";
 import { PATHS } from "../../config.ts";
 import { APP_IDENTITY, piEngineFor, type PiEngine } from "./models.ts";
-import { effectivePromptSegments } from "./prompt-segments.ts";
+import { effectivePromptSegments } from "./prompt-segments.ts";
+import { withTeachingLanguage } from "./teaching-language.ts";
+import type { AppLocale } from "../../i18n/config.ts";
 import {
 	askUserQuestionTool,
 	createProberTools,
@@ -84,13 +86,21 @@ export const CONVERSATION_TOOL_NAMES = Object.freeze([
  *  tests/prompt-overrides.test.ts). Overrides are a static-file read
  *  through config paths, not request state — the store import carries no
  *  chat/job machinery. */
-export function composeInstructions(kind: AgentKind, switches?: Record<string, boolean>): string {
+export function composeInstructions(
+	kind: AgentKind,
+	switches?: Record<string, boolean>,
+	locale?: AppLocale,
+): string {
 	const segments = effectivePromptSegments(kind, switches ?? {});
-	return segments
+	const composed = segments
 		.map((s) => (s.enabled ? s.overrideText! : s.sourceText))
 		.map((t) => t.trim())
 		.filter(Boolean)
 		.join("\n\n---\n\n");
+	// THE TEACHING LANGUAGE (zh-CN i18n wave): the source prompts stay
+	// English; a locale directive is appended so the model writes its
+	// learner-facing output in the user's UI language.
+	return withTeachingLanguage(composed, locale);
 }
 
 // The switch-free source composition, cached per kind (module-load once).
@@ -128,6 +138,9 @@ export interface AgentBuildOptions {
 	/** Tests may pass a bare tool registry to drive deterministic flows.
 	 *  An explicit registry is NEVER toggle-filtered — the caller owns it. */
 	tools?: Record<string, AgentTool<any>>;
+	/** The UI language the agent should TEACH in (zh-CN i18n wave). Absent
+	 *  = the factory default locale. The prompt directive is appended last. */
+	teachingLocale?: AppLocale;
 	/** Server-owned per-turn resolver. Additive only; explicit tools test overrides
 	 * bypass contributions entirely. No conversation identity means no factory call. */
 	pluginContributions?: (context: PluginToolContext, reservedToolNames: readonly string[]) => {
@@ -212,8 +225,8 @@ function baseAgentOptions(kind: AgentKind, opts: AgentBuildOptions, tools: Agent
 	const narrationGuard = narrationGuardApplies(kind, engine.model, opts.tools !== undefined);
 	const narrationHooks = narrationGuard ? makeNarrationGuard() : undefined;
 	const composedPrompt = opts.promptSwitches
-		? composeInstructions(kind, opts.promptSwitches)
-		: composedInstructions[kind]!;
+		? composeInstructions(kind, opts.promptSwitches, opts.teachingLocale)
+		: withTeachingLanguage(composedInstructions[kind]!, opts.teachingLocale);
 	const builtinPrompt = narrationGuard ? `${composedPrompt}\n\n---\n\n${SEND_TO_USER_DELIVERY_RULE}` : composedPrompt;
 	// Bind native read and preserve the kind/model-aware Claude output gate
 	// before resolving additive plugins. Explicit registries remain caller-owned.

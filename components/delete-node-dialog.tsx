@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { HostDialog } from "@/components/host-dialog";
+import { useT } from "@/i18n/use-t.ts";
 
 /** The 409 extraction_running line (owner phrasing, node interlude):
  *  the server's error names the extraction; the ACTIVITY DOCK is the
@@ -48,17 +49,18 @@ export function DeleteNodeBody({
 	onRun: () => void;
 	renderFrame?: (frame: ReactElement<{ children: ReactNode }>) => ReactNode;
 }) {
+	const t = useT("dialog");
 	const frame = (
 		<div
 			role="dialog"
 			aria-modal="true"
-			aria-label="Delete node"
+			aria-label={t("deleteNodeAria")}
 			data-testid="delete-node-dialog"
 			onClick={(e) => e.stopPropagation()}
 			className="w-[32rem] max-w-[calc(100vw-2rem)] rounded-xl border bg-card p-5 shadow-xl"
 		>
 			<h2 className="text-sm font-semibold text-destructive">
-				{folders.length > 0 ? (nodes.length > 0 ? "Delete nodes and remove empty folders?" : "Remove empty folders?") : nodes.length === 1 ? "Delete node?" : `Delete ${nodes.length} nodes?`}
+				{folders.length > 0 ? (nodes.length > 0 ? t("deleteNodesAndFolders") : t("removeEmptyFolders")) : nodes.length === 1 ? t("deleteNodeQuestion") : t("deleteNodesQuestion", { count: nodes.length })}
 			</h2>
 			{/* The node name(s) below the title in JetBrains Mono (owner,
 			    2026-09-24): the name is the payload — mono suits it, and
@@ -81,14 +83,14 @@ export function DeleteNodeBody({
 					</code>
 				)}
 			</div>
-			{folders.length > 0 && <p className="mt-2 text-sm" data-testid="folder-removal-names">Empty folders: {folders.map((f) => f.name).join(", ")}</p>}
+			{folders.length > 0 && <p className="mt-2 text-sm" data-testid="folder-removal-names">{t("emptyFolders")} {folders.map((f) => f.name).join(", ")}</p>}
 			{nodes.length > 0 && <p className="mt-2 text-sm text-muted-foreground" data-testid="node-permanence-line">
 				{nodes.length === 1
-					? "This permanently deletes the node — this cannot be undone."
-					: `This permanently deletes all ${nodes.length} nodes — this cannot be undone.`}
+					? t("deleteNodePermanent")
+					: t("deleteNodesPermanent", { count: nodes.length })}
 			</p>}
 			<p className="mt-2 text-xs text-muted-foreground" data-testid="folder-removal-explanation">
-				{folders.length > 0 ? "Only the named empty folders are removed. " : ""}Sessions, imported source records, and non-empty folders are kept.
+				{folders.length > 0 ? t("onlyNamedFolders") + " " : ""}{t("keptNote")}
 			</p>
 			{failure && (
 				<div
@@ -130,7 +132,7 @@ export function DeleteNodeBody({
 					// refusal banner): border + text, fill on hover.
 					className="rounded-sm border border-destructive/50 bg-destructive/10 px-3 py-1.5 text-xs text-destructive transition-colors hover:bg-destructive/20 disabled:opacity-40"
 				>
-					{busy ? "Deleting…" : "Delete"}
+					{busy ? t("deleting") : t("deleteButton")}
 				</button>
 			</div>
 		</div>

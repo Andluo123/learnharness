@@ -1,5 +1,6 @@
 import type { PluginAction, PluginActionContext, PluginFrontendContext, PluginSettingsSchema, PluginSurfaceProps, PluginWidgetHandle } from "learnharness-plugin-api";
 import { abortable } from "./abort.ts";
+import { t } from "./i18n.ts";
 import { exportSheet } from "./capture.ts";
 import { acceptedPoseKeys, occurrenceKey, parsePoseResponse } from "./poses.ts";
 import { colorError, imageScaleError, parseSettings, type Settings } from "./settings.ts";
@@ -55,7 +56,7 @@ export async function activate(ctx: PluginFrontendContext): Promise<() => void> 
     open = pad;
     try {
       pad.handle = ctx.ui.openSurface(context.surfaceTarget, {
-        title: "Drawing pad", background: "opaque",
+        title: t("Drawing pad"), background: "opaque",
         content(container, signal) {
           if (pad.closed || signal.aborted) return;
           const mounted = mountSheet(container, ctx, sheets, state, context.view.input, signal);
@@ -113,14 +114,14 @@ export async function activate(ctx: PluginFrontendContext): Promise<() => void> 
     run(context) { editingPad(context)?.selectHand(); },
   };
   const rows = (value: Settings): PluginSettingsSchema["rows"] => [...([
-    { key: "darkInkColor", label: "Dark mode ink color" },
-    { key: "lightInkColor", label: "Light mode ink color" },
+    { key: "darkInkColor", label: t("Dark mode ink color") },
+    { key: "lightInkColor", label: t("Light mode ink color") },
   ] as const).map(({ key, label }) => ({
     key, type: "text" as const, label, value: value[key],
     description: "Six-digit hex color. Recolors all unsent ink when this app theme mode is active.", validate: colorError,
     async onChange(color: string) { applySettings(await ctx.call("set-ink-color", { [key]: color })); },
   })), {
-    key: "imageScale", type: "number", label: "Image scale", value: value.imageScale, min: 0, max: 100,
+    key: "imageScale", type: "number", label: t("Image scale"), value: value.imageScale, min: 0, max: 100,
     description: "Export percentage (default 50%). Applied before the fixed 2000 × 2000 pixel cap. Does not change the drawing surface.",
     validate: imageScaleError,
     async onChange(imageScale) { applySettings(await ctx.call("set-image-scale", { imageScale })); },

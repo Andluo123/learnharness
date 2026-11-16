@@ -103,6 +103,9 @@ export interface AuthProviderInfo {
  * xiaomi variants) each keep their own row — the UI groups as it wishes.
  */
 export const AUTH_PROVIDER_KEYS: readonly AuthProviderInfo[] = [
+	// App-provided provider (not in pi-ai's builtin catalog): Agnes AI,
+	// OpenAI-compatible. See src/agent/agnes/provider.ts.
+	{ id: "agnes", envVar: "AGNES_API_KEY", label: "Agnes AI" },
 	{ id: "ant-ling", envVar: "ANT_LING_API_KEY", label: "Ant Ling" },
 	{ id: "anthropic", envVar: "ANTHROPIC_API_KEY", label: "Anthropic" },
 	{ id: "baseten", envVar: "BASETEN_API_KEY", label: "Baseten" },

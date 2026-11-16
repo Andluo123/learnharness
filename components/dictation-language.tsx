@@ -9,13 +9,15 @@ import { SettingsMenuTrigger, SettingsRow } from "@/components/settings/controls
 import { SearchMenuList } from "@/components/settings/search-menu-list";
 import { useDictationActive } from "@/components/dictation-state";
 import { useDictationLanguage } from "@/components/dictation-preference";
+import { useT } from "@/i18n/use-t.ts";
 
 type LanguagePreference = ReturnType<typeof useDictationLanguage>;
 
 export function DictationLanguageSetting() {
 	const preference = useDictationLanguage();
+	const t = useT("dictationLang");
 	const active = useDictationActive();
-	return <SettingsRow label="Language" testid="row-dictation-language" dimmed={active}>
+	return <SettingsRow label={t("language")} testid="row-dictation-language" dimmed={active}>
 		<DictationLanguagePicker preference={preference} disabled={active} />
 	</SettingsRow>;
 }
@@ -24,6 +26,7 @@ function DictationLanguagePicker({ preference, disabled }: {
 	preference: LanguagePreference;
 	disabled: boolean;
 }) {
+	const t = useT("dictationLang");
 	const { language, saving, error, load, save } = preference;
 	const [open, setOpen] = useState(false);
 	const triggerRef = useRef<HTMLButtonElement>(null);
@@ -94,7 +97,7 @@ function DictationLanguagePicker({ preference, disabled }: {
 					listTestid="dictation-language-list"
 					optionTestid={(item) => `dictation-language-${item.code}`}
 					ariaLabel="Search dictation languages"
-					placeholder="Search languages…"
+					placeholder={t("searchLanguages")}
 					empty="No languages match."
 					renderItem={(item) => <span className="text-card-foreground">{item.label}</span>}
 				/>

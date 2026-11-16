@@ -1,4 +1,5 @@
 import { mountLibraryTree } from './library-tree.js';
+import { t } from './i18n.js';
 import { createReviewController } from './review.js';
 import { mountDashboard } from './dashboard.js';
 import { buildPracticeCards } from './practice-queue.js';
@@ -135,7 +136,7 @@ export function activate(ctx) {
   }
   function createCard(deck, proposition, signal, onCreated) {
     const requestId = uuid();
-    dialog(proposition ? 'Add cue' : 'Create card', signal, ({ root, actions, signal: ds, run, close }) => {
+    dialog(proposition ? t('Add cue') : t('Create card'), signal, ({ root, actions, signal: ds, run, close }) => {
       const name = proposition ? null : field(root, 'Name', '');
       const { question, answer } = cueFields(root);
       button(actions, 'Save', run(async () => {
@@ -211,8 +212,8 @@ export function activate(ctx) {
     });
   }
   function editDeck(deck, signal) {
-    dialog(deck ? 'Deck settings' : 'Create deck', signal, ({ root, actions, signal: ds, run, close }) => {
-      const name = field(root, 'Deck name', deck?.name || ''), limit = deck ? field(root, 'New propositions per day', deck.newLimit, 'number') : null;
+    dialog(deck ? t('Deck settings') : t('Create deck'), signal, ({ root, actions, signal: ds, run, close }) => {
+      const name = field(root, t('Deck name'), deck?.name || ''), limit = deck ? field(root, 'New propositions per day', deck.newLimit, 'number') : null;
       if (limit) { limit.min = '0'; limit.step = '1'; }
       button(actions, deck ? 'Save' : 'Create', run(async () => {
         if (!name.value.trim()) throw new Error('Enter a deck name.');
@@ -277,7 +278,7 @@ export function activate(ctx) {
     };
     updateSelection();
     deckToolbar.append(searchLabel);
-    button(deckToolbar, 'Create deck', () => editDeck(null, signal), signal);
+    button(deckToolbar, t('Create deck'), () => editDeck(null, signal), signal);
     deckPanel.append(deckToolbar, selectionActions, treeSlot);
     const dashboardSlot = el('div', 'fc-dashboard-slot');
     root.append(toolbar, fileStatus, error, batchArea, deckPanel, dashboardSlot); container.append(root);

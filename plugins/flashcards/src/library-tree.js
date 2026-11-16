@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 // Plugin-owned data/actions inside the shared native tree. No host implementation imports.
 const el = (tag, className, text) => {
   const node = document.createElement(tag);
@@ -63,7 +64,7 @@ export function mountLibraryTree({ ctx, container, signal, button, onReview, onP
     const { kind, deck, p, cue, archive } = record;
     if (archive) return [];
     const items = kind === 'deck' ? [
-      { key: 'settings', label: 'Deck settings', onSelect: run(() => onDeckSettings(record.deck)) },
+      { key: 'settings', label: t('Deck settings'), onSelect: run(() => onDeckSettings(record.deck)) },
     ]
       : kind === 'proposition' ? [{ key: 'memberships', label: 'Decks…', onSelect: run(() => onMemberships(record.p)) }]
       : [{ key: 'edit', label: 'Edit', onSelect: run(() => onEdit(record.p, record.cue)) }, { key: 'delete', label: 'Delete', disabled: ['running', 'cancelling'].includes(state.batch?.status), onSelect: run(() => onDelete(record.p, record.cue)) }];
@@ -116,7 +117,7 @@ export function mountLibraryTree({ ctx, container, signal, button, onReview, onP
       if (!record.archive && record.kind !== 'archive') {
         const more = el('span', 'fc-tree-more'); root.append(more);
         if (record.kind === 'deck' || record.kind === 'proposition') {
-          const label = record.kind === 'deck' ? 'Create card' : 'Add cue';
+          const label = record.kind === 'deck' ? t('Create card') : t('Add cue');
           button(more, label, run(() => record.kind === 'deck' ? onCreateCard(record.deck) : onCreateCue(record.p, record.deck)), mountSignal, { icon: plusIcon, iconOnly: true, size: 'icon-sm', variant: 'ghost', title: label });
         }
         const actionsLabel = `${record.kind === 'deck' ? 'Deck' : record.kind === 'proposition' ? 'Proposition' : 'Cue'} actions`;
@@ -125,7 +126,7 @@ export function mountLibraryTree({ ctx, container, signal, button, onReview, onP
       function refresh() {
         const title = record.kind === 'deck' ? record.deck.name : record.kind === 'proposition' ? record.p.name : record.kind === 'cue' ? record.cue.question.replace(/\s+/g, ' ').trim() || 'Cue' : 'Archive';
         label.textContent = title;
-        label.title = record.kind === 'proposition' ? record.p.statement || title : record.kind === 'deck' ? 'Rename deck' : title;
+        label.title = record.kind === 'proposition' ? record.p.statement || title : record.kind === 'deck' ? t('Rename deck') : title;
         metadata.textContent = record.kind === 'proposition' ? `${record.p.cues.filter(c => !c.deleted).length} cues` : '';
         if (draft) {
           label.hidden = draft.editing;
@@ -143,10 +144,10 @@ export function mountLibraryTree({ ctx, container, signal, button, onReview, onP
     if (records.has(key)) Object.assign(records.get(key), data); else records.set(key, data);
     return content(key);
   }
-  let tree = ctx.ui.mountTree(inner, { label: 'Flashcards library', header: 'Name', rows: [], columns: [
-    { key: 'propositions', header: 'Propositions', width: '6.5rem', align: 'right' },
+  let tree = ctx.ui.mountTree(inner, { label: t('Flashcards library'), header: 'Name', rows: [], columns: [
+    { key: 'propositions', header: t('Propositions'), width: '6.5rem', align: 'right' },
     { key: 'due', header: 'Due', width: '3rem', align: 'right' },
-    { key: 'new', header: 'New today', width: '6rem', align: 'right' },
+    { key: 'new', header: t('New today'), width: '6rem', align: 'right' },
   ] }, { signal });
   function render() {
     if (!live() || !state) return;
@@ -183,7 +184,7 @@ export function mountLibraryTree({ ctx, container, signal, button, onReview, onP
     }
     tree.update({ rows });
     for (const [key, refresh] of mounted) if (seen.has(key)) refresh();
-    empty.textContent = rows.length ? '' : query ? 'No matching flashcards.' : 'No flashcards yet. Pick knowledge or upload a file above to generate your first cues.';
+    empty.textContent = rows.length ? '' : query ? t('No matching flashcards.') : t('No flashcards yet. Pick knowledge or upload a file above to generate your first cues.');
     empty.hidden = !!rows.length;
     onSelection(selection());
   }

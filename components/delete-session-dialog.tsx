@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { HostDialog } from "@/components/host-dialog";
 import type { ChatDeleteMode, ChatListItem } from "@/src/core";
+import { useT } from "@/i18n/use-t.ts";
 
 /** The graph-traces checkbox copy (owner, 2026-09-24 flow rework — was
  *  the delete-nodes option's body in the two-button design): the
@@ -50,6 +51,7 @@ export function DeleteSessionDialog({
 	onDeleted: (id: string, mode: ChatDeleteMode, graphRevision: number) => void;
 }) {
 	const [traces, setTraces] = useState(false);
+	const t = useT("dialog");
 	const [busy, setBusy] = useState(false);
 	// Retry IS pressing Delete again: the mode always derives from the
 	// checkbox's current state (a toggle between failure and retry is a
@@ -132,16 +134,17 @@ export function DeleteSessionBody({
 	onRun: () => void;
 	renderFrame?: (frame: ReactElement<{ children: ReactNode }>) => ReactNode;
 }) {
+	const t = useT("dialog");
 	const frame = (
 		<div
 			role="dialog"
 			aria-modal="true"
-			aria-label="Delete session"
+			aria-label={t("deleteSessionAria")}
 			data-testid="delete-session-dialog"
 			onClick={(e) => e.stopPropagation()}
 			className="w-[32rem] max-w-[calc(100vw-2rem)] rounded-xl border bg-card p-5 shadow-xl"
 		>
-			<h2 className="text-sm font-semibold text-destructive">Delete session?</h2>
+			<h2 className="text-sm font-semibold text-destructive">{t("deleteSessionTitle")}</h2>
 			{/* The session name below the title in JetBrains Mono (owner,
 			    2026-09-24): no code-block chrome — the font already says
 			    code. Owner, 2026-10-13 polish: normal text-sm size (was

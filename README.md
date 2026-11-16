@@ -43,6 +43,10 @@ Future teaching sessions can read the graph instead of starting from scratch. Pr
 
 ![LearnHarness knowledge graph](docs/assets/knowledge-graph.png)
 
+## Languages
+
+The interface is fully available in **简体中文 (Simplified Chinese)** and **English**. Switch at any time in Settings → General → Language; the change applies immediately, without a restart. The agent teaches in the selected language. See [docs/i18n-zh-cn.md](docs/i18n-zh-cn.md) for the architecture.
+
 ## Download and get started
 
 **[Download from learnharness.ai](https://learnharness.ai)** · [GitHub Releases](https://github.com/amosblomqvist/learnharness/releases)

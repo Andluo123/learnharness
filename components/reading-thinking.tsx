@@ -6,6 +6,7 @@ import { composingQuestionKey, pluginQuestionKeySuppressed } from "./plugin-ques
 import { PathInput } from "@/components/path-input";
 import { useOptionalInteractionLayers } from "./interaction-layers";
 import { isInteractionScopeEligible } from "./plugin-input-focus";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * The reading-thinking field (owner design 2026-10-03, "two questions per
@@ -45,6 +46,7 @@ export function ReadingThinkingField({
 	claim: boolean;
 	inputRef?: RefObject<HTMLDivElement | null>;
 }) {
+	const t = useT("readingThinking");
 	const controller = useOptionalInteractionLayers();
 	const [draft, setDraft] = useState(value);
 	// Appends may arrive back-to-back before React commits. Like Chat's
@@ -112,7 +114,7 @@ export function ReadingThinkingField({
 						e.currentTarget.blur();
 					}
 				}}
-				placeholder="Whatever comes to mind as you read."
+				placeholder={t("readingPlaceholder")}
 				className="field-sizing-content lh-input max-h-40 w-full resize-none bg-transparent py-0.5 outline-none placeholder:text-muted-foreground/70"
 			/>
 		</div>

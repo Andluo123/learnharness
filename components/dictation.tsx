@@ -8,6 +8,7 @@ import { deepgramListenUrl, type DictationLanguage } from "@/src/core";
 import { useDictationLanguage } from "@/components/dictation-preference";
 import { setDictationActive } from "@/components/dictation-state";
 import { dispatchFocusedPluginShortcut } from "@/components/plugin-input-focus";
+import { useT } from "@/i18n/use-t.ts";
 export { isDictationActive } from "@/components/dictation-state";
 
 /**
@@ -757,6 +758,7 @@ export function useDictation({ append, destination = "primary", disabled = false
  *             (full text in the tooltip), cleared on the next click.
  */
 export function DictationBar({ dictation, disabled = false }: { dictation: Dictation; disabled?: boolean }) {
+	const t = useT("dictation");
 	const { phase, error, levelRef, toggle, active, clearError, blocked } = dictation;
 	const { open: openSettings } = useSettingsDialog();
 	/** The keyless click (zero-keys wave, owner dictation trio): the errored
@@ -837,12 +839,12 @@ export function DictationBar({ dictation, disabled = false }: { dictation: Dicta
 
 	return (
 		<div className="flex w-full min-w-0 items-center gap-2" data-testid="dictation-bar">
-			<Hint label="Stop dictation (Esc)" side="top">
+			<Hint label={t("stopDictationHint")} side="top">
 				<button
 					type="button"
 					onClick={toggle}
 					disabled={phase === "stopping"}
-					aria-label="Stop dictation"
+					aria-label={t("stopDictation")}
 					data-testid="dictation-toggle"
 					className="flex h-7 shrink-0 items-center gap-1.5 rounded-md bg-destructive/10 px-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/20"
 				>

@@ -6,6 +6,7 @@ import { formatTokens, formatUsd, planCostLabel, prettyModel } from "@/component
 import { ModelControl, catalogLimits, useModelCatalog } from "@/components/model-picker";
 import { usePopoverDismiss } from "@/components/popover-dismiss";
 import { INTERACTION_LAYER_Z_BASE } from "@/components/host-dialog";
+import { useT } from "@/i18n/use-t.ts";
 
 export function formatContextMeasurement(tokens: number | null, limit: number | null): string {
 	const numerator = tokens === null ? "?" : formatTokens(tokens);
@@ -70,6 +71,7 @@ export function StatsBar({
 	 *  data (which renders nothing pre-chat on that surface). */
 	leadingSlot?: ReactNode;
 }) {
+	const t = useT("stats");
 	const [open, setOpen] = useState(false);
 	const [selectedModel, setSelectedModel] = useState<string | undefined>();
 	const modelChanged = useCallback((model: string | undefined) => {
@@ -145,13 +147,13 @@ export function StatsBar({
 						</div>
 						<div className="flex flex-col gap-1 text-muted-foreground">
 							<div className="flex justify-between gap-2">
-								<span>Context (last call)</span>
+								<span>{t("contextLastCall")}</span>
 								<span className="tabular-nums text-card-foreground">
 									{contextLabel}
 								</span>
 							</div>
 							{selectedModel?.startsWith(`${CLAUDE_CODE_PROVIDER}:`) && (
-								<p>Window reported by Claude Code; may be lower for auto-compaction.</p>
+								<p>{t("claudeCodeWindow")}</p>
 							)}
 							<div className="flex justify-between gap-2">
 								<span>{subscription ? "Usage" : "Total cost"}</span>
@@ -159,14 +161,14 @@ export function StatsBar({
 							</div>
 							{cacheHitRate !== null && (
 								<div data-testid="stats-cache-hit-rate" className="flex justify-between gap-2">
-									<span>Cache hit rate</span>
+									<span>{t("cacheHitRate")}</span>
 									<span className="tabular-nums text-card-foreground">{(cacheHitRate * 100).toFixed(1)}%</span>
 								</div>
 							)}
-							{providers.includes("ChatGPT") && <a href="https://chatgpt.com/settings/usage" target="_blank" rel="noreferrer" className="underline underline-offset-2">Manage ChatGPT usage</a>}
+							{providers.includes("ChatGPT") && <a href="https://chatgpt.com/settings/usage" target="_blank" rel="noreferrer" className="underline underline-offset-2">{t("manageChatGptUsage")}</a>}
 							{unpriced > 0 && (
 								<div className="flex justify-between gap-2">
-									<span>Unpriced turns</span>
+									<span>{t("unpricedTurns")}</span>
 									<span className="tabular-nums text-card-foreground">{unpriced}</span>
 								</div>
 							)}

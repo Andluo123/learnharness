@@ -28,6 +28,14 @@ import { findEnvKeys } from "../node_modules/@earendil-works/pi-ai/dist/env-api-
  *  stay env-only by owner spec; asserted absent below. */
 const ANTHROPIC_ALTERNATES = ["ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_OAUTH_TOKEN"];
 
+/** Providers THIS app registers itself (pi-ai has no catalog entry for
+ *  them). Kept as an explicit allowlist so the no-drift pin above still
+ *  catches typos and stale rows. */
+const APP_PROVIDED = [
+	{ id: "agnes", envVar: "AGNES_API_KEY", label: "Agnes AI" },
+] as const;
+const MISSING = "<missing>";
+
 const EXCLUDED_PROVIDERS = new Set([
 	"github-copilot",
 	"amazon-bedrock",
@@ -60,15 +68,28 @@ function deriveProviders() {
 }
 
 describe("AUTH_PROVIDER_KEYS — the no-drift pin against pi-ai", () => {
-	it("is EXACTLY pi-ai's plain-key provider table (id, envVar, label), exclusions applied", () => {
+	it("covers EVERY pi-ai plain-key provider (id, envVar, label), exclusions applied", () => {
+		// The direction that matters is pi-ai → table: a pi-ai upgrade that
+		// adds/renames/re-labels a provider must fail loudly. Rows the table
+		// adds on its own are checked by the next test.
 		const truth = deriveProviders();
-		const mine = [...AUTH_PROVIDER_KEYS].sort((a, b) => a.id.localeCompare(b.id));
+		const mineById = new Map(AUTH_PROVIDER_KEYS.map((p) => [p.id, p]));
 		assert.deepEqual(
-			mine.map((p) => [p.id, p.envVar, p.label]),
+			truth.map((p) => {
+				const row = mineById.get(p.id);
+				return row ? [row.id, row.envVar, row.label] : [p.id, MISSING, MISSING];
+			}),
 			truth.map((p) => [p.id, p.envVar, p.label]),
 			"pi-ai's provider env-key table changed — regenerate AUTH_PROVIDER_KEYS (src/core/auth-keys.ts) from the derivation in this test",
 		);
 	});
+
+	it("adds NO provider pi-ai does not know, except the app-provided ones", () => {
+		const truthIds = new Set(deriveProviders().map((p) => p.id));
+		const extra = AUTH_PROVIDER_KEYS.filter((p) => !truthIds.has(p.id));
+		assert.deepEqual(extra.map((p) => [p.id, p.envVar, p.label]), APP_PROVIDED.map((p) => [p.id, p.envVar, p.label]));
+	});
+
 
 	it("the owner-spec exclusions are absent", () => {
 		const ids = new Set(AUTH_PROVIDER_KEYS.map((p) => p.id));

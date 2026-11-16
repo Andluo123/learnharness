@@ -19,6 +19,7 @@ import { chatGPTModel } from "./chatgpt-bridge.ts";
 import { chatGPTStream } from "./chatgpt-stream.ts";
 import type { ChatGPTDispatchLifecycle } from "./chatgpt-request-cycle.ts";
 import { createClaudeCodeProvider } from "./claude-code/provider.ts";
+import { createAgnesProvider } from "./agnes/provider.ts";
 import { streamClaudeCode } from "./claude-code/stream.ts";
 import { nativeSubscriptionId, nativeSubscriptionModel } from "./subscription-bridge.ts";
 import { nativeSubscriptionStream } from "./subscription-stream.ts";
@@ -92,6 +93,10 @@ export function piModels() {
 				: provider);
 		}
 		collection.setProvider(createClaudeCodeProvider(streamClaudeCode));
+		// Agnes AI (zh-CN providers wave): an OpenAI-compatible provider with a
+		// published catalog. Inserted after the builtins so a future pi-ai
+		// release that ships its own "agnes" provider wins.
+		collection.setProvider(createAgnesProvider());
 	}
 	providerSource?.sync(collection);
 	return collection;

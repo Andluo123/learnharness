@@ -15,6 +15,7 @@ import path from "node:path";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import { isHexColor, type ChatSettings } from "../core";
 import { COLOR_OVERRIDE_KEYS, isThemeId, type AppearanceColorOverrides, type ColorOverrideKey } from "../core/themes.ts";
+import { isAppLocale, LOCALES } from "../../i18n/config.ts";
 import type {
 	AgentSettings,
 	AppearanceSettings,
@@ -93,6 +94,12 @@ export function parseGeneralSettingsBody(body: unknown): SettingsBodyResult<Gene
 			return { ok: false, error: "autoUpdate must be a boolean" };
 		}
 		settings.autoUpdate = raw.autoUpdate;
+	}
+	if (raw.language !== undefined) {
+		if (!isAppLocale(raw.language)) {
+			return { ok: false, error: `language must be one of: ${LOCALES.join(", ")}` };
+		}
+		settings.language = raw.language;
 	}
 	return { ok: true, settings };
 }

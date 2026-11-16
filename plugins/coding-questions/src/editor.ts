@@ -6,6 +6,7 @@ import { languages } from "@codemirror/language-data";
 import { oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import type { PluginQuestionAnswerState, PluginQuestionEditorHandle, PluginQuestionEditorProps, PluginProblemEditorHandle, PluginProblemEditorProps } from "learnharness-plugin-api";
 import { isReady, normalizeLineEndings, type CodingPayload, type CodingQuestionPayload } from "./contract.ts";
+import { t } from "./i18n.ts";
 import { supportsSyntaxDiagnostics, syntaxDiagnosticsExtension } from "./diagnostics.ts";
 
 export function findLanguage(name: string): LanguageDescription | null {
@@ -50,7 +51,7 @@ function createCodeView(container: HTMLElement, language: string, code: string, 
         EditorState.tabSize.of(4),
         indentUnit.of("    "),
         syntaxHighlighting(oneDarkHighlightStyle),
-        EditorView.contentAttributes.of({ "aria-label": onChange ? "Code answer" : "Submitted code" }),
+        EditorView.contentAttributes.of({ "aria-label": onChange ? t("Code answer") : t("Submitted code") }),
         editable.of([EditorState.readOnly.of(!active), EditorView.editable.of(active)]),
         languageSupport.of([]),
         keymap.of([...standardKeymap, ...historyKeymap].filter(binding => ![binding.key, binding.mac, binding.win, binding.linux].some(key => key !== undefined && reservedKeys.has(key)))),
@@ -62,9 +63,9 @@ function createCodeView(container: HTMLElement, language: string, code: string, 
   });
 
   const languageDescription = findLanguage(language);
-  if (!languageDescription) status.textContent = "Plain text";
+  if (!languageDescription) status.textContent = t("Plain text");
   else {
-    status.textContent = "Loading highlighting…";
+    status.textContent = t("Loading highlighting…");
     void languageDescription.load().then(support => {
       if (disposed) return;
       // Catalog support may include tag insertion, completion keymaps or other
@@ -75,7 +76,7 @@ function createCodeView(container: HTMLElement, language: string, code: string, 
       ]) });
       status.textContent = "";
     }).catch(() => {
-      if (!disposed) status.textContent = "Plain text";
+      if (!disposed) status.textContent = t("Plain text");
     });
   }
 

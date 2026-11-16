@@ -1,3 +1,4 @@
+import { t } from "./i18n.ts";
 /** A tucked text-only control, matching the native quiz's Why button. */
 export function mountDisclosure(container: HTMLElement, kind: "test-output" | "model-solution", label: string, signal: AbortSignal, render: (body: HTMLElement) => void | (() => void)): () => void {
   const document = container.ownerDocument;
@@ -5,7 +6,7 @@ export function mountDisclosure(container: HTMLElement, kind: "test-output" | "m
   root.className = `lh-coding-disclosure lh-coding-${kind}`;
   const button = document.createElement("button");
   button.type = "button";
-  button.textContent = label;
+  button.textContent = t(label);
   button.setAttribute("aria-expanded", "false");
   const body = document.createElement("div");
   body.className = "lh-coding-disclosure__body";
@@ -28,7 +29,7 @@ export function mountDisclosure(container: HTMLElement, kind: "test-output" | "m
     if (disposed || signal.aborted) return;
     if (open) { close(); return; }
     open = true;
-    button.textContent = `Hide ${label.toLowerCase()}`;
+    button.textContent = t("Hide") + ` ${label.toLowerCase()}`;
     button.setAttribute("aria-expanded", "true");
     root.append(body);
     try {

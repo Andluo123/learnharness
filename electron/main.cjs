@@ -58,6 +58,7 @@ const DATA_DIR = () => path.join(app.getPath("userData"), "data");
 // Resolve the saved palette before window creation; renderer reports keep
 // it current after live saves. This helper needs no compiled server bundle.
 const { normalizeAppearance, themeSourceFor, serverDataDir, readAppearance, chromeColors } = require("./appearance-chrome.cjs");
+const { menuLabels, readMenuLocale } = require("./menu-language.cjs");
 let appearance = normalizeAppearance(null);
 
 function applyChrome(win) {
@@ -613,52 +614,65 @@ function applyZoom(win, factor) {
 
 /** macOS needs an application menu with the Edit roles — without one,
  *  Cmd+C/V/A do nothing in the renderer. Everything else stays minimal. */
+/** Rebuild the native menu after a language change (zh-CN i18n wave).
+ *  Cheap (a small template) and idempotent — safe on every appearance report. */
+function refreshNativeMenu() {
+	try { installMenu(); } catch (error) { log(`menu refresh failed: ${error?.message ?? error}`); }
+}
+
 function installMenu() {
+	// The menu follows the record's UI language (zh-CN i18n wave). Read at
+	// build time so a language change reaches the menu on the next refresh
+	// (refreshNativeMenu is called from the appearance IPC handler).
+	const labels = menuLabels(readMenuLocale(serverDataDir({
+		devUrl: process.env.LH_DEV_URL, env: process.env,
+		packagedDataDir: DATA_DIR(), repoRoot: path.join(__dirname, ".."),
+	})));
 	const template = [
 		{
 			label: app.name,
 			submenu: [
-				{ role: "about" },
+				{ role: "about", label: labels.about },
 				// Manual checks report their result in Settings → General.
-				{ label: "Check for Updates…", click: () => checkForUpdatesFromMenu() },
+				{ label: labels.checkForUpdates, click: () => checkForUpdatesFromMenu() },
 				{ type: "separator" },
-				{ role: "hide" },
-				{ role: "hideOthers" },
+				{ role: "hide", label: labels.hide },
+				{ role: "hideOthers", label: labels.hideOthers },
 				{ type: "separator" },
-				{ role: "quit" },
+				{ role: "quit", label: labels.quit },
 			],
 		},
-		{ label: "Edit", submenu: [{ role: "undo" }, { role: "redo" }, { type: "separator" }, { role: "cut" }, { role: "copy" }, { role: "paste" }, { role: "selectAll" }] },
+		{ label: labels.edit, submenu: [{ role: "undo", label: labels.undo }, { role: "redo", label: labels.redo }, { type: "separator" }, { role: "cut", label: labels.cut }, { role: "copy", label: labels.copy }, { role: "paste", label: labels.paste }, { role: "selectAll", label: labels.selectAll }] },
 		{
-			label: "View",
+			label: labels.view,
 			submenu: [
-				{ role: "reload" },
-				{ role: "toggleDevTools" },
+				{ role: "reload", label: labels.reload },
+				{ role: "toggleDevTools", label: labels.toggleDevTools },
 				{ type: "separator" },
 				// OWNED zoom (see applyZoom): the roles change zoomLevel
 				// silently; these broadcast the factor and re-seat the
 				// traffic lights. The renderer's --lh-zoom depends on
 				// hearing every change.
 				{
-					label: "Actual Size",
+					label: labels.actualSize,
 					accelerator: "CommandOrControl+0",
 					click: () => applyZoom(BrowserWindow.getAllWindows()[0], 1),
 				},
 				{
-					label: "Zoom In",
+					label: labels.zoomIn,
 					accelerator: "CommandOrControl+Plus",
 					click: () => zoomStep(BrowserWindow.getAllWindows()[0], +1),
 				},
 				{
-					label: "Zoom Out",
+					label: labels.zoomOut,
 					accelerator: "CommandOrControl+-",
 					click: () => zoomStep(BrowserWindow.getAllWindows()[0], -1),
 				},
 				{ type: "separator" },
-				{ role: "togglefullscreen" },
+				{ role: "togglefullscreen", label: labels.toggleFullscreen },
 			],
 		},
-		{ role: "windowMenu" },
+		{ role: "windowMenu", label: labels.window },
 	];
 	Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
@@ -809,6 +823,10 @@ async function main() {
 		appearance = normalizeAppearance(next);
 		nativeTheme.themeSource = themeSourceFor(appearance.mode);
 		for (const win of BrowserWindow.getAllWindows()) applyChrome(win);
+		// The native menu follows the record's UI language (zh-CN i18n wave):
+		// the renderer reports the record on load, so a language write reaches
+		// the menu without an app restart.
+		refreshNativeMenu();
 	});
 	reopenWindow = () => { chatgpt?.resume(); subscriptions?.resume(); return createWindow(url); };
 	app.on("activate", () => {

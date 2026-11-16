@@ -47,6 +47,7 @@ import {
 import { useAppearance } from "./appearance.tsx";
 import { SettingsSection } from "./controls.tsx";
 import { UpdateSettings } from "./update-settings.tsx";
+import { LanguageSettings } from "./language-settings.tsx";
 import { AgentSection } from "./agent-section.tsx";
 import type { ModelsSettings } from "@/src/core";
 import { MENU_CLOSE_EVENT, MENU_OPEN_EVENT } from "@/components/menu-shell";
@@ -57,22 +58,30 @@ import { AppearanceSection, GraphSection } from "./appearance-section.tsx";
 import { KeyboardSection } from "./keyboard-section.tsx";
 import { PluginsSection } from "./plugins-section.tsx";
 import { PluginSettingsPage } from "./plugin-settings-page.tsx";
-import { usePlugins } from "@/components/plugins";
+import { usePlugins } from "@/components/plugins";
+import { useT } from "@/i18n/use-t.ts";
 import { ChatGPTUIProvider } from "./chatgpt-connection.tsx";
 import { NativeSubscriptionUIProvider } from "./subscription-connections.tsx";
 
 /** Owner (2026-09-20): hints earn their place — mechanics-explaining
  *  prose is out; only the keyboard note stays (storage location is a
  *  real question users ask). */
-const SECTIONS = [
-	{ id: "keys", label: "Providers", icon: KeyIcon },
-	{ id: "agent", label: "Agent", icon: BotIcon },
-	{ id: "appearance", label: "Appearance", icon: PaletteIcon },
-	{ id: "graph", label: "Graph", icon: WaypointsIcon },
-	{ id: "keyboard", label: "Keyboard", icon: KeyboardIcon, hint: "Stored on this device" },
-	{ id: "general", label: "General", icon: SettingsIcon },
-] as const;
-type SectionId = (typeof SECTIONS)[number]["id"] | "plugins" | "core-plugins" | `plugin:${string}`;
+type CoreSectionId = "keys" | "agent" | "appearance" | "graph" | "keyboard" | "general";
+interface NavSectionSpec {
+	id: CoreSectionId;
+	labelKey: string;
+	icon: LucideIcon;
+	hintKey?: string;
+}
+const SECTIONS: readonly NavSectionSpec[] = [
+	{ id: "keys", labelKey: "sections.keys", icon: KeyIcon },
+	{ id: "agent", labelKey: "sections.agent", icon: BotIcon },
+	{ id: "appearance", labelKey: "sections.appearance", icon: PaletteIcon },
+	{ id: "graph", labelKey: "sections.graph", icon: WaypointsIcon },
+	{ id: "keyboard", labelKey: "sections.keyboard", icon: KeyboardIcon, hintKey: "keyboardHint" },
+	{ id: "general", labelKey: "sections.general", icon: SettingsIcon },
+];
+type SectionId = CoreSectionId | "plugins" | "core-plugins" | `plugin:${string}`;
 
 /** `open(section?, row?)` — the optional ROW deep-links into the Keys
  *  section with that row unfolded (zero-keys wave: the dictation error's
@@ -154,12 +163,13 @@ function SettingsDialog({
 	/** The keys-section row to unfold (see DialogContext above). */
 	initialRow: string | null;
 }) {
+	const t = useT("settings");
 	// Keep the original visual frame and plain dim backdrop. The shared
 	// untransformed boundary also contains this modal's portaled menus.
 	return <SettingsDialogBody onClose={onClose} initialSection={initialSection}
 		initialRow={initialRow} navigationRequest={navigationRequest}
 		renderFrame={frame => <HostDialog open layerId={layerId} ownerId={null}
-			onClose={onClose} frame={frame} aria-label="Settings"
+			onClose={onClose} frame={frame} aria-label={t("title")}
 			backdropProps={{
 				className: "fixed inset-0 z-50 flex items-center justify-center bg-background/80",
 				"data-testid": "settings-backdrop",
@@ -185,6 +195,7 @@ export function SettingsDialogBody({
 	 *  retargets follow it exactly like initialSection below. */
 	initialRow?: string | null;
 }) {
+	const t = useT("settings");
 	const { onAppearanceChange } = useAppearance();
 	const inheritedWriteOrder = useContext(WriteOrderContext);
 	const standaloneWriteOrder = useRef<SettingsWriteOrder>({ issued: 0, acknowledged: 0, listeners: new Set() });
@@ -249,9 +260,14 @@ export function SettingsDialogBody({
 	}, [missingPlugin, management]);
 	const selected = missingPlugin ? management : active;
 	const navSections: { id: SectionId; label: string; icon?: LucideIcon }[] = [
-		...SECTIONS,
-		{ id: "core-plugins", label: "Core plugins", icon: PlugIcon },
-		{ id: "plugins", label: "Community plugins", icon: PuzzleIcon },
+		...SECTIONS.map((section) => ({
+			id: section.id,
+			label: t(section.labelKey),
+			...(section.hintKey ? { hint: t(section.hintKey) } : {}),
+			icon: section.icon,
+		})),
+		{ id: "core-plugins", label: t("sections.corePlugins"), icon: PlugIcon },
+		{ id: "plugins", label: t("sections.plugins"), icon: PuzzleIcon },
 		...enabledPlugins.map(plugin => ({ id: `plugin:${plugin.info.id}` as const, label: plugin.info.manifest?.name ?? plugin.info.id })),
 	];
 
@@ -362,7 +378,7 @@ export function SettingsDialogBody({
 					>
 						<button
 					type="button"
-					aria-label="Close settings"
+					aria-label={t("close")}
 					data-testid="settings-close"
 					className="ml-auto size-7 rounded-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
 					onClick={onClose}
@@ -384,7 +400,7 @@ export function SettingsDialogBody({
 				{/* Left nav — mono labels and theme-inherited decorative icons,
 					    active = bg-accent. */}
 				<nav
-					aria-label="Settings sections"
+					aria-label={t("sectionsLabel")}
 					data-testid="settings-nav"
 					className="flex min-h-0 w-48 shrink-0 flex-col gap-1 overflow-y-auto border-r border-border p-2"
 				>
@@ -439,15 +455,21 @@ export function SettingsDialogBody({
 						</p>
 					) : record === null ? (
 						<p className="px-6 py-5 text-xs text-muted-foreground/70">
-							Settings could not be loaded — refresh to retry.
+							{t("loadError")}
 						</p>
 					) : (
 						<div>
 							{active === "general" && (
 								<SettingsSection
-									title="General"
+									title={t("sections.general")}
 									testid="section-general"
 								>
+									<LanguageSettings
+										value={record.general?.language ?? "zh-CN"}
+										onChange={(language) =>
+											void write("general", { ...record.general, language })
+										}
+									/>
 									<UpdateSettings
 										autoUpdate={record.general?.autoUpdate ?? true}
 										onAutoUpdateChange={(on) =>
@@ -457,13 +479,13 @@ export function SettingsDialogBody({
 								</SettingsSection>
 							)}
 							{active === "keys" && (
-								<SettingsSection title="Providers" testid="section-keys">
+								<SettingsSection title={t("sections.keys")} testid="section-keys">
 									<KeysSection initialRow={initialRow ?? undefined} />
 								</SettingsSection>
 							)}
 							{active === "agent" && (
 								<SettingsSection
-									title="Agent"
+									title={t("sections.agent")}
 									testid="section-agent"
 								>
 									<AgentSection
@@ -486,7 +508,7 @@ export function SettingsDialogBody({
 							)}
 							{active === "appearance" && (
 								<SettingsSection
-									title="Appearance"
+									title={t("sections.appearance")}
 									testid="section-appearance"
 								>
 									<AppearanceSection
@@ -499,7 +521,7 @@ export function SettingsDialogBody({
 							)}
 							{active === "graph" && (
 								<SettingsSection
-									title="Graph"
+									title={t("sections.graph")}
 									testid="section-graph"
 								>
 									<GraphSection
@@ -512,8 +534,8 @@ export function SettingsDialogBody({
 							)}
 							{active === "keyboard" && (
 								<SettingsSection
-									title="Keyboard"
-									hint="Stored on this device"
+									title={t("sections.keyboard")}
+									hint={t("keyboardHint")}
 									testid="section-keyboard"
 								>
 									<KeyboardSection />

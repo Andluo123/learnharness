@@ -20,7 +20,8 @@ import {
 describe("FACTORY_SETTINGS (the compiled factory layer)", () => {
 	it("pins the owner-decided defaults", () => {
 		assert.equal(CURRENT_SETTINGS_VERSION, 1);
-		assert.deepEqual(FACTORY_SETTINGS.general, { autoUpdate: true });
+		// zh-CN i18n wave: the factory UI language is 简体中文 (owner decision).
+		assert.deepEqual(FACTORY_SETTINGS.general, { autoUpdate: true, language: "zh-CN" });
 		assert.deepEqual(FACTORY_SETTINGS.agent, { workerRequestConcurrency: 8 });
 		// wave 7 collapse: the master switch ONLY + the extraction-UX
 		// redesign's chunk budget (2026-09-24); doubled to 8192 with the

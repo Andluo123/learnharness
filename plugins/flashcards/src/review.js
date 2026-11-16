@@ -1,4 +1,5 @@
 // Page-bound review, using only the public plugin UI and RPC contracts.
+import { t } from './i18n.js';
 const ratings = ["Again", "Hard", "Good", "Easy"];
 const ratingOptions = label => {
   const color = `var(--fc-rating-${label.toLowerCase()})`;
@@ -70,11 +71,11 @@ export function createReviewController({ ctx, signal, button, markdown, onRated 
       const stage = el("div", "fc-review-stage"), title = el("h2", "fc-review-title");
       stage.tabIndex = -1;
       stage.setAttribute("role", "group");
-      stage.setAttribute("aria-label", practice ? "Flashcard practice" : "Flashcard review");
+      stage.setAttribute("aria-label", practice ? t("Flashcard practice") : t("Flashcard review"));
       stage.setAttribute("data-plugin-initial-focus", "");
       title.hidden = true;
       const card = el("div", "fc-review-card"), footer = el("div", "fc-review-footer"), bottom = el("div", "fc-review-bottom");
-      const practiceNote = practice ? el("p", "fc-review-meta fc-practice-note", "Practice mode does not change your review schedule.") : null;
+      const practiceNote = practice ? el("p", "fc-review-meta fc-practice-note", t("Practice mode does not change your review schedule.")) : null;
       stage.append(title, card, bottom, footer);
       root.append(stage);
       if (practiceNote) root.append(practiceNote);
@@ -117,7 +118,7 @@ export function createReviewController({ ctx, signal, button, markdown, onRated 
         // Capture this presentation's cue so an overlapping stale control cannot
         // reveal consumed material or advance the shared queue a second time.
         const cs = reset(), index = practiceIndex, cue = practiceCards[index];
-        if (!cue) { footer.append(el("p", "fc-review-meta", "Practice complete.")); return; }
+        if (!cue) { footer.append(el("p", "fc-review-meta", t("Practice complete."))); return; }
         const remaining = practiceCards.length - index - 1;
         const { answer, actions } = question(cue, cs, `${remaining} ${remaining === 1 ? 'card' : 'cards'} remaining`);
         let revealButton;
@@ -133,13 +134,13 @@ export function createReviewController({ ctx, signal, button, markdown, onRated 
           };
           control(actions, "Next", () => advanceAction?.(), cs, "Space", { variant: "outline" });
         };
-        revealButton = control(actions, "Reveal answer", () => revealAction?.(), cs, "Space", { variant: "outline" });
+        revealButton = control(actions, t("Reveal answer"), () => revealAction?.(), cs, "Space", { variant: "outline" });
       }
-      const retry = (parent, cs) => button(parent, "Retry next card", nextReview, cs);
+      const retry = (parent, cs) => button(parent, t("Retry next card"), nextReview, cs);
       async function nextReview() {
         if (content.signal.aborted) return;
         const pending = reset();
-        footer.append(el("p", "fc-review-meta", "Loading next card…"));
+        footer.append(el("p", "fc-review-meta", t("Loading next card…")));
         try {
           const result = await ctx.call("next-review", scope);
           if (pending.aborted) return;
@@ -210,7 +211,7 @@ export function createReviewController({ ctx, signal, button, markdown, onRated 
               }
             }
           };
-          revealButton = control(actions, "Reveal answer", () => revealAction?.(), cs, "Space", { variant: "outline" });
+          revealButton = control(actions, t("Reveal answer"), () => revealAction?.(), cs, "Space", { variant: "outline" });
         } catch (cause) {
           if (pending.aborted) return;
           const cs = reset();
@@ -245,7 +246,7 @@ export function createReviewController({ ctx, signal, button, markdown, onRated 
     try {
       // Capture the active page now, never after awaiting a review RPC. Content
       // can mount either during this call or later; it owns starting the request.
-      handle = ctx.ui.openSurface({ title: practice ? "Flashcard practice" : "Flashcard review", background: "dimmed", content: mount, onClose: close }, { signal: session.signal });
+      handle = ctx.ui.openSurface({ title: practice ? t("Flashcard practice") : t("Flashcard review"), background: "dimmed", content: mount, onClose: close }, { signal: session.signal });
       if (closed) handle.dispose();
     } catch (cause) { close(); throw cause; }
   }

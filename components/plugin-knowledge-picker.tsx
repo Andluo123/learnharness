@@ -8,6 +8,7 @@ import { NodePickerControl } from "@/components/composer-actions";
 import { HostDialog } from "@/components/host-dialog";
 import { InteractionLayerOwner, useInteractionLayer, useInteractionLayers, useOptionalInteractionLayers, type InteractionLayer, type OpeningLease } from "@/components/interaction-layers";
 import { HostContentRootContext, HostRouteLifetimeContext, type HostRouteLifetime } from "./host-content-root";
+import { useT } from "@/i18n/use-t.ts";
 
 /** One replaceable selector slot in the shared controller, not a private stack. */
 const PICKER_SLOT = "knowledge-picker";
@@ -23,6 +24,7 @@ interface PickerOrigin {
 function PanePicker({ origin, openingLease, onClose, children }: {
 	origin: PickerOrigin; openingLease: OpeningLease; onClose: () => "closed"; children: ReactNode;
 }) {
+	const t = useT("pluginKnowledgePicker");
 	const controller = useInteractionLayers();
 	const root = useRef<HTMLDivElement>(null);
 	const popup = useRef<HTMLDivElement>(null);
@@ -51,7 +53,7 @@ function PanePicker({ origin, openingLease, onClose, children }: {
 		entered.current = true; focusInitial();
 	}, [layer.isTop, focusInitial]);
 	return createPortal(<InteractionLayerOwner.Provider value={layer.id}>
-		<div ref={root} role="region" aria-label="Pick nodes" data-plugin-knowledge-picker-pane=""
+		<div ref={root} role="region" aria-label={t("pickNodes")} data-plugin-knowledge-picker-pane=""
 			className="absolute inset-0" style={{ zIndex: 100 + layer.order }}>
 			{children}
 			<div ref={popup} data-interaction-popup-host={layer.id}

@@ -3,6 +3,7 @@ import type {
   PluginSettingsSchema, PluginWidgetHandle,
   PluginThinkingPickerProps as ThinkingProps, PluginButtonProps,
 } from "learnharness-plugin-api";
+import { t } from "./i18n.ts";
 import { Scope, button, element, example, family, note, readout, row } from "./dom.ts";
 import { mountOverlayExamples, openPageSurfaceDemo } from "./surfaces.ts";
 import { mountTreeDemo } from "./tree.ts";
@@ -65,7 +66,7 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
       onSend() { if (!life.signal.aborted && value.trim()) { busy = true; sends++; lastCallback = "onSend (local simulation)"; render(); } },
       onStop() { if (!life.signal.aborted) { busy = false; lastCallback = "onStop (local simulation)"; render(); } },
     }, { signal: life.signal }));
-    const complete = button(ui, body, life, "complete-composer", { label: "Complete simulation", disabled: true, variant: "outline", onClick() { busy = false; lastCallback = "simulation completed"; render(); } });
+    const complete = button(ui, body, life, "complete-composer", { label: t("Complete simulation"), disabled: true, variant: "outline", onClick() { busy = false; lastCallback = "simulation completed"; render(); } });
     function render() { composer.update({ value, busy, canSend: !!value.trim() }); complete.update({ disabled: !busy }); show({ draft: value, busy, sends, lastCallback }); }
     render();
   });
@@ -79,12 +80,12 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
     }, { signal: life.signal });
     life.own(() => dictation.dispose());
     const controls = row(body);
-    button(ui, controls, life, "dictate", { label: "Dictate", onClick() { lastCallback = "toggle requested (not recording status)"; render(); dictation.toggle(); } });
-    button(ui, controls, life, "finish-dictation", { label: "Finish dictation", variant: "outline", async onClick() {
+    button(ui, controls, life, "dictate", { label: t("Dictate"), onClick() { lastCallback = "toggle requested (not recording status)"; render(); dictation.toggle(); } });
+    button(ui, controls, life, "finish-dictation", { label: t("Finish dictation"), variant: "outline", async onClick() {
       await dictation.finish();
       if (!life.signal.aborted) { lastCallback = "finish resolved after final delivery"; render(); }
     } });
-    button(ui, controls, life, "cancel-dictation", { label: "Cancel dictation", variant: "outline", onClick() { dictation.cancel(); lastCallback = "cancel requested"; render(); } });
+    button(ui, controls, life, "cancel-dictation", { label: t("Cancel dictation"), variant: "outline", onClick() { dictation.cancel(); lastCallback = "cancel requested"; render(); } });
     function render() { show({ transcript, deliveries, lastCallback }); }
     render();
   });
@@ -108,7 +109,7 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
       dictation: { onTranscript(text) { if (!life.signal.aborted) { value = join(value, text); deliveries++; lastCallback = "dictation.onTranscript (draft updated)"; render(); } } },
     });
     composer = life.widget(ui.mountStandardComposer(example(body, "standard-composer", "Host standard composer"), props(), { signal: life.signal }));
-    complete = button(ui, body, life, "complete-standard-composer", { label: "Complete simulation", variant: "outline", disabled: true, onClick() { busy = false; lastCallback = "simulation completed"; render(); } });
+    complete = button(ui, body, life, "complete-standard-composer", { label: t("Complete simulation"), variant: "outline", disabled: true, onClick() { busy = false; lastCallback = "simulation completed"; render(); } });
     function render() { composer.update(props()); complete.update({ disabled: !busy }); show({ draft: value, model: model ?? null, thinking: thinking ?? null, busy, sends, deliveries, lastSent, lastCallback }); }
     render();
   });
@@ -137,16 +138,16 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
     ] as const) {
       life.widget(ui.mountBadge(example(badges, `badge-${id}`), props, { signal: life.signal }));
     }
-    button(ui, body, life, "button-disabled", { label: "Disabled", disabled: true, onClick() { throw new Error("Disabled example must not run"); } });
+    button(ui, body, life, "button-disabled", { label: t("Disabled"), disabled: true, onClick() { throw new Error("Disabled example must not run"); } });
     const actions = row(body);
-    button(ui, actions, life, "button-async", { label: "Start async example", onClick() {
+    button(ui, actions, life, "button-async", { label: t("Start async example"), onClick() {
       if (pending || life.signal.aborted) return;
       lastCallback = "async callback pending";
       const promise = new Promise<void>(resolve => { pending = resolve; });
       render();
       return promise;
     } });
-    const complete = button(ui, actions, life, "complete-button-async", { label: "Complete async example", variant: "outline", disabled: true, onClick() { finish(); lastCallback = "async callback completed"; render(); } });
+    const complete = button(ui, actions, life, "complete-button-async", { label: t("Complete async example"), variant: "outline", disabled: true, onClick() { finish(); lastCallback = "async callback completed"; render(); } });
     function finish() { const resolve = pending; pending = undefined; resolve?.(); }
     life.own(finish);
     function render() { complete.update({ disabled: !pending }); show({ clicks, pending: !!pending, lastCallback }); }
@@ -159,12 +160,12 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
     const show = readout(body, "settings");
     const update = (key: string, apply: () => void) => { if (!life.signal.aborted) { apply(); lastCallback = `${key}.onChange`; render(); } };
     const schema = (): PluginSettingsSchema => ({ rows: [
-      { key: "toggle", type: "toggle", label: "Toggle example", description: "A local boolean value.", value: enabled, onChange: value => update("toggle", () => { enabled = value; }) },
-      { key: "text", type: "text", label: "Text example", description: "At least three non-space characters.", value: text, validate: value => value.trim().length < 3 ? "Enter at least three non-space characters." : undefined, onChange: value => update("text", () => { text = value; }) },
-      { key: "dropdown", type: "dropdown", label: "Dropdown example", description: "Choose one of two local options.", value: choice, options: [{ value: "first", label: "First option" }, { value: "second", label: "Second option" }], onChange: value => update("dropdown", () => { choice = value; }) },
-      { key: "number", type: "number", label: "Number example", description: "Whole number from 1 to 10.", value: count, min: 1, max: 10, step: 1, validate: value => Number.isInteger(value) ? undefined : "Enter a whole number.", onChange: value => update("number", () => { count = value; }) },
-      { key: "slider", type: "slider", label: "Slider example", description: "Whole number from 0 to 100.", value: amount, min: 0, max: 100, step: 1, validate: value => Number.isInteger(value) ? undefined : "Choose a whole number.", onChange: value => update("slider", () => { amount = value; }) },
-      { key: "disabled", type: "text", label: "Disabled example", description: "This row cannot be edited.", value: "Unavailable", disabled: true, onChange() {} },
+      { key: "toggle", type: "toggle", label: t("Toggle example"), description: "A local boolean value.", value: enabled, onChange: value => update("toggle", () => { enabled = value; }) },
+      { key: "text", type: "text", label: t("Text example"), description: "At least three non-space characters.", value: text, validate: value => value.trim().length < 3 ? "Enter at least three non-space characters." : undefined, onChange: value => update("text", () => { text = value; }) },
+      { key: "dropdown", type: "dropdown", label: t("Dropdown example"), description: "Choose one of two local options.", value: choice, options: [{ value: "first", label: "First option" }, { value: "second", label: "Second option" }], onChange: value => update("dropdown", () => { choice = value; }) },
+      { key: "number", type: "number", label: t("Number example"), description: "Whole number from 1 to 10.", value: count, min: 1, max: 10, step: 1, validate: value => Number.isInteger(value) ? undefined : "Enter a whole number.", onChange: value => update("number", () => { count = value; }) },
+      { key: "slider", type: "slider", label: t("Slider example"), description: "Whole number from 0 to 100.", value: amount, min: 0, max: 100, step: 1, validate: value => Number.isInteger(value) ? undefined : "Choose a whole number.", onChange: value => update("slider", () => { amount = value; }) },
+      { key: "disabled", type: "text", label: t("Disabled example"), description: "This row cannot be edited.", value: "Unavailable", disabled: true, onChange() {} },
     ] });
     const settings = life.widget(ui.mountSettingsRows(example(body, "settings-rows"), schema(), { signal: life.signal }));
     function render() { settings.update(schema()); show({ enabled, text, choice, count, amount, lastCallback }); }
@@ -184,7 +185,7 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
     for (const status of ["succeeded", "failed", "cancelled", "interrupted"] as const) {
       for (const presentation of ["collapsed", "card", "plain"] as const) {
         life.widget(ui.mountWorkerResult(example(body, `worker-${status}-${presentation}`, `${status} / ${presentation}`), {
-          label: "Example worker", status, presentation,
+          label: t("Example worker"), status, presentation,
           text: `**Static example:** ${status}. No worker was run.`,
         }, { signal: life.signal }));
       }
@@ -200,7 +201,7 @@ export function mountGallery(container: HTMLElement, ctx: PluginFrontendContext,
     let opens = 0; let closed = 0; let lastCallback = "none";
     const show = readout(body, "surfaces");
     const render = () => show({ target: "current page", opens, closed, lastCallback });
-    button(ui, body, life, "open-surface", { label: "Open surface", variant: "outline", onClick() {
+    button(ui, body, life, "open-surface", { label: t("Open surface"), variant: "outline", onClick() {
       if (life.signal.aborted) return;
       opens++; lastCallback = "openSurface (current page body)"; render();
       life.widget(openPageSurfaceDemo(ui, life.signal, () => {

@@ -7,6 +7,7 @@ import { PathInput } from "@/components/path-input";
 import { AttachFilesButton } from "@/components/attach-files-button";
 import { useOptionalInteractionLayers } from "./interaction-layers";
 import { isInteractionScopeEligible } from "./plugin-input-focus";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * The chat composer — content row ONLY (the persistent rounded shell lives in
@@ -114,7 +115,7 @@ export function Composer({
 	autoFocus,
 	inputRef,
 	onEscape,
-	placeholder = "Ask, answer, or steer the lesson…",
+	placeholder,
 	nextProblem = false,
 	onNext,
 	defaultDropTarget = true,
@@ -148,7 +149,9 @@ export function Composer({
 	defaultDropTarget?: boolean;
 	fileInsertion?: boolean;
 }) {
+	const t = useT("composer");
 	const controller = useOptionalInteractionLayers();
+	const resolvedPlaceholder = placeholder ?? t("defaultPlaceholder");
 	const act = () => {
 		const action = enterAction({ busy, canSend, nextProblem });
 		if (action === "stop") onStop();
@@ -193,7 +196,7 @@ export function Composer({
 						act();
 					}
 				}}
-				placeholder={placeholder}
+				placeholder={resolvedPlaceholder}
 				autoFocus={autoFocus}
 				className="field-sizing-content lh-input max-h-48 min-h-10 flex-1 resize-none bg-transparent px-2.5 py-2 outline-none placeholder:text-muted-foreground"
 			/>
@@ -216,16 +219,16 @@ export function Composer({
 					<button
 						type="submit"
 						data-testid="next-problem-button"
-						aria-label="Next problem"
+						aria-label={t("nextProblem")}
 						className="flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-[10px] bg-success px-4 font-ui text-xs font-medium uppercase tracking-wide text-background transition-colors hover:bg-success/85"
 					>
-						Next problem
+						{t("nextProblem")}
 						<ArrowRightIcon className="size-4" />
 					</button>
 				) : (
 					<button
 						type="submit"
-						aria-label={busy && !canSend ? "Stop" : "Send"}
+						aria-label={busy && !canSend ? t("stop") : t("send")}
 						disabled={!busy && !canSend}
 						className={cn(
 							"flex size-10 shrink-0 items-center justify-center rounded-[10px] transition-colors",

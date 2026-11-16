@@ -115,6 +115,7 @@ import {
 	toOffSliderPosition,
 	toSliderPosition,
 } from "@/src/core";
+import { useT } from "@/i18n/use-t.ts";
 
 /** The uniform node look (no state classes — canvas wants hex, not oklch):
  *  the accent color, until the state model lands. */
@@ -305,6 +306,7 @@ export function displayCostTotals(costs: Pick<GraphCostSummary, "stages">): {
 /** Exported for the chains home (graph rendering off, owner
  * 2026-10-06): the same bare cumulative-dollars pill + panel. */
 export function GraphCostControl({ costs }: { costs: GraphCostSummary }) {
+	const t = useT("graph");
 	const [open, setOpen] = useState(false);
 	// Click anywhere outside (or Escape) closes the panel — the root
 	// wraps button + panel, so the toggle itself keeps working.
@@ -315,7 +317,7 @@ export function GraphCostControl({ costs }: { costs: GraphCostSummary }) {
 		<div ref={rootRef} className="relative">
 			<Hint
 				// Trimmed (owner, subtlety round 2026-09-25).
-				label="Graph costs — click for details"
+				label={t("graphCostsHint")}
 				side="bottom"
 			>
 				<button
@@ -420,6 +422,7 @@ function GraphSettingsControl({
 	settings: GraphRenderSettings;
 	changeSettings: (update: (cur: RenderSettings) => RenderSettings) => void;
 }) {
+	const t = useT("graph");
 	const [open, setOpen] = useState(false);
 	// Click anywhere outside (or Escape) closes the panel (2026-09-17) —
 	// the root wraps button + panel, so the toggle itself keeps working.
@@ -432,7 +435,7 @@ function GraphSettingsControl({
 		<div ref={rootRef} className="relative">
 			<Hint
 				// User language (tooltip wave) — "rendering" is internal.
-				label="Graph display settings"
+				label={t("displaySettingsHint")}
 				side="bottom"
 			>
 				<button
@@ -465,7 +468,7 @@ function GraphSettingsControl({
 							    number — src/core/render-settings.ts). Physics keeps the
 							    fine-grained log sliders (step 5). */}
 							<SettingSlider
-								label="Node size"
+								label={t("nodeSize")}
 								min={0}
 								max={100}
 								step={10}
@@ -475,7 +478,7 @@ function GraphSettingsControl({
 									changeSettings((cur) => ({ ...cur, nodeSize: fromLadderPosition(p, NODE_SIZE_LADDER) }))}
 							/>
 							<SettingSlider
-								label="Edge width"
+								label={t("edgeWidth")}
 								min={0}
 								max={100}
 								step={10}
@@ -485,7 +488,7 @@ function GraphSettingsControl({
 									changeSettings((cur) => ({ ...cur, edgeWidth: fromLadderPosition(p, EDGE_WIDTH_LADDER) }))}
 							/>
 							<SettingSlider
-								label="Arrowhead size"
+								label={t("arrowheadSize")}
 								min={0}
 								max={100}
 								step={10}
@@ -495,7 +498,7 @@ function GraphSettingsControl({
 									changeSettings((cur) => ({ ...cur, arrowLength: fromLadderPosition(p, ARROW_LENGTH_LADDER) }))}
 							/>
 							<SettingSlider
-								label="Label size"
+								label={t("labelSize")}
 								min={0}
 								max={100}
 								step={10}
@@ -506,7 +509,7 @@ function GraphSettingsControl({
 							/>
 							{/* Display is absolute (ratio / 0.5): "1×" is the default, dead-center (owner, 2026-10-07). */}
 							<SettingSlider
-								label="Labels until zoom"
+								label={t("labelsUntilZoom")}
 								min={0}
 								max={100}
 								step={10}
@@ -527,7 +530,7 @@ function GraphSettingsControl({
 								Regions
 							</span>
 							<label className="flex cursor-pointer items-center justify-between text-[11px] text-muted-foreground">
-								<span>Background colors</span>
+								<span>{t("backgroundColors")}</span>
 								<input
 									type="checkbox"
 									checked={settings.regions.enabled}
@@ -540,7 +543,7 @@ function GraphSettingsControl({
 								/>
 							</label>
 							<SettingSlider
-								label="Dilation"
+								label={t("dilation")}
 								disabled={!regionTuning.enabled}
 								min={0}
 								max={100}
@@ -569,7 +572,7 @@ function GraphSettingsControl({
 								}
 							/>
 							<SettingSlider
-								label="Edge alpha"
+								label={t("edgeAlpha")}
 								disabled={!regionTuning.enabled}
 								min={0}
 								max={100}
@@ -585,7 +588,7 @@ function GraphSettingsControl({
 							<label
 								className={`flex items-center justify-between gap-2 text-[11px] text-muted-foreground${!regionTuning.enabled ? " opacity-40" : ""}`}
 							>
-								<span>Bitmap resolution</span>
+								<span>{t("bitmapResolution")}</span>
 								<select
 									disabled={!regionTuning.enabled}
 									className="rounded-md border bg-background px-1.5 py-0.5 text-xs tabular-nums text-foreground"
@@ -610,7 +613,7 @@ function GraphSettingsControl({
 							    their own clusterLabels toggle. Size is screen px
 							    (constant at any zoom, unlike node labels). */}
 							<label className="flex cursor-pointer items-center justify-between text-[11px] text-muted-foreground">
-								<span>Cluster labels</span>
+								<span>{t("clusterLabels")}</span>
 								<input
 									type="checkbox"
 									checked={settings.clusterLabels}
@@ -619,7 +622,7 @@ function GraphSettingsControl({
 								/>
 							</label>
 							<SettingSlider
-								label="Cluster label size"
+								label={t("clusterLabelSize")}
 								disabled={!settings.clusterLabels}
 								min={0}
 								max={100}
@@ -648,7 +651,7 @@ function GraphSettingsControl({
 								Physics
 							</span>
 							<SettingSlider
-								label="Node repulsion"
+								label={t("nodeRepulsion")}
 								min={0}
 								max={100}
 								step={5}
@@ -661,7 +664,7 @@ function GraphSettingsControl({
 									}))}
 							/>
 							<SettingSlider
-								label="Edge attraction"
+								label={t("edgeAttraction")}
 								min={0}
 								max={100}
 								step={5}
@@ -674,7 +677,7 @@ function GraphSettingsControl({
 									}))}
 							/>
 							<SettingSlider
-								label="Edge length"
+								label={t("edgeLength")}
 								min={0}
 								max={100}
 								step={5}
@@ -687,7 +690,7 @@ function GraphSettingsControl({
 									}))}
 							/>
 							<SettingSlider
-								label="Central pull"
+								label={t("centralPull")}
 								min={0}
 								max={100}
 								step={5}
@@ -700,7 +703,7 @@ function GraphSettingsControl({
 									}))}
 							/>
 							<SettingSlider
-								label="Cluster pull"
+								label={t("clusterPull")}
 								min={0}
 								max={100}
 								step={5}
@@ -713,7 +716,7 @@ function GraphSettingsControl({
 									}))}
 							/>
 							<SettingSlider
-								label="Friction"
+								label={t("friction")}
 								min={0}
 								max={100}
 								step={5}
@@ -742,12 +745,12 @@ function GraphSettingsControl({
 									}
 								>
 									<option value="off">Off</option>
-									<option value="vertical">Vertical (up)</option>
-									<option value="radial">Radial (outward)</option>
+									<option value="vertical">{t("verticalUp")}</option>
+									<option value="radial">{t("radialOutward")}</option>
 								</select>
 							</label>
 							<SettingSlider
-								label="Depth strength"
+								label={t("depthStrength")}
 								disabled={physicsTuning.depthMode === "off"}
 								min={0}
 								max={100}
@@ -761,7 +764,7 @@ function GraphSettingsControl({
 									}))}
 							/>
 							<SettingSlider
-								label="Depth spacing"
+								label={t("depthSpacing")}
 								disabled={physicsTuning.depthMode === "off"}
 								min={0}
 								max={100}
@@ -775,7 +778,7 @@ function GraphSettingsControl({
 									}))}
 							/>
 							<SettingSlider
-								label="Base ring radius"
+								label={t("baseRingRadius")}
 								disabled={physicsTuning.depthMode !== "radial"}
 								min={0}
 								max={100}
@@ -831,13 +834,14 @@ export function GraphChromeRow({
 	 *  2026-09-29). */
 	onOpenChains: () => void;
 }) {
+	const t = useT("graph");
 	return (
 		<>
 			{!isEmpty && (
 				<div className="graph-chrome-fade-in w-56 min-w-0 shrink rounded-xl border bg-card/85 px-1 py-[3px] shadow-lg backdrop-blur">
 					<Hint
 						// ⌘F focuses node search (surface-scoped registry action).
-						label="Search nodes"
+						label={t("searchNodes")}
 						action="find"
 						side="bottom"
 					>
@@ -847,22 +851,22 @@ export function GraphChromeRow({
 							ref={searchInputRef}
 							value={query}
 							onChange={(e) => onQuery(e.target.value)}
-							placeholder="Search nodes…"
-							aria-label="Search nodes"
+							placeholder={t("searchNodesPlaceholder")}
+							aria-label={t("searchNodes")}
 							spellCheck={false}
 							className="h-7 w-full rounded-lg border bg-background pl-8 text-xs outline-none placeholder:text-muted-foreground focus:border-ring"
 						/>
 					</div>
 					</Hint>
 					{noMatch && (
-						<div className="px-1.5 pt-1 text-[11px] text-muted-foreground">No matching nodes.</div>
+						<div className="px-1.5 pt-1 text-[11px] text-muted-foreground">{t("noMatchingNodes")}</div>
 					)}
 				</div>
 			)}
 			{/* The chain table (chains overlay, owner plan 2026-09-29). Own
 			    container (36px band), between the search and Import. */}
 			<div className="graph-chrome-fade-in shrink-0 rounded-xl border bg-card/85 px-1 py-[3px] shadow-lg backdrop-blur">
-					<Hint label="Every reasoning chain" side="bottom">
+					<Hint label={t("everyReasoningChain")} side="bottom">
 						<button
 							type="button"
 							onClick={onOpenChains}
@@ -961,6 +965,7 @@ export function GraphView({
 	onPracticeSelectionChange?: (nodes: { id: string; name: string; statement: string }[]) => void;
 	onChainSelectClose?: () => void;
 }) {
+	const t = useT("graph");
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const interactions = useInteractionLayers();
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -1474,10 +1479,10 @@ export function GraphView({
 				<div className="flex h-full w-full items-center justify-center px-4">
 					<div className="flex flex-col items-center gap-3 text-center text-muted-foreground">
 						<WaypointsIcon className="size-10 opacity-40" strokeWidth={1.25} />
-						<div className="text-lg font-medium text-foreground">Knowledge graph</div>
+						<div className="text-lg font-medium text-foreground">{t("knowledgeGraph")}</div>
 						<div className="max-w-sm text-sm">
-							<p>Start a session to begin learning.</p>
-							<p className="mt-1 text-xs">Attach your material with the paperclip or drag and drop.</p>
+							<p>{t("startSessionToLearn")}</p>
+							<p className="mt-1 text-xs">{t("attachMaterial")}</p>
 						</div>
 					</div>
 				</div>
@@ -1631,7 +1636,7 @@ export function GraphView({
 					<NodeCardText name={selected.node.name} statement={selected.node.statement} />
 					{selected.sourceIds.length > 0 ? (
 						<div className="mt-3 flex flex-col gap-1">
-							<div className="text-xs text-muted-foreground">Sessions</div>
+							<div className="text-xs text-muted-foreground">{t("sessions")}</div>
 							{selected.sourceIds.map((sourceId) => {
 								// An imported-notes file: a STATIC entry — the path,
 								// plain text, never a link (no session to open).
@@ -1660,7 +1665,7 @@ export function GraphView({
 							})}
 						</div>
 					) : (
-						<div className="mt-3 text-xs text-muted-foreground">No sessions recorded.</div>
+						<div className="mt-3 text-xs text-muted-foreground">{t("noSessionsRecorded")}</div>
 					)}
 				</div>
 			)}

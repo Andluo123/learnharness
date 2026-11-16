@@ -11,6 +11,7 @@ import {
 	isSelectionRectVisible, observeSelectionActions, resolveSelectionActionPosition,
 	type RectLike, type SelectionActionPoint,
 } from "./selection-actions";
+import { useT } from "@/i18n/use-t.ts";
 
 /** One button on the toolbar. Cite is the first; side questions adds more. */
 export interface SelectionAction {
@@ -104,6 +105,7 @@ function selectionVisible(range: Range, viewport: HTMLElement): boolean {
 
 /** The floating toolbar over a tutor-text selection inside `viewport`. */
 export function SelectionToolbar({ viewport, actions }: { viewport: HTMLElement | null; actions: readonly SelectionAction[] }) {
+	const t = useT("selectionToolbar");
 	const controller = useOptionalInteractionLayers();
 	const [state, setState] = useState<{ capture: CapturedSelection; position: SelectionActionPoint } | null>(null);
 	const toolbarRef = useRef<HTMLDivElement>(null);
@@ -184,7 +186,7 @@ export function SelectionToolbar({ viewport, actions }: { viewport: HTMLElement 
 		<div
 			ref={toolbarRef}
 			role="toolbar"
-			aria-label="Selection actions"
+			aria-label={t("selectionActions")}
 			data-testid="selection-toolbar"
 			className="fixed z-50 flex max-w-[calc(100vw-1rem)] gap-1"
 			style={{ left: state.position.x, top: state.position.y }}

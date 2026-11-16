@@ -97,7 +97,8 @@ function fixture({ packaged = true, updaterMissing = false } = {}) {
 			}
 			if (id === "node:fs") return {
 				readFileSync: (file: string) => {
-					settingsReads.push(file);
+					// Normalize separators so the assertion is platform-independent.
+					settingsReads.push(file.replace(/\\/g, "/"));
 					if (settings instanceof Error) throw settings;
 					return settings;
 				}, mkdirSync() {}, appendFileSync() {},
@@ -120,7 +121,10 @@ function fixture({ packaged = true, updaterMissing = false } = {}) {
 		window: () => new FakeWindow(),
 		state: () => JSON.parse(JSON.stringify(run("updateState"))),
 		check: async (manual = false) => { run(`checkForUpdates({ manual: ${manual} })`); await Promise.resolve(); await Promise.resolve(); },
-		menuCheck: () => menu[0]!.submenu!.find(item => item.label === "Check for Updates…")!.click!(),
+		// The menu is LOCALIZED (zh-CN i18n wave), so locating the item by its
+		// English label would pin the test to one UI language. The item is the
+		// app menu's second entry by construction (about, check, sep, …).
+		menuCheck: () => (menu[0]!.submenu as Array<{ type?: string; click?: () => void }>).filter(item => item.type !== "separator")[1]!.click!(),
 	};
 }
 
@@ -131,6 +135,8 @@ describe("automatic-update preference gate", () => {
 		f.run("setupAutoUpdater()");
 		await f.check();
 		assert.equal(f.updater.checks, 0);
+		// ONE read here: this case calls setupAutoUpdater() alone, without
+		// main(), so the native-menu language read (zh-CN i18n wave) never runs.
 		assert.deepEqual(f.settingsReads, ["/fixture/custom-user-data-dev/data/settings.json"]);
 		await f.check(true);
 		assert.equal(f.updater.checks, 1);

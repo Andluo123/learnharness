@@ -55,6 +55,7 @@ import { NativeSubscriptionBackgroundAccess, SubscriptionConnections } from "@/c
 import { defaultOrderLevel, populateLevel, THINKING_LABEL } from "@/components/thinking-default";
 import { ThinkingMenuList } from "@/components/settings/model-menu";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
+import { useT } from "@/i18n/use-t.ts";
 
 /** The pickers' slot identity — same roster language as the Agent
  *  section's slot rows. */
@@ -160,6 +161,7 @@ export function SetupKeysBody({
 	isCustom?: boolean;
 	onCustomSaved?: () => void;
 }) {
+	const t = useT("setup");
 	return (
 		<div className="flex flex-col gap-3 px-6 py-5" data-testid="setup-stage-keys">
 			<p className="text-xs text-muted-foreground">
@@ -169,7 +171,7 @@ export function SetupKeysBody({
 				<div ref={menuAnchor} className="relative max-w-96">
 					<button
 						type="button"
-						aria-label="Provider"
+						aria-label={t("provider")}
 						data-testid="setup-key-provider"
 						aria-expanded={menuOpen}
 						onClick={onToggleMenu}
@@ -203,7 +205,7 @@ export function SetupKeysBody({
 								onKeyDown={(e) => {
 									if (e.key === "Enter" && value.trim()) onSave();
 								}}
-								placeholder="Paste key…"
+								placeholder={t("pasteKey")}
 								aria-label={`${provider.label} key`}
 								data-testid="setup-key-input"
 								disabled={saving}
@@ -228,7 +230,7 @@ export function SetupKeysBody({
 					</p>
 				)}
 			</div>
-			<div className="mt-2 border-t border-border/60 pt-4"><h3 className="mb-3 font-ui text-xs text-muted-foreground">Subscriptions</h3><SubscriptionConnections setup /></div>
+			<div className="mt-2 border-t border-border/60 pt-4"><h3 className="mb-3 font-ui text-xs text-muted-foreground">{t("subscriptions")}</h3><SubscriptionConnections setup /></div>
 		</div>
 	);
 }
@@ -258,6 +260,7 @@ export function SetupDialog(props: SetupDialogProps) {
 }
 
 function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
+	const t = useT("setup");
 	const controller = useInteractionLayers();
 	const { catalog, failed, refresh } = useModelCatalog();
 	const providerStageSeen = useRef(false);
@@ -431,17 +434,17 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 		onSave={() => void saveKey()}
 	/>;
 
-	return <HostDialog open onClose={() => { onClose(); return "closed"; }} aria-label="Set up your models"
+	return <HostDialog open onClose={() => { onClose(); return "closed"; }} aria-label={t("setupTitle")}
 		backdropProps={{ className: "fixed inset-0 z-50 flex items-center justify-center bg-background/80", "data-testid": "setup-backdrop" }}
 		frame={<div data-testid="setup-dialog"
 			className="settings-dialog-pop flex max-h-[85vh] w-[640px] max-w-[90vw] flex-col overflow-hidden rounded-md border border-border bg-card shadow-xl"
 			onClick={(e) => e.stopPropagation()} />}>
 				<header className="flex h-15 shrink-0 items-center gap-3 border-b border-border px-5">
-					<h2 className="font-title text-2xl tracking-tight">Set up your models</h2>
+					<h2 className="font-title text-2xl tracking-tight">{t("setupTitle")}</h2>
 					<Hint label="Close" binding="escape" side="left">
 <button
 						type="button"
-						aria-label="Close setup"
+						aria-label={t("closeSetup")}
 						data-testid="setup-close"
 						onClick={onClose}
 						className="ml-auto text-muted-foreground transition-colors hover:text-foreground"
@@ -457,7 +460,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 					</p>
 				)}
 				{stage === "loading" ? (
-					!failed && <p data-testid="setup-stage-loading" role="status" className="px-6 py-5 text-xs text-muted-foreground">Loading models…</p>
+					!failed && <p data-testid="setup-stage-loading" role="status" className="px-6 py-5 text-xs text-muted-foreground">{t("loadingModels")}</p>
 				) : stage === "keys" ? (
 					<div className="flex flex-col px-6 py-5">{keysBody}</div>
 				) : (
