@@ -63,7 +63,10 @@ import {
 	type LhMessage,
 	type ModelSlotName,
 } from "@/src/core";
-import { useT } from "@/i18n/use-t.ts";
+import { useT } from "@/i18n/use-t.ts";
+import { localizeError } from "@/i18n/error-messages.ts";
+import { useActiveLocale } from "@/i18n/use-active-locale.ts";
+import type { AppLocale } from "@/i18n/config.ts";
 import { PlanBlock, PlanPopup, latestTree } from "@/components/plan-block";
 import { PlanMarginalia, planExists } from "@/components/plan-window";
 import { MermaidOverlay, SessionMermaidContext, type SessionImage } from "@/components/session-overlay";
@@ -185,6 +188,7 @@ export const ChatActionsContext = createContext<{
 export function localizeRefusal(
 	message: string,
 	t: (key: string, values?: Record<string, unknown>) => string,
+	locale: AppLocale = "en",
 ): string {
 	try {
 		const body = JSON.parse(message) as { code?: unknown; provider?: unknown };
@@ -193,9 +197,11 @@ export function localizeRefusal(
 			return t("refusalProviderKey", { provider: body.provider });
 		}
 	} catch {
-		/* not a refusal envelope: keep the server text */
+		/* not a refusal envelope: fall through to the message map */
 	}
-	return message;
+	// Thrown logic-layer errors (session-core, hooks) carry English; the map
+	// covers the ones the UI actually surfaces. Unknown text passes through.
+	return localizeError(message, locale);
 }
 
 export function parseModelsRefusal(message: string | undefined): ModelSlotName[] | null {
@@ -318,9 +324,10 @@ export function Chat({
 	initialConfigured?: boolean;
 }) {
 	const t = useT("chat");
+	const activeLocale = useActiveLocale();
 	const localizedError = useCallback(
-		(message: string) => localizeRefusal(message, t),
-		[t],
+		(message: string) => localizeRefusal(message, t, activeLocale),
+		[t, activeLocale],
 	);
 	// Reattach plumbing (background-turn runner wave): the hook holds the
 	// settled terminal's callback — a stable ref assigned below, once

@@ -21,7 +21,7 @@ const ROOT = path.resolve(import.meta.dirname, "..");
 const SKIP_DIRS = new Set(["node_modules","dist",".next",".git","core-plugins","tests","docs"]);
 
 /** TypeScript noise that looks like copy but is not. */
-const NOISE = /^(Promise|RefObject|AnchorRect|PluginSubmission|Array\.from|ReturnType|Record<|HTML\w+Element)/;
+const NOISE = /^(Promise|RefObject|AnchorRect|PluginSubmission|Array\.from|ReturnType|Record<|HTML\w+Element|PluginActionContext|Extract$|T \| Promise)/;
 
 /** Files whose English strings are DELIBERATE fallbacks: module-level
  *  constants and pure functions cannot call a hook, so they keep the English
@@ -62,6 +62,15 @@ function looksLikeCopy(text) {
 	return /\s/.test(s) || /^[A-Z][a-z]+([ -][A-Za-z]+){0,5}$/.test(s);
 }
 
+/** Error strings already localized at display time (i18n/error-messages.ts). */
+function loadMappedErrors() {
+	try {
+		const src = readFileSync(path.join(ROOT, "i18n", "error-messages.ts"), "utf-8");
+		return new Set([...src.matchAll(/^\t"([^"]+)":/gm)].map((m) => m[1]));
+	} catch { return new Set(); }
+}
+const MAPPED_ERRORS = loadMappedErrors();
+
 const findings = [];
 
 function walk(dir) {
@@ -69,10 +78,23 @@ function walk(dir) {
 		if (SKIP_DIRS.has(entry.name)) continue;
 		const full = path.join(dir, entry.name);
 		if (entry.isDirectory()) { walk(full); continue; }
-		if (!/\.tsx$/.test(entry.name)) continue;
+		if (!/\.(tsx|ts)$/.test(entry.name)) continue;
 		scanFile(full);
 	}
 }
+
+/** Developer-facing throws (argument validation, registration contract)
+ *  stay English on purpose — they surface in the console, not the UI. */
+const DEV_ERROR = new RegExp([
+	// Plugin/component API contract violations — developer-facing, never UI copy.
+	"must be", "must export", "cannot", "nonempty", "requires", "require ",
+	"Invalid (event|argument|extension|answer|plugin)",
+	"registration", "mount must", "already registered",
+	"Duplicate (plugin|question|problem|submission)",
+	"reserved by the host", "placement must",
+	"Unknown plugin", "globally unique",
+	"used within", "Provider", "test fixture",
+].join("|"), "i");
 
 function scanFile(file) {
 	const lines = readFileSync(file, "utf-8").split("\n");
@@ -82,7 +104,15 @@ function scanFile(file) {
 		if (/\bt\(/.test(line)) return;                      // already translated
 
 		const add = (kind, text) => {
-			if (looksLikeCopy(text)) findings.push({ file, line: index + 1, kind, text });
+			if (!looksLikeCopy(text)) return;
+			// .ts files are mostly logic: keep their developer throws in English.
+			// Thrown API-contract violations are developer-facing wherever they
+			// live (.ts OR .tsx) — they surface in the console, not the UI.
+			if (kind === "thrown" && DEV_ERROR.test(text)) return;
+			// banner (i18n/error-messages.ts). The throw site stays English by
+			// design — logic layers cannot call a hook.
+			if (kind === "thrown" && MAPPED_ERRORS.has(text)) return;
+			findings.push({ file, line: index + 1, kind, text });
 		};
 
 		// 1. JSX text nodes
@@ -103,9 +133,15 @@ function scanFile(file) {
 			add(`obj-${m[1]}`, m[2]);
 		}
 
-		// 5/6. bare string literal on its own line (constant / return value)
+		// 5/6. bare string literal (constant / return value / thrown message)
 		const bare = line.match(/^\s*(?:return\s+)?[?]?\s*[:]?\s*"([A-Z][^"]{4,200})"[,;)]?\s*$/);
 		if (bare) add("constant", bare[1]);
+		// thrown user-facing message (common in .ts logic files)
+		const thrown = line.match(/throw new (?:Error|TypeError|RangeError)\(\s*["']([A-Z][^"']{8,200})["']/);
+		if (thrown) add("thrown", thrown[1]);
+		// a plain message string assigned to an error/state field
+		const msgField = line.match(/\b(message|errorMessage|detail):\s*["']([A-Z][^"']{8,200})["']/);
+		if (msgField) add("msg-" + msgField[1], msgField[2]);
 	});
 }
 
