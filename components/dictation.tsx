@@ -615,12 +615,10 @@ export function useDictation({ append, destination = "primary", disabled = false
 			worklet.connect(ctx.destination);
 		} catch (e) {
 			if (gen !== genRef.current) return;
-			const msg =
-				e instanceof DOMException && (e.name === "NotAllowedError" || e.name === "SecurityError")
-					? t("micPermissionDenied")
-					: e instanceof Error
-						? e.message
-						: t("micUnavailable");
+			// Browser DOMException messages are ENGLISH and developer-worded
+			// ("Requested device not found"). Map the ones users actually hit
+			// instead of leaking the raw text into a Chinese UI.
+			const msg = describeMicError(e, t);
 			setError(msg);
 			cleanup();
 			return;
@@ -631,7 +629,7 @@ export function useDictation({ append, destination = "primary", disabled = false
 			token = await tokenPromise;
 		} catch (e) {
 			if (gen !== genRef.current) return;
-			setError(e instanceof Error ? e.message : "token unavailable");
+			setError(e instanceof Error ? e.message : t("sttTokenUnavailable"));
 			cleanup();
 			return;
 		}
@@ -865,4 +863,37 @@ export function DictationBar({ dictation, disabled = false }: { dictation: Dicta
 			</div>
 		</div>
 	);
+}
+
+/** Turn a getUserMedia / AudioContext failure into UI copy.
+ *
+ *  The browser's own DOMException.message is English and phrased for
+ *  developers ("Requested device not found", "Permission denied"), so it
+ *  must not reach the interface verbatim. Known names map to catalog keys;
+ *  an unknown failure keeps its message (an operator still needs the real
+ *  text) but is prefixed so the user knows it came from the browser.
+ */
+function describeMicError(
+	error: unknown,
+	t: (key: string) => string,
+): string {
+	if (error instanceof DOMException || (error instanceof Error && "name" in error)) {
+		switch ((error as Error).name) {
+			case "NotAllowedError":
+			case "SecurityError":
+				return t("micPermissionDenied");
+			case "NotFoundError":
+			case "DevicesNotFoundError":
+				return t("micNotFound");
+			case "NotReadableError":
+			case "TrackStartError":
+				return t("micBusy");
+			case "OverconstrainedError":
+				return t("micUnsupported");
+			case "AbortError":
+				return t("micAborted");
+		}
+	}
+	if (error instanceof Error && error.message) return error.message;
+	return t("micUnavailable");
 }

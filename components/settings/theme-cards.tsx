@@ -141,7 +141,7 @@ export function ThemeCards({
 					className="flex h-7 shrink-0 items-center gap-2 rounded-sm border border-border bg-background px-2 font-ui text-xs text-foreground transition-colors hover:border-muted-foreground/50"
 				>
 					<DownloadIcon className="size-3.5" />
-					Export JSON
+					{t("exportJson")}
 				</button>
 			</div>
 			<div className="grid grid-cols-3 gap-3">

@@ -465,7 +465,12 @@
 		"language": "语言",
 		"searchLanguages": "搜索语言…",
 		"micPermissionDenied": "麦克风权限被拒绝",
-		"micUnavailable": "麦克风不可用"
+		"micUnavailable": "麦克风不可用",
+		"micNotFound": "未找到麦克风 —— 请连接后重试",
+		"micBusy": "麦克风正被其他应用占用",
+		"micUnsupported": "此麦克风不支持所需的参数设置",
+		"micAborted": "麦克风访问被中断",
+		"sttTokenUnavailable": "语音服务不可用 —— 请在「设置 → 服务提供商」中添加 Deepgram 密钥"
 	},
 	"shortcuts": {
 		"title": "键盘快捷键",
@@ -817,7 +822,8 @@
 		"resetAll": "全部重置",
 		"rebindError": "请使用 Mod/Alt 组合键或功能键。Escape、Tab 与 Enter 为保留键。",
 		"pluginUnavailable": "此插件操作已不可用。",
-		"inactive": "未激活"
+		"inactive": "未激活",
+		"resetAllDefaults": "全部恢复默认"
 	},
 	"settingsPluginPage": {
 		"loadingSettings": "正在加载插件设置…",
@@ -827,7 +833,8 @@
 	"settingsThemes": {
 		"theme": "主题",
 		"importJson": "导入 JSON",
-		"remove": "移除"
+		"remove": "移除",
+		"exportJson": "导出 JSON"
 	},
 	"settingsModelMenu": {
 		"searchModels": "搜索模型…",

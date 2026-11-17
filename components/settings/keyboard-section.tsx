@@ -201,7 +201,7 @@ export function KeyboardSection() {
 					data-testid="kbd-reset-all"
 					className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
 				>
-					Reset all to defaults
+					{t("resetAllDefaults")}
 				</button>
 			</div>
 		</>

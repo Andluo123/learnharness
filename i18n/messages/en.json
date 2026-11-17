@@ -465,7 +465,12 @@
 		"language": "Language",
 		"searchLanguages": "Search languages…",
 		"micPermissionDenied": "Microphone permission denied",
-		"micUnavailable": "mic unavailable"
+		"micUnavailable": "mic unavailable",
+		"micNotFound": "No microphone found — connect one and try again",
+		"micBusy": "The microphone is busy in another app",
+		"micUnsupported": "This microphone does not support the required settings",
+		"micAborted": "Microphone access was interrupted",
+		"sttTokenUnavailable": "Speech service is unavailable — add a Deepgram key in Settings → Providers"
 	},
 	"shortcuts": {
 		"title": "Keyboard shortcuts",
@@ -817,7 +822,8 @@
 		"resetAll": "Reset all",
 		"rebindError": "Use a Mod/Alt chord or function key. Escape, Tab and Enter are reserved.",
 		"pluginUnavailable": "This plugin action is no longer available.",
-		"inactive": "Inactive"
+		"inactive": "Inactive",
+		"resetAllDefaults": "Reset all to defaults"
 	},
 	"settingsPluginPage": {
 		"loadingSettings": "Loading plugin settings…",
@@ -827,7 +833,8 @@
 	"settingsThemes": {
 		"theme": "Theme",
 		"importJson": "Import JSON",
-		"remove": "Remove"
+		"remove": "Remove",
+		"exportJson": "Export JSON"
 	},
 	"settingsModelMenu": {
 		"searchModels": "Search models…",
