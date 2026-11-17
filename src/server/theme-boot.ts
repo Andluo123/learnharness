@@ -25,5 +25,29 @@ export function readThemeBoot(): ThemeBoot {
 	const id = appearance?.theme;
 	const custom = id && !isBuiltinThemeId(id) ? themeStore.readTheme(id) : null;
 	const theme = resolveTheme(id, custom ? [custom] : []);
-	return { appearance, theme, vars: themeVars(effectiveColors(theme, appearance), theme.mode) };
+	const vars: Record<string, string> = themeVars(effectiveColors(theme, appearance), theme.mode);
+
+	// TYPE variables ride along with the colors (theme wave follow-up). The
+	// Appearance provider re-applies them on the client, but the FIRST PAINT
+	// happens before it mounts: a refresh used to flash Source Sans 3 over the
+	// user's chosen reading font (and 16px over their size) until hydration.
+	// Emitting them here makes the server render match the record.
+	const family = appearance?.fontFamily;
+	if (typeof family === "string" && family.trim()) {
+		vars["--font-prose"] = `"${family}", var(--font-sans3), ui-sans-serif, system-ui, sans-serif`;
+	}
+	if (typeof appearance?.proseFontSize === "number") {
+		vars["--lh-prose-size"] = `${appearance.proseFontSize}px`;
+	}
+	if (appearance?.codeLigatures !== undefined) {
+		vars["--lh-code-ligatures"] = appearance.codeLigatures ? "normal" : "none";
+	}
+	if (appearance?.sessionNameSerif === false) {
+		vars["--font-title"] = "var(--font-prose)";
+	}
+	if (typeof appearance?.mdRendering?.headingWeight === "number") {
+		vars["--lh-heading-weight"] = String(appearance.mdRendering.headingWeight);
+	}
+
+	return { appearance, theme, vars };
 }
