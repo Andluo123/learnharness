@@ -6,7 +6,7 @@ import { PaperclipIcon } from "lucide-react";
 import { directoryReferencePath, quoteFilePath } from "@/src/core";
 import { Hint } from "@/components/ui/hint";
 import { INSERT_FILE_PATHS_EVENT } from "@/components/path-input";
-import { BROWSER_NOTICE } from "@/components/file-path-drop-zone";
+import { BROWSER_NOTICE_KEY } from "@/components/file-path-drop-zone";
 import { InteractionLayerOwner, useInteractionLayer, useInteractionLayers, useOptionalInteractionLayers } from "./interaction-layers";
 import { INTERACTION_LAYER_Z_BASE } from "./host-dialog";
 import { isInteractionScopeEligible } from "./plugin-input-focus";
@@ -84,6 +84,8 @@ function AttachmentPopup({ anchorRef, rootRef, open, close, children }: {
  */
 export function AttachFilesButton({ editorRef }: { editorRef: React.RefObject<HTMLDivElement | null> }) {
 	const t = useT("attachFiles");
+	// The browser notice lives in the drop-zone catalog; resolve it there.
+	const dropZoneT = useT("dropZone");
 	const controller = useOptionalInteractionLayers();
 	const pickerRef = useRef<HTMLInputElement>(null);
 	const desktop = useDesktopPaths();
@@ -132,14 +134,14 @@ export function AttachFilesButton({ editorRef }: { editorRef: React.RefObject<HT
 		const choose = window.lh?.chooseAttachmentFolder;
 		setOpen(false);
 		setNotice("");
-		if (!choose) { setNotice(BROWSER_NOTICE); return; }
+		if (!choose) { setNotice(dropZoneT(BROWSER_NOTICE_KEY)); return; }
 		choosingFolder.current = true;
 		try {
 			const chosen = await choose();
 			if (chosen === null) return; // Native cancellation leaves the draft intact.
 			const path = directoryReferencePath(chosen);
 			if (editor?.isConnected && editor === editorRef.current) editor.dispatchEvent(new CustomEvent(INSERT_FILE_PATHS_EVENT, { detail: [path] }));
-		} catch { setNotice("Could not choose a folder. Try again."); }
+		} catch { setNotice(t("chooseFolderFailed")); }
 		finally { choosingFolder.current = false; }
 	};
 	return (
@@ -158,7 +160,7 @@ export function AttachFilesButton({ editorRef }: { editorRef: React.RefObject<HT
 					e.currentTarget.value = ""; // allow re-picking the same file
 				}}
 			/>
-			<Hint label={desktop ? "Attach files or a folder" : BROWSER_NOTICE}>
+			<Hint label={desktop ? t("attachHint") : dropZoneT(BROWSER_NOTICE_KEY)}>
 				<button
 					ref={buttonRef}
 					type="button"

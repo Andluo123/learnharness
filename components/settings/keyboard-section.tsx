@@ -93,7 +93,7 @@ export function KeyboardSection() {
 			if (!binding) return;
 			const next = nextOverrides(loadOverrides(), rebinding, binding);
 			if (rebinding.startsWith("plugin:")) {
-				if (!isPluginShortcutBinding(binding)) { setRebindError("Use a Mod/Alt chord or function key. Escape, Tab and Enter are reserved."); return; }
+				if (!isPluginShortcutBinding(binding)) { setRebindError(t("errors.e15")); return; }
 				const row = resolvePluginShortcuts(candidates, next, coreShortcutBindings(next)).find(row => row.id === rebinding);
 				if (!row || row.status !== "active") { setRebindError(row?.reason ?? "This plugin action is no longer available."); return; }
 			}

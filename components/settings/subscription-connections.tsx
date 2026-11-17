@@ -43,7 +43,7 @@ export function NativeSubscriptionUIProvider({ children }: { children: React.Rea
 				return next && (!old || next.revision >= old.revision) ? next : old ?? emptySubscriptionStatus(providerId);
 			});
 			statusesRef.current = accepted; setStatuses(accepted);
-		} catch { if (mounted.current && request === sequence.current) setError("The desktop connection is unavailable. Retry when the app is ready."); }
+		} catch { if (mounted.current && request === sequence.current) setError(t("errors.e12")); }
 	}
 	useEffect(() => {
 		mounted.current = true; void refresh();
@@ -80,7 +80,7 @@ export function NativeSubscriptionUIProvider({ children }: { children: React.Rea
 		if (!dialog || !bridge || operation || !status?.available) return;
 		const owner = ++generation.current; setOperation("login"); setError(null);
 		try { await bridge.login(dialog, backgroundDirty ? background : undefined); await refresh(); if (mounted.current && generation.current === owner) setDialog(null); }
-		catch { if (mounted.current && generation.current === owner) setError("Sign-in did not complete. Try connecting again."); }
+		catch { if (mounted.current && generation.current === owner) setError(t("errors.e17")); }
 		finally { if (mounted.current && generation.current === owner) setOperation(null); }
 	}
 	return <Context.Provider value={{ statuses, busy: !!operation, open }}>

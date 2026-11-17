@@ -830,7 +830,7 @@ function CustomEndpointEditor({
 			setKeyPresent(status.keyPresent);
 			setKeyReuseRequired(status.keyReuseRequired);
 			if (status.keySource === "env") setKey("");
-		}).catch(() => { if (!cancelled) setError("Unable to inspect effective key. Reload configuration and retry."); })
+		}).catch(() => { if (!cancelled) setError(t("errors.e16")); })
 			.finally(() => { if (!cancelled) setAuthLoading(false); });
 		return () => { cancelled = true; };
 	}, [authMode]);

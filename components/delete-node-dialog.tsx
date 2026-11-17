@@ -162,6 +162,7 @@ export function DeleteNodeDialog({
 	 *  selection-side callers can prune. */
 	onDeleted: (nodeIds: string[], graphRevision: number) => void;
 }) {
+	const t = useT("dialog");
 	const [busy, setBusy] = useState(false);
 	const hasItems = Boolean(nodes?.length || folders.length);
 	const [failure, setFailure] = useState<{ code: string; error: string } | null>(null);
@@ -211,7 +212,7 @@ export function DeleteNodeDialog({
 			if (removedFolders.length > 0) onFoldersDeleted?.(removedFolders);
 			onDeleted(dead, revision);
 		} catch (error) {
-			setFailure({ code: "network", error: folders.length > 0 && error instanceof Error ? error.message : "Delete failed — network error. Try again." });
+			setFailure({ code: "network", error: folders.length > 0 && error instanceof Error ? error.message : t("errors.e3") });
 			if (removedFolders.length > 0) onFoldersDeleted?.(removedFolders);
 			setBusy(false);
 			if (dead.length > 0) onDeleted(dead, revision);

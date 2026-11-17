@@ -426,7 +426,9 @@
 	"attachFiles": {
 		"attachFiles": "Attach files",
 		"files": "Files",
-		"folder": "Folder"
+		"folder": "Folder",
+		"attachHint": "Attach files or a folder",
+		"chooseFolderFailed": "Could not choose a folder. Try again."
 	},
 	"minimalHome": {
 		"startSessionToLearn": "Start a session to begin learning.",
@@ -496,7 +498,12 @@
 		"editComment": "Edit citation comment"
 	},
 	"dropZone": {
-		"dismissNotice": "Dismiss attachment notice"
+		"dismissNotice": "Dismiss attachment notice",
+		"browserNotice": "Local file paths can only be attached in the desktop app. You can paste a full path instead.",
+		"noLocalPaths": "No local file paths were available. Drop existing files or folders from your computer.",
+		"openChatFirst": "Open a chat to attach file paths.",
+		"someSkipped": "Some dropped items had no available file path.",
+		"dropToAttach": "Drop to attach file paths"
 	},
 	"graphContextCard": {
 		"graphContext": "Graph context"
@@ -854,7 +861,12 @@
 		"checkAgain": "Check again",
 		"setupLink": "Setup ↗",
 		"startsHint": "LearnHarness starts it when needed—no background process required.",
-		"verifyHint": "Verify AI claims independently—they may be inaccurate, incomplete, misleading, or outdated."
+		"verifyHint": "Verify AI claims independently—they may be inaccurate, incomplete, misleading, or outdated.",
+		"checking": "Checking…",
+		"notFound": "Not found",
+		"meetsMinimum": "Version {version} · meets minimum",
+		"updateRequired": "Version {version} · update required",
+		"checkFailed": "Version could not be checked"
 	},
 	"settingsSubs": {
 		"manage": "Manage",
@@ -999,5 +1011,24 @@
 		"practice": "Practice",
 		"appWide": "App-wide",
 		"views": "Views"
+	},
+	"errors": {
+		"e1": "Could not save source organization.",
+		"e2": "Could not delete sources.",
+		"e3": "Delete failed — network error. Try again.",
+		"e4": "Could not save dictation language. Try again.",
+		"e5": "Dictation transcript could not be applied",
+		"e6": "Deepgram reconnect failed",
+		"e7": "Dictation language unavailable",
+		"e8": "Could not reach the server — try again.",
+		"e9": "Value is outside the allowed range.",
+		"e10": "Enter a positive, safely representable whole number.",
+		"e11": "Enter an absolute path or ~/folder.",
+		"e12": "The desktop connection is unavailable. Retry when the app is ready.",
+		"e13": "Could not load Claude Code settings.",
+		"e14": "Could not save Claude Code settings.",
+		"e15": "Use a Mod/Alt chord or function key. Escape, Tab and Enter are reserved.",
+		"e16": "Unable to inspect effective key. Reload configuration and retry.",
+		"e17": "Sign-in did not complete. Try connecting again."
 	}
 }

@@ -426,7 +426,9 @@
 	"attachFiles": {
 		"attachFiles": "附加文件",
 		"files": "文件",
-		"folder": "文件夹"
+		"folder": "文件夹",
+		"attachHint": "附加文件或文件夹",
+		"chooseFolderFailed": "无法选择文件夹。请重试。"
 	},
 	"minimalHome": {
 		"startSessionToLearn": "开始一个会话，即可着手学习。",
@@ -496,7 +498,12 @@
 		"editComment": "编辑引用评论"
 	},
 	"dropZone": {
-		"dismissNotice": "关闭附件提示"
+		"dismissNotice": "关闭附件提示",
+		"browserNotice": "只能在桌面应用中附加本地文件路径。你也可以直接粘贴完整路径。",
+		"noLocalPaths": "没有可用的本地文件路径。请从电脑中拖入已存在的文件或文件夹。",
+		"openChatFirst": "请先打开一个会话以附加文件路径。",
+		"someSkipped": "部分拖入的项目没有可用的文件路径。",
+		"dropToAttach": "松开以附加文件路径"
 	},
 	"graphContextCard": {
 		"graphContext": "图谱上下文"
@@ -854,7 +861,12 @@
 		"checkAgain": "重新检查",
 		"setupLink": "设置 ↗",
 		"startsHint": "LearnHarness 会在需要时启动它 —— 无需常驻后台进程。",
-		"verifyHint": "请独立核实 AI 的说法 —— 它们可能不准确、不完整、具有误导性或已过时。"
+		"verifyHint": "请独立核实 AI 的说法 —— 它们可能不准确、不完整、具有误导性或已过时。",
+		"checking": "正在检查…",
+		"notFound": "未找到",
+		"meetsMinimum": "版本 {version} · 满足最低要求",
+		"updateRequired": "版本 {version} · 需要更新",
+		"checkFailed": "无法检查版本"
 	},
 	"settingsSubs": {
 		"manage": "管理",
@@ -999,5 +1011,24 @@
 		"practice": "练习",
 		"appWide": "全应用",
 		"views": "视图"
+	},
+	"errors": {
+		"e1": "无法保存来源整理信息。",
+		"e2": "无法删除来源。",
+		"e3": "删除失败 —— 网络错误。请重试。",
+		"e4": "无法保存听写语言。请重试。",
+		"e5": "无法应用语音转写结果",
+		"e6": "Deepgram 重连失败",
+		"e7": "听写语言不可用",
+		"e8": "无法连接服务器 —— 请重试。",
+		"e9": "数值超出允许范围。",
+		"e10": "请输入一个安全的正整数。",
+		"e11": "请输入绝对路径或 ~/文件夹。",
+		"e12": "桌面连接不可用。请在应用就绪后重试。",
+		"e13": "无法加载 Claude Code 设置。",
+		"e14": "无法保存 Claude Code 设置。",
+		"e15": "请使用 Mod/Alt 组合键或功能键。Escape、Tab 与 Enter 为保留键。",
+		"e16": "无法检查当前生效的密钥。请重新加载配置后重试。",
+		"e17": "登录未完成。请重新连接。"
 	}
 }

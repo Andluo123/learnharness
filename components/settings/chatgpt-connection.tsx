@@ -138,7 +138,7 @@ export function ChatGPTUIProvider({ children }: { children: React.ReactNode }) {
 			try {
 				const next: unknown = await bridge?.status();
 				if (next && mounted.current && request === statusSequence.current) receive.current(next);
-			} catch { if (mounted.current && request === statusSequence.current) setError("The desktop connection is unavailable. Retry when the app is ready."); }
+			} catch { if (mounted.current && request === statusSequence.current) setError(t("errors.e12")); }
 		};
 		void refresh();
 		const off = bridge?.onChange(() => void refresh());

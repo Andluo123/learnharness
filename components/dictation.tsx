@@ -444,7 +444,7 @@ export function useDictation({ append, destination = "primary", disabled = false
 			if (endGen !== genRef.current) return;
 			appendPendingRef.current = false;
 			appendFailureRef.current = failed;
-			if (failed) setError(failed.error instanceof Error ? failed.error.message : "Dictation transcript could not be applied");
+			if (failed) setError(failed.error instanceof Error ? failed.error.message : t("errors.e5"));
 			if (recordingOwner === owner) {
 				recordingOwner = null;
 				recordingTarget = null;
@@ -519,7 +519,7 @@ export function useDictation({ append, destination = "primary", disabled = false
 						})
 						.catch(() => {
 							if (gen === genRef.current) {
-								setError("Deepgram reconnect failed");
+								setError(t("errors.e6"));
 								cleanup();
 							}
 						});
@@ -556,7 +556,7 @@ export function useDictation({ append, destination = "primary", disabled = false
 			language = await getLanguage();
 		} catch (e) {
 			if (gen !== genRef.current) return;
-			setError(e instanceof Error ? e.message : "Dictation language unavailable");
+			setError(e instanceof Error ? e.message : t("errors.e7"));
 			cleanup();
 			return;
 		}

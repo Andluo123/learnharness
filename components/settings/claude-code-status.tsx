@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Toggle } from "./controls";
 import { useT } from "@/i18n/use-t.ts";
 
+/** Status copy as a KEY (module-level pure function — no hook). The render
+ *  path resolves it through settingsClaudeCode. */
 export function claudeCodeStatusLabel(status: ClaudeCodeStatus | null): string {
 	switch (status?.state) {
-		case "not-found": return "Not found";
-		case "meets-minimum": return `Version ${status.version} · meets minimum`;
-		case "update-required": return `Version ${status.version} · update required`;
-		default: return "Version could not be checked";
+		case "not-found": return "notFound";
+		case "meets-minimum": return "meetsMinimum";
+		case "update-required": return "updateRequired";
+		default: return "checkFailed";
 	}
 }
 
@@ -42,7 +44,7 @@ export function ClaudeCodeInstallationStatus() {
 				setError(null);
 			}
 		} catch {
-			if (!controller.signal.aborted) setError("Could not load Claude Code settings.");
+			if (!controller.signal.aborted) setError(t("errors.e13"));
 		}
 	}, []);
 	useEffect(() => {
@@ -68,7 +70,7 @@ export function ClaudeCodeInstallationStatus() {
 				notifySettingsSaved("claudeCode");
 			}
 		} catch {
-			if (!controller.signal.aborted) setError("Could not save Claude Code settings.");
+			if (!controller.signal.aborted) setError(t("errors.e14"));
 		} finally {
 			if (!controller.signal.aborted) setSaving(false);
 		}
@@ -108,7 +110,7 @@ export function ClaudeCodeInstallationStatus() {
 		{error && <p role="alert" className="text-xs text-error">{error}</p>}
 		{enabled && <>
 			<div className="flex flex-wrap items-center gap-3">
-				<span role="status" className="text-xs text-muted-foreground">{busy ? "Checking…" : claudeCodeStatusLabel(status)}</span>
+				<span role="status" className="text-xs text-muted-foreground">{busy ? t("checking") : t(claudeCodeStatusLabel(status))}</span>
 				<Button type="button" size="xs" variant="outline" className="cursor-pointer disabled:cursor-not-allowed" disabled={busy} onClick={() => void refresh()} data-testid="claude-code-check-again">{t("checkAgain")}</Button>
 			</div>
 			<p className="text-xs leading-relaxed text-muted-foreground"><strong className="font-medium">{t("installHint")} in your terminal, then select a Claude Code model here.</strong> {t("startsHint")}</p>

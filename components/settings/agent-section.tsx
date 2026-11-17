@@ -821,7 +821,7 @@ export function AgentSection({
 							// as an empty value. It is INVALID, not a blank reset.
 							if (event.target instanceof HTMLInputElement && event.target.validity.badInput) {
 								event.stopPropagation();
-								setWorkerConcurrencyError("Enter a positive, safely representable whole number.");
+								setWorkerConcurrencyError(t("errors.e10"));
 							}
 						}}
 					>
@@ -929,7 +929,7 @@ export function AgentSection({
 					const effectiveAgent = fileAccessError ? { ...agent, fileAccess: { restricted: true, folders } } : agent;
 					const addFolder = () => {
 						const next = folderInput.trim();
-						if (!isFolderEntry(next)) { setFolderError("Enter an absolute path or ~/folder."); return; }
+						if (!isFolderEntry(next)) { setFolderError(t("errors.e11")); return; }
 						if (!folders.includes(next)) onSectionChange(composeAddFolder(effectiveAgent, next));
 						setFolderInput("");
 						setFolderError(null);

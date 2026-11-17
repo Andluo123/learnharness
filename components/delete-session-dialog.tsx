@@ -94,7 +94,7 @@ export function DeleteSessionDialog({
 			}
 			onDeleted(chat.id, mode, body.graphRevision ?? 0);
 		} catch {
-			setFailure({ code: "network", error: "Delete failed — network error. Try again." });
+			setFailure({ code: "network", error: t("errors.e3") });
 			setBusy(false);
 		}
 	};
