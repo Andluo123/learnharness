@@ -472,7 +472,9 @@ export function SettingsDialogBody({
 									<LanguageSettings
 										value={record.general?.language ?? "zh-CN"}
 										onChange={(language) =>
-											void write("general", { ...record.general, language })
+											// RETURN the promise: LanguageSettings awaits it before
+											// refreshing, so the server re-read sees the new value.
+											write("general", { ...record.general, language })
 										}
 									/>
 									<UpdateSettings

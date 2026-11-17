@@ -45,7 +45,11 @@ export function LanguageSettings({
 	onChange,
 }: {
 	value: AppLocale;
-	onChange: (language: AppLocale) => void;
+	/** Persists the language. MUST resolve only after the record is on disk:
+	 *  the refresh below re-reads it server-side, and firing the refresh
+	 *  before the write lands sent the OLD locale back (switching to English
+	 *  then back to Chinese appeared to do nothing until a manual reload). */
+	onChange: (language: AppLocale) => void | Promise<unknown>;
 }) {
 	const t = useT("settingsGeneral");
 	const refresh = useOptionalRefresh();
@@ -76,8 +80,12 @@ export function LanguageSettings({
 							)}
 							onClick={() => {
 								if (active) return;
-								onChange(locale);
-								startTransition(() => refresh());
+								// ORDER IS THE FIX: persist first, then refresh. The
+								// refresh re-renders the server tree from the settings
+								// record, so it must observe the NEW value.
+								startTransition(async () => {
+									try { await onChange(locale); } finally { refresh(); }
+								});
 							}}
 						>
 							{LOCALE_LABELS[locale]}
