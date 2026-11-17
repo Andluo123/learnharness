@@ -91,15 +91,17 @@ export function composeInstructions(
 	switches?: Record<string, boolean>,
 	locale?: AppLocale,
 ): string {
-	const segments = effectivePromptSegments(kind, switches ?? {});
+	const segments = effectivePromptSegments(kind, switches ?? {}, locale);
 	const composed = segments
 		.map((s) => (s.enabled ? s.overrideText! : s.sourceText))
 		.map((t) => t.trim())
 		.filter(Boolean)
 		.join("\n\n---\n\n");
-	// THE TEACHING LANGUAGE (zh-CN i18n wave): the source prompts stay
-	// English; a locale directive is appended so the model writes its
-	// learner-facing output in the user's UI language.
+	// THE TEACHING LANGUAGE (zh-CN i18n wave): the SOURCE prompts now carry a
+	// translated sibling per language, so the composition itself is already
+	// Chinese when the UI is. The appended directive still states the rule
+	// explicitly — it also covers overrides the user wrote in English while
+	// running a Chinese UI.
 	return withTeachingLanguage(composed, locale);
 }
 
@@ -107,11 +109,12 @@ export function composeInstructions(
 // With promptSwitches provided, baseAgentOptions composes FRESH per turn —
 // an override file written while its switch is ON must flip the next
 // turn's composition; the cache serves only the switches-less path.
-const composedInstructions: Record<AgentKind, string> = {
-	prober: composeInstructions("prober"),
-	teacher: composeInstructions("teacher"),
-	practice: composeInstructions("practice"),
-};
+/** Switch-free composition. Composed FRESH per call — the file set is tiny
+ *  and a module-level cache leaked state across tests that mix locales
+ *  (a zh-CN call poisoned the byte-identical English pin). */
+function cachedComposition(kind: AgentKind, locale: AppLocale | undefined): string {
+	return composeInstructions(kind, undefined, locale);
+}
 
 // Money channel (wave 4): the chat-handler passes a per-turn collector;
 // every model call's usage lands in the chat record's turns log
@@ -226,7 +229,7 @@ function baseAgentOptions(kind: AgentKind, opts: AgentBuildOptions, tools: Agent
 	const narrationHooks = narrationGuard ? makeNarrationGuard() : undefined;
 	const composedPrompt = opts.promptSwitches
 		? composeInstructions(kind, opts.promptSwitches, opts.teachingLocale)
-		: withTeachingLanguage(composedInstructions[kind]!, opts.teachingLocale);
+		: cachedComposition(kind, opts.teachingLocale);
 	const builtinPrompt = narrationGuard ? `${composedPrompt}\n\n---\n\n${SEND_TO_USER_DELIVERY_RULE}` : composedPrompt;
 	// Bind native read and preserve the kind/model-aware Claude output gate
 	// before resolving additive plugins. Explicit registries remain caller-owned.

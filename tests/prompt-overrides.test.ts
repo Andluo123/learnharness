@@ -258,7 +258,11 @@ describe("composeInstructions: override honoring + the byte-identical source pat
 			const fragmentsOf = (dir: string) =>
 				fs
 					.readdirSync(dir)
-					.filter((f) => /^\d+-[\w.-]+\.md$/.test(f))
+					// The translated siblings (.zh-CN.md) must NOT register as
+					// fragments — the same rule as core/prompt-segments.ts's
+					// FRAGMENT_RE, mirrored here so the byte-identical pin
+					// compares English against English.
+					.filter((f) => /^\d+-[\w-]+\.md$/.test(f))
 					.sort()
 					.map((f) => fs.readFileSync(path.join(dir, f), "utf-8").trim())
 					.filter(Boolean);

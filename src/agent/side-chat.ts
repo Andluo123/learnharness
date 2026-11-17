@@ -22,6 +22,7 @@ import { backgroundCaptureStream, createBackgroundCapture } from "./background-c
 import { providerEventObserver } from "./provider-events.ts";
 import { PATHS } from "../../config.ts";
 import type { SideModelTurn } from "../core/side-chat.ts";
+import type { AppLocale } from "../../i18n/config.ts";
 import type { PiEngine } from "./models.ts";
 import { readPromptOverride } from "./prompt-segments.ts";
 
@@ -39,15 +40,27 @@ function readSource(file: string): string {
 	}
 }
 
+/** A file's translated sibling when one exists for this locale.
+ *  `00-base.zh-CN.md` sits beside `00-base.md`. An absent translation falls
+ *  back to the English source rather than blanking the segment. */
+function localizedSource(file: string, locale: AppLocale | undefined): string {
+	if (locale === undefined || locale === "en") return readSource(file);
+	const translated = file.replace(/\.md$/, ".zh-CN.md");
+	return fs.existsSync(translated) ? readSource(translated) : readSource(file);
+}
+
 /** The side model's system prompt, composed fresh per call (an override
  *  switched on between questions lands on the next one). */
-export function composeSideChatInstructions(switches: Record<string, boolean> = {}): string {
-	const segments = [readSource(SIDE_BASE)];
+export function composeSideChatInstructions(
+	switches: Record<string, boolean> = {},
+	locale?: AppLocale,
+): string {
+	const segments = [localizedSource(SIDE_BASE, locale)];
 	for (const key of SIDE_SHARED_FRAGMENTS) {
 		const override = switches[key] === true ? readPromptOverride(key) : null;
-		segments.push(override ?? readSource(path.join(PROMPTS_DIR, ...key.split("/"))));
+		segments.push(override ?? localizedSource(path.join(PROMPTS_DIR, ...key.split("/")), locale));
 	}
-	segments.push(readSource(SIDE_STYLE));
+	segments.push(localizedSource(SIDE_STYLE, locale));
 	return segments
 		.map((s) => s.trim())
 		.filter(Boolean)

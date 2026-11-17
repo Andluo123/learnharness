@@ -17,14 +17,21 @@
  */
 
 import { effectivePromptSegments, readSettingsRecord } from "@/src/server";
+import { isAppLocale, type AppLocale } from "@/i18n/config.ts";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-	const switches = readSettingsRecord()?.agent?.prompts ?? {};
+	const record = readSettingsRecord();
+	const switches = record?.agent?.prompts ?? {};
+	// The segment VIEW follows the UI language: with `zh-CN` the source text
+	// shown here is the translated sibling, so what the user reads in
+	// Settings is what the agent composes with.
+	const raw = record?.general?.language;
+	const locale: AppLocale | undefined = isAppLocale(raw) ? raw : undefined;
 	return Response.json({
-		prober: effectivePromptSegments("prober", switches),
-		teacher: effectivePromptSegments("teacher", switches),
-		practice: effectivePromptSegments("practice", switches),
+		prober: effectivePromptSegments("prober", switches, locale),
+		teacher: effectivePromptSegments("teacher", switches, locale),
+		practice: effectivePromptSegments("practice", switches, locale),
 	});
 }

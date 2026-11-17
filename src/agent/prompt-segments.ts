@@ -30,7 +30,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { PATHS, PROMPTS_OVERRIDE_DIR } from "../../config.ts";
-import { FRAGMENT_RE, isValidSegmentPath, type PromptAgent, type PromptSegmentInfo } from "../core/prompt-segments.ts";
+import { FRAGMENT_RE, isValidSegmentPath, TRANSLATED_BASE, translatedFragmentPath, type PromptAgent, type PromptSegmentInfo } from "../core/prompt-segments.ts";
+import type { AppLocale } from "../../i18n/config.ts";
 
 const PROMPTS_DIR = path.join(PATHS.root, "src", "agent", "prompts");
 
@@ -105,11 +106,17 @@ export function listSourceSegments(agent: PromptAgent): Array<{ path: string; sh
 export function effectivePromptSegments(
 	agent: PromptAgent,
 	switches: Record<string, boolean>,
+	locale?: AppLocale,
 ): PromptSegmentInfo[] {
 	return listSourceSegments(agent).map((segment) => {
 		let sourceText: string;
 		try {
-			sourceText = fs.readFileSync(segment.file, "utf-8");
+			// TRANSLATED SIBLINGS (zh-CN wave): when the UI language is not
+			// English and a `<fragment>.zh-CN.md` sits beside the source, that
+			// file IS the source text for this locale. Falling back to the
+			// English source keeps an untranslated fragment usable instead of
+			// blanking it.
+			sourceText = fs.readFileSync(sourceFor(segment, locale), "utf-8");
 		} catch {
 			sourceText = ""; // source unreadable — the agent loader would crash anyway
 		}
@@ -122,6 +129,24 @@ export function effectivePromptSegments(
 			shared: segment.shared,
 		};
 	});
+}
+
+/** Which file supplies a segment's SOURCE text for a locale.
+ *
+ *  `system-prompt.md` has a fixed sibling name; numeric fragments derive
+ *  theirs from the path. An absent translation is not an error — the English
+ *  source stays authoritative. */
+function sourceFor(segment: { path: string; file: string }, locale: AppLocale | undefined): string {
+	// `undefined` is the switches-less/pre-compiled path: it must stay
+	// byte-identical to the old loader (tests pin that), so it ALWAYS reads
+	// the English source. Only an EXPLICIT `zh-CN` (a live turn from a
+	// Chinese UI) selects the translated sibling.
+	if (locale !== "zh-CN") return segment.file;
+	const translated = segment.path === "system-prompt.md"
+		? path.join(path.dirname(segment.file), TRANSLATED_BASE)
+		: translatedFragmentPath(segment.file);
+	if (!translated) return segment.file;
+	return fs.existsSync(translated) ? translated : segment.file;
 }
 
 /** Every known segment path across both agents (route validation). */

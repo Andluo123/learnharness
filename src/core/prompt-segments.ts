@@ -13,8 +13,30 @@
  * (e.g. 20-teaching.md). POSIX-relative, no traversal, no nesting.
  */
 
-/** A prompt fragment: numeric order key + .md (e.g. 20-teaching.md). Nothing else loads. */
-export const FRAGMENT_RE = /^\d+-[\w.-]+\.md$/;
+/** A prompt fragment: numeric order key + .md (e.g. 20-teaching.md). Nothing else loads.
+ *
+ *  TRANSLATIONS ARE SIBLINGS (zh-CN wave): `20-teaching.zh-CN.md` is the
+ *  Chinese rendering of `20-teaching.md`. The pattern deliberately EXCLUDES
+ *  a language suffix so a translated file never registers as its own
+ *  segment — discovery keeps one entry per logical fragment and picks the
+ *  text by language. */
+export const FRAGMENT_RE = /^\d+-[\w-]+\.md$/;
+
+/** The language suffix a translated fragment carries (before .md). */
+export const LOCALE_SUFFIX = ".zh-CN.md";
+
+/** The translated sibling of a source fragment path, or null when the
+ *  basename is not a fragment (system-prompt.md has its own fixed name).
+ *  Pure string work — this module stays importable without node:path. */
+export function translatedFragmentPath(file: string): string | null {
+	const slash = Math.max(file.lastIndexOf("/"), file.lastIndexOf("\\"));
+	const base = slash >= 0 ? file.slice(slash + 1) : file;
+	if (!FRAGMENT_RE.test(base)) return null;
+	return file.replace(/\.md$/, LOCALE_SUFFIX);
+}
+
+/** The fixed translated sibling of the shared base prompt. */
+export const TRANSLATED_BASE = "system-prompt.zh-CN.md";
 
 /** Which agent's prompt directory to compose. */
 /** Practice (2026-10-04): composes ONLY its own directory — no shared
