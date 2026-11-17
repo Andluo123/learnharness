@@ -638,7 +638,8 @@
 		"noModelsHint": "没有可用模型 —— 请先在「服务提供商」中添加密钥",
 		"tierFooter": "用于此层级的所有代理",
 		"usedBy": "使用方：{users}",
-		"promptInUse": "使用中"
+		"promptInUse": "使用中",
+		"promptsHint": "每一行是代理指令的一个片段。点「显示原文」可以查看，编辑并保存后会生成你自己的版本；此时该行的开关才可用，用于在「你的版本」与「内置版本」之间切换。"
 	},
 	"settingsKeys": {
 		"pasteKey": "粘贴密钥…",

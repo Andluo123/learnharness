@@ -638,7 +638,8 @@
 		"noModelsHint": "No models — add a provider key in Keys",
 		"tierFooter": "Runs every agent of this tier",
 		"usedBy": "Used by {users}",
-		"promptInUse": "In use"
+		"promptInUse": "In use",
+		"promptsHint": "Each row shows a fragment of the agent's instructions. Show the text, edit it and save to create your own version — the switch then lets you flip between your version and the built-in one."
 	},
 	"settingsKeys": {
 		"pasteKey": "Paste key…",

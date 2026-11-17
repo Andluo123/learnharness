@@ -1060,6 +1060,13 @@ export function AgentSection({
 			</SettingsGroup>
 
 			<SettingsGroup label={t("systemPrompts")} testid="group-prompts">
+				{/* One line for the whole section (owner: per-row hints were noise).
+				    The disabled switches confused the owner — the switch does NOT
+				    enable a fragment, it picks between YOUR saved version and the
+				    built-in one, so it only arms once an override file exists. */}
+				<p className="mb-1 text-xs leading-relaxed text-muted-foreground/70">
+					{t("promptsHint")}
+				</p>
 				{prompts === null ? (
 					<p className="text-xs text-muted-foreground/70">{t("loadingSegments")}</p>
 				) : (
