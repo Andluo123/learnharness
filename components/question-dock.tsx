@@ -917,10 +917,30 @@ function QuestionDockForm({
 	// shared by both arrangements; the refs feed the layout probe.
 	const questionPart = (
 		<div ref={questionPartRef} data-question-part="">
-			<div className={QC_LABEL}>
-				{questionCardLabel(toolName, kind, qd.questionType)}
-				{qd.mode === "multi-select" && " · select all that apply"}
+			<div className="mb-1 flex items-start justify-between gap-2">
+				<span className={QC_LABEL}>
+					{toolName === "probe"
+						? t("probeLabel")
+						: toolName === "recall"
+							? t("recallLabel")
+							: kind === "quiz"
+								? qd.questionType === "predict"
+									? t("predictionLabel")
+									: t("checkLabel")
+								: kind === "explain"
+									? t("explainLabel")
+									: t("questionLabel")}
+					{qd.mode === "multi-select" && t("selectAllThatApply")}
+				</span>
+				{/* The question and its options read together — one passage, one voice. */}
+				<SpeakButton
+					text={[qd.question, qd.context, ...qd.options.map((opt) => opt.label)].filter(Boolean).join("\n")}
+					label={`question-${qd.id ?? "current"}`}
+				/>
 			</div>
+			{/* The question's own figure ABOVE the text (owner, 2026-11-18):
+			    a geometry problem shows its diagram first, like the textbook. */}
+			{questionFigure && <QuizFigureImage figure={questionFigure} size="question" />}
 			<div className={QC_QUESTION}>
 				<ToolContentResponse>{qd.question}</ToolContentResponse>
 			</div>
