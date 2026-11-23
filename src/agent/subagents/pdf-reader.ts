@@ -42,10 +42,15 @@ Reading doctrine — always in this order:
      math_density or images (you read equations and diagrams visually, not as extracted text).
    - MEDIUM (11-40 pages): extract promising pages; render only flagged pages (math- or
      image-heavy, or where extraction looks thin).
-   - LONG (> 40 pages): pdf_search for the question's key terms first; extract and render only
-     the pages that hit. Never read a long document front-to-back.
-3. When the extracted text of a page looks math- or diagram-heavy, or garbled, RENDER that
-   page and read it visually before drawing conclusions from it.
+   - LONG (> 40 pages): pdf_search for the question's key terms FIRST; extract and render ONLY
+     the pages that hit. NEVER read a long document front-to-back, and NEVER render page after
+     page in batches — that wastes minutes and floods your context without improving the brief.
+3. TEXT FIRST, RENDER SPARINGLY: pdf_extract preserves equations and prose as Markdown. Use it
+   as your primary reading. RENDER a page ONLY when its extracted text is garbled, or when the
+   question genuinely needs the visual layout (a diagram/figure you must describe). Render at most
+   12 pages in the whole task — this cap is enforced; further pdf_render calls are refused. A
+   textbook question about a theorem is answerable from extracted text plus 1-2 rendered example
+   pages, not from rendering the entire book.
 4. Render DPI guidance: 100 for text-dominant pages, 150 the default, 200 for dense small
    print (math details, fine diagrams).
 
@@ -61,6 +66,10 @@ extracted or rendered.`;
 /** Rendered pages per pdf_render call — the skill renders selectively; a
  *  batch cap keeps one over-eager call from flooding the vision context. */
 const RENDER_BATCH_CAP = 6;
+/** Hard cap on total pages rendered in ONE pdf job — the render-total safety net:
+ *  a reader that keeps rendering page batches is refused after this many, so a single
+ *  oversized document cannot monopolize the activity dock for minutes. */
+const RENDER_TOTAL_CAP = 12;
 /** Extract output ceiling — narrow the spec instead of dumping a book. */
 const EXTRACT_CAP = 24_000;
 
@@ -211,6 +220,8 @@ export async function runPdfReaderAgent(
 	 *  Search-hit context lines consult but don't read (the "78 pages
 	 *  consulted" overstatement split, sources v1 2026-09-19). */
 	const read = new Set<number>();
+/** Pages actually rendered to images this job (hard-capped by RENDER_TOTAL_CAP). */
+	let renderedCount = 0;
 	let finalText = "";
 	let nudged = false;
 	let captureError: unknown;
@@ -298,8 +309,17 @@ export async function runPdfReaderAgent(
 						const spec = String(args.pages ?? "1");
 						const dpi = numOr(args.dpi, 150);
 						const wanted = specNumbers(spec, RENDER_BATCH_CAP);
+						// Hard cap: refuse further renders once the job has rendered RENDER_TOTAL_CAP pages.
+						if (renderedCount >= RENDER_TOTAL_CAP) {
+						toolResults.push(toolText(call.id, call.name,
+						`Render budget reached (${RENDER_TOTAL_CAP} pages already rendered). Do NOT render more pages — ` +
+						`answer from the text you have already extracted. Use pdf_extract for any further reading.`));
+						continue;
+						}
 						opts.onActivity?.(`pdf_render: ${spec} @${dpi}dpi`);
-						const pages = await headless.renderPdfPages(pdfPath, wanted, { dpi });
+						const remaining = RENDER_TOTAL_CAP - renderedCount;
+						const pages = await headless.renderPdfPages(pdfPath, wanted.slice(0, remaining), { dpi });
+						renderedCount += pages.length;
 						const processed: { page: number; image: ProcessImageResult }[] = [];
 						for (const p of pages) {
 							const image = await processImage(p.png, "image/png", { resizeOptions: engine.model.inputLimits?.images?.resize });

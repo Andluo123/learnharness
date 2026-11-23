@@ -205,6 +205,21 @@ describe("pdf-reader loop (faux engine)", () => {
 		assert.deepEqual(headless.calls, ["render:2,3"]);
 	});
 
+	it("render budget caps total pages across multiple pdf_render calls", async () => {
+		const headless = fakeHeadless();
+		const engine = fauxEngine([
+			fauxAssistantMessage([fauxToolCall("pdf_render", { pages: "1-6", dpi: 150 }, { id: "r1" })], { stopReason: "toolUse" }),
+			fauxAssistantMessage([fauxToolCall("pdf_render", { pages: "7-12", dpi: 150 }, { id: "r2" })], { stopReason: "toolUse" }),
+			// third call must be refused by the hard cap
+			fauxAssistantMessage([fauxToolCall("pdf_render", { pages: "13-18", dpi: 150 }, { id: "r3" })], { stopReason: "toolUse" }),
+			fauxAssistantMessage([fauxText("Done from the text already gathered (p. 1).")]),
+		]);
+		await runPdfReaderAgent({ path: FIXTURE, question: "cap test" }, { engine, headless });
+		const rendered = headless.calls.filter(c => c.startsWith("render:"));
+		assert.equal(rendered.length, 2, "only the first two render calls execute");
+		assert.equal(headless.calls.filter(c => c.startsWith("render:")).join("|"), "render:1,2,3,4,5,6|render:7,8,9,10,11,12");
+	});
+
 	it("no Chrome: render calls degrade to an error note, text tools still work", async () => {
 		const engine = fauxEngine([
 			fauxAssistantMessage([fauxToolCall("pdf_render", { pages: "1", dpi: 150 }, { id: "r1" })], {
