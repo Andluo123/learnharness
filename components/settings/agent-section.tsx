@@ -105,6 +105,14 @@ const CATALOG_REFRESH_MESSAGES: Record<ModelCatalogRefreshOutcome | "pending" | 
 };
 
 function ModelCatalogRefreshRow() {
+	const t = useT("settingsAgent");
+	const CATALOG_REFRESH_MESSAGES: Record<ModelCatalogRefreshOutcome | "pending" | "failed", string> = {
+		pending: t("catalogRefreshing"),
+		updated: t("catalogUpdated"),
+		unchanged: t("catalogUnchanged"),
+		"no-providers": t("catalogNoProviders"),
+		failed: t("catalogRefreshFailed"),
+	};
 	const [state, setState] = useState<keyof typeof CATALOG_REFRESH_MESSAGES>();
 	const pending = state === "pending";
 	async function refresh() {
@@ -112,12 +120,12 @@ function ModelCatalogRefreshRow() {
 		try { setState(await refreshRemoteModelCatalog()); }
 		catch { setState("failed"); }
 	}
-	return <SettingsRow label="Model catalog" testid="model-catalog-refresh-row" hint={
+	return <SettingsRow label={t("modelCatalog")} testid="model-catalog-refresh-row" hint={
 		<span role="status" className={state === "failed" ? "text-destructive" : undefined}>
-			{state ? CATALOG_REFRESH_MESSAGES[state] : "Check Pi for new models"}
+			{state ? CATALOG_REFRESH_MESSAGES[state] : t("checkPiForNewModels")}
 		</span>
 	}>
-		<Button type="button" variant="outline" size="icon-sm" aria-label="Refresh model catalog" title="Refresh model catalog" aria-busy={pending}
+		<Button type="button" variant="outline" size="icon-sm" aria-label={t("refreshModelCatalog")} title={t("refreshModelCatalog")} aria-busy={pending}
 			disabled={pending} onClick={() => void refresh()}>
 			<RefreshCw aria-hidden="true" className={pending ? "animate-spin" : undefined} />
 		</Button>

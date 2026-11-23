@@ -67,6 +67,7 @@ export function transcriptWidthLabel(rem: number | null): string {
  * native `change` (release / keyboard step) — not one write per tick.
  */
 function TranscriptWidthSlider({ value, onCommit }: { value: number | null; onCommit: (rem: number | null) => void }) {
+	const t = useT("settingsAppearance");
 	const position = value ?? TRANSCRIPT_FULL_POSITION;
 	const [draft, setDraft] = useState(position);
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -89,7 +90,7 @@ function TranscriptWidthSlider({ value, onCommit }: { value: number | null; onCo
 			<input
 				ref={inputRef}
 				type="range"
-				aria-label="Transcript width"
+				aria-label={t("transcriptWidth")}
 				aria-valuetext={transcriptWidthLabel(draftRem)}
 				data-testid="input-transcript-width"
 				min={TRANSCRIPT_WIDTH_MIN_REM}
@@ -478,14 +479,14 @@ export function AppearanceSection({
 					onChange={(on) => onSectionChange({ ...appearance, sessionNameSerif: on })}
 				/>
 			</SettingsRow>
-			<SettingsRow label="Compact session list" testid="row-compact-session-list">
+			<SettingsRow label={t("compactSessionList")} testid="row-compact-session-list">
 				<Toggle
 					checked={resolved.compactSessionList}
-					label="Compact session list"
+					label={t("compactSessionList")}
 					onChange={(on) => onSectionChange({ ...appearance, compactSessionList: on })}
 				/>
 			</SettingsRow>
-			<SettingsRow label="Heading weight" hint={`${resolved.mdRendering.headingWeight}`} testid="row-heading-weight">
+			<SettingsRow label={t("headingWeight")} hint={`${resolved.mdRendering.headingWeight}`} testid="row-heading-weight">
 				<CommitInput
 					type="number"
 					value={String(md?.headingWeight ?? "")}
@@ -507,17 +508,17 @@ export function AppearanceSection({
 					}}
 				/>
 			</SettingsRow>
-			<SettingsRow label="Transcript width" testid="row-transcript-width">
+			<SettingsRow label={t("transcriptWidth")} testid="row-transcript-width">
 				<TranscriptWidthSlider
 					value={resolved.transcriptMaxWidth}
 					// Full = absence (the unset representation for numbers).
 					onCommit={(rem) => { void onSectionChange({ ...appearance, transcriptMaxWidth: rem ?? undefined }); }}
 				/>
 			</SettingsRow>
-			<SettingsRow label="Adapt question layout" testid="row-adaptive-questions">
+			<SettingsRow label={t("adaptQuestionLayout")} testid="row-adaptive-questions">
 				<Toggle
 					checked={resolved.adaptiveQuestions}
-					label="Adapt question layout"
+					label={t("adaptQuestionLayout")}
 					onChange={(on) => onSectionChange({ ...appearance, adaptiveQuestions: on })}
 				/>
 			</SettingsRow>

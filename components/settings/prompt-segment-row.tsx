@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Toggle } from "./controls";
+import { useT } from "@/i18n/use-t.ts";
 
 export function promptSegmentName(path: string): string {
 	const name = (path.split("/").at(-1) ?? "").replace(/\.[^.]+$/, "").replace(/^[\d-]+/, "").replace(/-+/g, " ");
@@ -23,6 +24,7 @@ export function PromptSegmentRow({ path, usageHint, hasOverride, enabled, busy, 
 	onToggle: (enabled: boolean) => void;
 }) {
 	const name = promptSegmentName(path);
+	const t = useT("settingsAgent");
 	const row = useRef<HTMLDivElement>(null);
 	return <div ref={row} role="group" aria-label={name} tabIndex={-1} data-testid={`prompt-segment-${path}`} className="border-t border-border/50 py-2 font-ui focus-visible:outline-1 focus-visible:outline-ring">
 		<div data-testid={`prompt-row-${path}`} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
@@ -31,14 +33,14 @@ export function PromptSegmentRow({ path, usageHint, hasOverride, enabled, busy, 
 				{usageHint && <p className="mt-0.5 text-xs text-muted-foreground">{usageHint}</p>}
 			</div>
 			<div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-				<Button type="button" size="xs" variant="ghost" disabled={busy} onClick={() => { if (row.current) onView(row.current); }}>View default</Button>
+				<Button type="button" size="xs" variant="ghost" disabled={busy} onClick={() => { if (row.current) onView(row.current); }}>{t("promptSegmentViewDefault")}</Button>
 				<Button type="button" size="xs" variant="outline" className={cn("w-[17ch]", switching && !busy && "disabled:opacity-100")} disabled={busy || switching} onClick={() => { if (row.current) onEdit(row.current); }}>
-					{hasOverride ? "Edit override" : "+ Add override"}
+					{hasOverride ? t("promptSegmentEditOverride") : t("promptSegmentAddOverride")}
 				</Button>
 				<div className="flex items-center gap-2 sm:ml-2">
-					<span className="w-[20ch] text-xs text-muted-foreground">In use: <span className="text-foreground">{enabled ? "Your version" : "Default"}</span></span>
+					<span className="w-[20ch] text-xs text-muted-foreground">{t("promptSegmentInUse")} <span className="text-foreground">{enabled ? t("promptSegmentYourVersion") : t("promptSegmentDefault")}</span></span>
 					<span className={cn("flex", !hasOverride && "opacity-40")}>
-						<Toggle label={`Use your override for ${name}`} title="Use your override instead of the default" checked={enabled} disabled={!hasOverride || busy || switching} onChange={onToggle} />
+						<Toggle label={t("promptSegmentUseOverride", { name })} title={t("promptSegmentUseOverrideInstead")} checked={enabled} disabled={!hasOverride || busy || switching} onChange={onToggle} />
 					</span>
 				</div>
 			</div>
