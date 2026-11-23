@@ -241,6 +241,8 @@ export function composeSearchEngine(
  *  when the default composes, even if a saved override sits on disk
  *  unused. The switch's meaning becomes legible: it visibly controls
  *  this line). Exported for the pin. */
+/** English fallback kept for the pin at tests/settings-pure.test.ts; the UI
+ *  renders t("promptInUse") instead (line ~574). */
 export const PROMPT_IN_USE_HINT = "Your version is in use";
 
 /** Prompt sections in display order; Shared is deduplicated and last. */
@@ -372,6 +374,8 @@ export function AgentSection({
 	const cacheRetentionLabelOf = useCacheRetentionLabel();
 	const thinkingLabelOf = useThinkingLabel();
 	const t = useT("settingsAgent");
+	// Top-level "errors" keys need a ROOT translator (see thinking-default.ts).
+	const r = useT();
 	const { catalog: body, failed: catalogFailed, refresh: refreshCatalog } = useModelCatalog();
 	const catalog = body?.models;
 	const slots = body?.slots;
@@ -821,7 +825,7 @@ export function AgentSection({
 							// as an empty value. It is INVALID, not a blank reset.
 							if (event.target instanceof HTMLInputElement && event.target.validity.badInput) {
 								event.stopPropagation();
-								setWorkerConcurrencyError(t("errors.e10"));
+								setWorkerConcurrencyError(r("errors.e10"));
 							}
 						}}
 					>
@@ -831,7 +835,7 @@ export function AgentSection({
 							step={1}
 							value={String(agent?.workerRequestConcurrency ?? "")}
 							placeholder={String(resolvedAgent.workerRequestConcurrency)}
-							ariaLabel="Concurrent worker requests"
+							ariaLabel={t("concurrentWorkers")}
 							testid="input-worker-request-concurrency"
 							onCommit={(value) => {
 								const next = composeWorkerRequestConcurrency(agent, value);
@@ -929,7 +933,7 @@ export function AgentSection({
 					const effectiveAgent = fileAccessError ? { ...agent, fileAccess: { restricted: true, folders } } : agent;
 					const addFolder = () => {
 						const next = folderInput.trim();
-						if (!isFolderEntry(next)) { setFolderError(t("errors.e11")); return; }
+						if (!isFolderEntry(next)) { setFolderError(r("errors.e11")); return; }
 						if (!folders.includes(next)) onSectionChange(composeAddFolder(effectiveAgent, next));
 						setFolderInput("");
 						setFolderError(null);
@@ -938,8 +942,8 @@ export function AgentSection({
 						<div data-testid="file-access-row" className="flex flex-col gap-2">
 							<SettingsRow label={t("fileAccess")} hint={!restricted
 								? t("broadAccess")
-								: folders.length ? "Only listed folders and subfolders."
-									: "Restricted: no folders allowed. Add a folder to enable access."}>
+								: folders.length ? t("restrictedFolders")
+									: t("restrictedNone")}>
 								<div className="flex items-center gap-2 text-xs">
 									<span>{t("restrictFolders")}</span>
 									<Toggle checked={restricted} label={t("restrictFolders")} onChange={(on) => onSectionChange(composeFileRestriction(effectiveAgent, on))} />
@@ -983,7 +987,7 @@ export function AgentSection({
 								<MenuTrigger
 									value={SEARCH_ENGINES.find(({ id }) => id === engine)?.label ?? ""}
 									emptyLabel={t("automatic")}
-									ariaLabel="Search engine"
+									ariaLabel={t("searchEngine")}
 									testid="search-engine-trigger"
 									open={open}
 									onClick={() => setOpenMenu(open ? null : { target: "search", kind: "engine" })}
@@ -1026,7 +1030,7 @@ export function AgentSection({
 						type="number"
 						value={String(compaction?.thresholdTokens ?? "")}
 						placeholder={String(resolvedCompaction.thresholdTokens)}
-						ariaLabel="compaction threshold"
+						ariaLabel={t("compactionThreshold")}
 						testid="input-compaction-threshold"
 						onCommit={(v) => {
 							// Empty = factory default (the budget row's discipline):

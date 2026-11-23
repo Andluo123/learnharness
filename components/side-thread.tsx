@@ -18,10 +18,14 @@ import { useT } from "@/i18n/use-t.ts";
 
 /** Ask always opens the selected teaching segment's ONE conversation. Cite
  * is an independent action that inserts a chip into the main/thinking field. */
-export function createSideQuestionActions({ open }: { open: (args: SideThreadOpenArgs) => void }): SelectionAction[] {
+export function createSideQuestionActions({ open, t }: {
+	open: (args: SideThreadOpenArgs) => void;
+	/** Section translator: this factory cannot call a hook. */
+	t: (key: string) => string;
+}): SelectionAction[] {
 	return [{
-		id: "side-ask", label: "Ask", ariaLabel: "Ask a side question about this selection", icon: MessageCircleQuestion, visible: () => true,
-		disabledLabel: (capture) => capture.selector.text.length > SIDE_QUOTE_MAX_CHARS ? "Shorten selection" : null,
+		id: "side-ask", label: t("ask"), ariaLabel: t("askAboutSelection"), icon: MessageCircleQuestion, visible: () => true,
+		disabledLabel: (capture) => capture.selector.text.length > SIDE_QUOTE_MAX_CHARS ? t("shortenSelection") : null,
 		onSelect: (capture) => {
 			const { text, start, end, prefix, suffix } = capture.selector;
 			open({ anchor: { kind: "range", range: capture.range.cloneRange() }, passage: {

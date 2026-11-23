@@ -704,6 +704,8 @@ export function ChainTableOverlay({
 	onSelectionChange?: (next: ReadonlySet<string>) => void;
 }) {
 	const t = useT("chains");
+	// Top-level "errors" keys need a ROOT translator (see thinking-default.ts).
+	const r = useT();
 	const [query, setQuery] = useState("");
 	const [sort, setSort] = useState<ChainSort>({ col: "name", dir: 1 });
 	const [internalSelection, setInternalSelection] = useState<ReadonlySet<string>>(() => new Set());
@@ -761,7 +763,7 @@ export function ChainTableOverlay({
 			try {
 				const response = await fetch("/api/graph/sources", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(action) });
 				const body = await response.json();
-				if (!response.ok) throw new Error(typeof body.error === "string" ? body.error : t("errors.e1"));
+				if (!response.ok) throw new Error(typeof body.error === "string" ? body.error : r("errors.e1"));
 				if (opening === directoryOpening.current) {
 					requestVersion.current++;
 					setDirectory(body as SourceDirectory); setDirectoryPending(false); setDirectoryFailure("");
@@ -876,7 +878,7 @@ export function ChainTableOverlay({
 							const response = await fetch("/api/graph/sources", { method: "DELETE", headers: { "Content-Type": "application/json" },
 								body: JSON.stringify({ sourceIds: deletion?.sources.map((s) => s.id) ?? [], folderIds: deletion?.folders.map((f) => f.id) ?? [], deleteSessions }) });
 							const body = await response.json();
-							if (!response.ok) throw new Error(typeof body.error === "string" ? body.error : t("errors.e2"));
+							if (!response.ok) throw new Error(typeof body.error === "string" ? body.error : r("errors.e2"));
 							graphRevision = body.graphRevision;
 							if (opening === directoryOpening.current) {
 								requestVersion.current++; setDirectory(body as SourceDirectory); setDirectoryPending(false); setDirectoryFailure("");

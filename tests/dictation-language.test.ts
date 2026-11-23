@@ -70,7 +70,7 @@ it("the section route persists language independently and rejects unsupported va
 		method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ language }),
 	}), { params: Promise.resolve({ section: "dictation" }) });
 	assert.equal((await put("pl")).status, 200);
-	const saved = { version: 1, dictation: { language: "pl" }, general: { autoUpdate: false } };
+	const saved = { version: 1, dictation: { language: "pl", detectLanguage: false, autoSend: false, continuousReadback: false }, general: { autoUpdate: false } };
 	assert.deepEqual(readSettings(), saved);
 	assert.equal((await put("unsupported")).status, 400);
 	assert.deepEqual(readSettings(), saved);

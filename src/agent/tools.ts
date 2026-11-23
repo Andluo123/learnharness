@@ -12,6 +12,7 @@ import {
 	quizInputObject,
 	quizInputProblems,
 } from "../core/question-core.ts";
+import { deliveredFigures } from "../core/quiz-figures.ts";
 import { filterEnabledTools, type EnabledTools } from "../core/pending.ts";
 import type { JobRecord } from "../core/contracts.ts";
 import type { JobStore } from "../core/ports.ts";
@@ -382,7 +383,12 @@ export function teachQuizToolFor(ctx: Pick<PlanToolContext, "chatId" | "chatStor
 		prepareArguments: prepareQuestionArguments,
 		executionMode: "sequential",
 		execute: async (_toolCallId, input) => {
-			const problems = [...quizInputProblems(input)];
+			// Quiz figures (owner, 2026-11-18): references validate against the
+			// figures this session's visual jobs have ALREADY delivered — read
+			// from the live record, exactly like the plan-nodeId check below.
+			const record = ctx.chatStore.getChat(ctx.chatId);
+			const figures = [...deliveredFigures(record?.messages ?? []).keys()];
+			const problems = [...quizInputProblems(input, figures)];
 			const nodeIdProblemText = nodeIdProblem(ctx, input.nodeId);
 			if (nodeIdProblemText) problems.push(nodeIdProblemText);
 			if (problems.length > 0) return invalidInputResult("quiz", problems);

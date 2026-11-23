@@ -368,8 +368,12 @@ export function isSubagentFailure(
 	return typeof r.svg !== "string" || r.svg.length === 0;
 }
 
-/** The model-facing text of a steer: what the result IS, what to do with it. */
-function steerText(kind: JobKind, result: JobResult): string {
+/** The model-facing text of a steer: what the result IS, what to do with it.
+ *  `figureId` (quiz figures, owner 2026-11-18): the visual job's TOOL-CALL
+ *  id, spelled out because the model never sees its own call ids — exactly
+ *  how plan_init slugs reach quiz nodeId authoring. A quiz references the
+ *  figure by copying this id into `figure` / `options[].figure`. */
+function steerText(kind: JobKind, result: JobResult, figureId?: string): string {
 	if (kind === "plugin") return (result as PluginBackgroundResult).text;
 	if (isSubagentFailure(kind, result)) {
 		if (kind === "research")
@@ -390,13 +394,16 @@ function steerText(kind: JobKind, result: JobResult): string {
 		return `The demo "${(result as DemoResult).title}" is built, headlessly tested, and rendered in the lesson. Builder notes: ${
 			(result as DemoResult).notes ?? "(none)"
 		}.\nTeach with it — reference its controls by name and point the learner at what to try.`;
+	const figureRef = figureId
+		? ` To show this figure inside a quiz question, set \`figure\` (or an option's \`figure\`) to exactly this id: ${figureId}.`
+		: "";
 	if ((result as VisualResult).image)
 		return `The annotated image is drawn, verified by inspection, and rendered in the lesson. Maker notes: ${
 			(result as VisualResult).notes ?? "(none)"
-		}.\nReference its marks as you teach.`;
+		}.\nReference its marks as you teach.${figureRef}`;
 	return `The figure is drawn, verified by inspection, and rendered in the lesson. Maker notes: ${
 		(result as VisualResult).notes ?? "(none)"
-	}.\nReference its elements as you teach.`;
+	}.\nReference its elements as you teach.${figureRef}`;
 }
 
 /**
@@ -412,7 +419,7 @@ export function buildSubagentSteer(
 		id: `steer_${job.id}`,
 		role: "custom",
 		customType: "subagent-steer",
-		content: steerText(job.kind, result),
+		content: steerText(job.kind, result, job.kind === "visual" ? job.toolCallId : undefined),
 		display: true,
 		details: {
 			jobId: job.id,

@@ -83,13 +83,13 @@ export function ModelMenuList({
 				listTestid="model-list"
 				optionTestid={(m) => `model-option-${m.id.replace(/[^a-z0-9-]/gi, "_")}`}
 				placeholder={t("searchModels")}
-				loading="Loading models…"
-				empty="No models match."
+				loading={t("loadingModels")}
+				empty={t("noModelsMatch")}
 				renderItem={(m) => <>
 					<span className="flex items-center justify-between gap-2">
 						<span className="truncate text-card-foreground">{m.name}</span>
 						<span className="shrink-0 tabular-nums text-muted-foreground" title={m.provider === CLAUDE_CODE_PROVIDER ? "Billing is determined by your Claude Code configuration; LearnHarness does not estimate it." : subscriptionLabel(`${m.provider}:${m.id}`) ? "Subscription connection" : m.cost ? t("priceLabel") : t("priceUnavailable")}>
-							{m.provider === CLAUDE_CODE_PROVIDER ? "CLI billing" : subscriptionLabel(`${m.provider}:${m.id}`) ?? priceLabel(m.cost)}
+							{m.provider === CLAUDE_CODE_PROVIDER ? t("cliBilling") : subscriptionLabel(`${m.provider}:${m.id}`) ?? priceLabel(m.cost)}
 						</span>
 					</span>
 					<span className="flex items-center justify-between gap-2 text-muted-foreground">

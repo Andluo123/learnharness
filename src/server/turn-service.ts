@@ -69,12 +69,24 @@ export function persistTurn(
 		const stamped: LhMessage[] = [];
 		for (const m of turnMessages.slice(baseCount)) {
 			const message = m as LhMessage;
+			// DIRTY TOOL-CALL DEFENSE (the Agnes 400, 2026-11-18): a model can emit an
+			// empty tool call ({id:"",name:""}); pi-agent-core then synthesizes a
+			// "Tool  not found" toolResult whose ids are empty too. Persisting either
+			// shape makes EVERY later request fail at OpenAI-compat endpoints
+			// ("messages[i]: missing field `tool_call_id`"). Never write them: skip
+			// such results, and strip such blocks from assistant messages.
+			if (message.role === "toolResult" && (!message.toolCallId || !message.toolName)) continue;
 			// The placeholder question result: loop device, never a record fact.
 			if (
 				(message as { role?: string }).role === "toolResult" &&
 				(QUESTION_TOOLS as readonly string[]).includes((message as ToolResultMessage).toolName) &&
 				!(message as ToolResultMessage).isError
 			) {
+				continue;
+			}
+			if (message.role === "assistant" && message.content.some((c) => c.type === "toolCall" && (!c.id || !c.name))) {
+				const content = message.content.filter((c) => c.type !== "toolCall" || Boolean(c.id && c.name));
+				stamped.push({ ...(message.id ? message : { ...message, id: newMessageId() }), content } as LhMessage);
 				continue;
 			}
 			stamped.push(message.id ? message : ({ ...message, id: newMessageId() } as LhMessage));

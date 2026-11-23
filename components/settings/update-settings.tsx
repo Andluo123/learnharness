@@ -15,8 +15,10 @@ export type UpdateState = {
 
 export const APP_VERSION = process.env.LH_VERSION ?? "";
 const HOMEPAGE = process.env.LH_HOMEPAGE ?? "";
+/** English fallbacks pinned by tests; the UI renders t("manualHint") / t("autoHint"). */
 export const MANUAL_UPDATE_HINT = "Checking downloads available updates. Downloaded updates install when you quit the app.";
 export const AUTO_UPDATE_HINT = "Check at startup and every 24 hours. Turning this off does not stop updates already in progress or ready to install.";
+/** English fallback pinned by tests; the UI renders t("updateError"). */
 const UPDATE_ERROR = "Couldn’t check for updates. Try again later.";
 
 /** Subscribe before requesting the snapshot. IPC replies and pushes can
@@ -65,7 +67,7 @@ export function updateStatusText(
 		case "downloading": return state.version ? tr("downloadingVersion", { version: state.version }) : tr("downloading");
 		case "up-to-date": return tr("upToDate");
 		case "downloaded": return state.version ? tr("versionReady", { version: state.version }) : tr("updateReady");
-		case "error": return UPDATE_ERROR;
+		case "error": return tr("updateError");
 		default: return null;
 	}
 }
@@ -90,7 +92,7 @@ export function UpdateSettings({
 	const active = state !== null && state.status !== "disabled";
 	const busy = state?.status === "checking" || state?.status === "downloading";
 	const status = state?.status === "downloaded" ? updateStatusText(state, t)
-		: failed || checkFailed ? UPDATE_ERROR : updateStatusText(state, t);
+		: failed || checkFailed ? t("updateError") : updateStatusText(state, t);
 	const releaseNotes = version && homepage ? `${homepage}/releases/tag/v${version}` : null;
 	const check = () => {
 		setCheckFailed(false);
@@ -105,7 +107,7 @@ export function UpdateSettings({
 				hint={
 					<>
 						{status && <span className="block" role="status" data-testid="update-status">{status}</span>}
-						{active && <span className="block">{MANUAL_UPDATE_HINT}</span>}
+						{active && <span className="block">{t("manualHint")}</span>}
 						{releaseNotes && <a href={releaseNotes} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-foreground hover:underline" data-testid="release-notes">{t("releaseNotes")}</a>}
 					</>
 				}
@@ -115,12 +117,12 @@ export function UpdateSettings({
 				) : (
 					<Button type="button" size="xs" variant="outline" className="cursor-pointer disabled:cursor-not-allowed" data-testid="update-check" disabled={busy} aria-busy={busy} onClick={check}>
 						{busy && <BrailleSpinner label={state.status === "downloading" ? t("downloadingUpdate") : t("checkingUpdates")} />}
-						Check for updates
+						{t("checkForUpdates")}
 					</Button>
 				))}
 			</SettingsRow>
 			{active && (
-				<SettingsRow label={t("automaticUpdates")} hint={AUTO_UPDATE_HINT} testid="row-auto-update">
+				<SettingsRow label={t("automaticUpdates")} hint={t("autoHint")} testid="row-auto-update">
 					<Toggle checked={autoUpdate} label={t("autoUpdateAria")} onChange={onAutoUpdateChange} />
 				</SettingsRow>
 			)}

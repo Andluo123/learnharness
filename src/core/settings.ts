@@ -36,6 +36,18 @@ import type { ModelRole } from "../../config.ts";
 import type { ChatSettings } from "./contracts/chat.ts";
 import { isSearchEngineId, type SearchEngineId } from "./search.ts";
 import { isDictationLanguage, type DictationLanguage } from "./dictation.ts";
+import {
+	DEFAULT_SPEECH_PROVIDER,
+	SPEECH_SPEED_DEFAULT,
+	clampSpeechSpeed,
+	defaultSpeechVoice,
+	isSpeechAudioFormat,
+	isSpeechLanguageStrategy,
+	isSpeechProviderId,
+	type SpeechAudioFormat,
+	type SpeechLanguageStrategy,
+	type SpeechProviderId,
+} from "./speech.ts";
 import { parseFileAccessSettings, type FileAccessSettings } from "./file-access.ts";
 import { COLOR_OVERRIDE_KEYS, isThemeId, type AppearanceColorOverrides } from "./themes.ts";
 import { DEFAULT_LOCALE, isAppLocale, type AppLocale } from "../../i18n/config.ts";
@@ -350,6 +362,36 @@ export interface GeneralSettings {
 /** One app-wide dictation preference, shared by every composer. */
 export interface DictationSettings {
 	language?: DictationLanguage;
+	/** Detect the spoken language automatically instead of fixing one up front. */
+	detectLanguage?: boolean;
+	/** After a dictation run ends and its text is flushed into the input, send the turn right away. */
+	autoSend?: boolean;
+	/** Read each finished dictation passage back (continuous listen→read). */
+	continuousReadback?: boolean;
+}
+
+/** One app-wide speech (TTS) preference, shared by every reader surface.
+ *  The provider vocabulary lives in src/core/speech.ts - this record only
+ *  holds what the user chose. */
+export interface SpeechSettingsRecord {
+	provider?: SpeechProviderId;
+	/** The Deepgram Flux model id (e.g. "flux-wenjing-zh"). */
+	voice?: string;
+	/** Speaking rate, clamped to the provider range. */
+	speed?: number;
+	language?: SpeechLanguageStrategy;
+	/** Continuous mode: read each new assistant answer automatically. */
+	autoRead?: boolean;
+	/** Read code blocks aloud too. Off by default. */
+	readCode?: boolean;
+	/** Read formulas aloud (LaTeX → words). On by default. */
+	readMath?: boolean;
+	/** The custom endpoint model id (provider "custom"). */
+	customModel?: string;
+	/** The custom endpoint voice name (provider "custom"). */
+	customVoice?: string;
+	/** The requested audio container. */
+	format?: SpeechAudioFormat;
 }
 
 /** Agent settings — everything about the non-conversation machinery. */
@@ -499,6 +541,8 @@ export interface UserSettings {
 	version: number;
 	general?: GeneralSettings;
 	dictation?: DictationSettings;
+	/** The speech (TTS) preferences (speech wave, 2026-11-20). */
+	speech?: SpeechSettingsRecord;
 	/** Explicit app-wide opt-in; absent/invalid is off, including older records. */
 	claudeCode?: { enabled?: boolean };
 	agent?: AgentSettings;
@@ -522,6 +566,7 @@ export interface FactorySettings {
 	agent: Required<Pick<AgentSettings, "workerRequestConcurrency">>;
 	general: Required<GeneralSettings>;
 	dictation: Required<DictationSettings>;
+	speech: Required<SpeechSettingsRecord>;
 	appearance: {
 		theme: string;
 		background: string | null;
@@ -544,7 +589,19 @@ export const FACTORY_SETTINGS: FactorySettings = {
 	version: CURRENT_SETTINGS_VERSION,
 	agent: { workerRequestConcurrency: 8 },
 	general: { autoUpdate: true, language: DEFAULT_LOCALE },
-	dictation: { language: "en" },
+	dictation: { language: "en", detectLanguage: false, autoSend: false, continuousReadback: false },
+	speech: {
+		provider: DEFAULT_SPEECH_PROVIDER,
+		voice: defaultSpeechVoice(DEFAULT_SPEECH_PROVIDER),
+		speed: SPEECH_SPEED_DEFAULT,
+		language: "auto",
+		autoRead: false,
+		readCode: false,
+		readMath: true,
+		customModel: "",
+		customVoice: "",
+		format: "mp3",
+	},
 	appearance: {
 		theme: "default",
 		background: null, // null = the active theme's background
@@ -586,6 +643,30 @@ function sanitizeHexOrNull(value: unknown): string | null {
 
 const boolOrDrop = (value: unknown): boolean | undefined =>
 	typeof value === "boolean" ? value : undefined;
+
+/** Coerce the speech section. Every field is validated on its own: an
+ *  unknown provider or format drops to the factory default, a speed
+ *  clamps, and the free-text fields (voice ids, model ids) keep any
+ *  non-empty string, because a custom endpoint may name its voices
+ *  however it likes. */
+function sanitizeSpeech(raw: Record<string, unknown>): SpeechSettingsRecord {
+	const out: SpeechSettingsRecord = {};
+	if (isSpeechProviderId(raw.provider)) out.provider = raw.provider;
+	if (typeof raw.voice === "string" && raw.voice.trim()) out.voice = raw.voice.trim();
+	if (raw.speed !== undefined) out.speed = clampSpeechSpeed(raw.speed);
+	if (isSpeechLanguageStrategy(raw.language)) out.language = raw.language;
+	if (typeof raw.autoRead === "boolean") out.autoRead = raw.autoRead;
+	if (typeof raw.readCode === "boolean") out.readCode = raw.readCode;
+	if (typeof raw.readMath === "boolean") out.readMath = raw.readMath;
+	if (typeof raw.customModel === "string" && raw.customModel.trim()) {
+		out.customModel = raw.customModel.trim();
+	}
+	if (typeof raw.customVoice === "string" && raw.customVoice.trim()) {
+		out.customVoice = raw.customVoice.trim();
+	}
+	if (isSpeechAudioFormat(raw.format)) out.format = raw.format;
+	return out;
+}
 
 function sanitizeGeneral(raw: Record<string, unknown>): GeneralSettings {
 	const out: GeneralSettings = {};
@@ -874,10 +955,20 @@ export function sanitizeUserSettings(raw: unknown): UserSettings | null {
 		out.general = sanitizeGeneral(r.general as Record<string, unknown>);
 	}
 	if (r.dictation !== undefined) {
-		const raw = r.dictation;
-		out.dictation = raw !== null && typeof raw === "object" && !Array.isArray(raw) &&
-			isDictationLanguage((raw as Record<string, unknown>).language)
-			? { language: (raw as DictationSettings).language }
+		const raw = r.dictation as Record<string, unknown>;
+		out.dictation = raw !== null && typeof raw === "object" && !Array.isArray(raw)
+			? {
+				language: isDictationLanguage(raw.language) ? raw.language : undefined,
+				detectLanguage: typeof raw.detectLanguage === "boolean" ? raw.detectLanguage : false,
+				autoSend: typeof raw.autoSend === "boolean" ? raw.autoSend : false,
+				continuousReadback: typeof raw.continuousReadback === "boolean" ? raw.continuousReadback : false,
+			}
+			: {};
+	}
+	if (r.speech !== undefined) {
+		const raw = r.speech;
+		out.speech = raw !== null && typeof raw === "object" && !Array.isArray(raw)
+			? sanitizeSpeech(raw as Record<string, unknown>)
 			: {};
 	}
 	if (r.claudeCode !== undefined) {

@@ -70,7 +70,8 @@
 			"keyboard": "Keyboard",
 			"general": "General",
 			"corePlugins": "Core plugins",
-			"plugins": "Community plugins"
+			"plugins": "Community plugins",
+			"speech": "Speech"
 		},
 		"general": {
 			"title": "General",
@@ -79,6 +80,7 @@
 			"autoUpdate": "Check for updates automatically"
 		},
 		"keyboardHint": "Stored on this device",
+		"speechHint": "How the app reads answers aloud.",
 		"sectionsLabel": "Settings sections",
 		"loadError": "Settings could not be loaded — refresh to retry.",
 		"settingTitleAria": "Settings",
@@ -101,7 +103,8 @@
 		"learnPlaceholder": "What do you want to learn?",
 		"practicePlaceholder": "What do you want to practice?",
 		"teach": "Teach",
-		"practice": "Practice"
+		"practice": "Practice",
+		"setUpModels": "Set up your models"
 	},
 	"time": {
 		"justNow": "just now",
@@ -114,7 +117,8 @@
 		"waiting": "Waiting for input",
 		"problemWaiting": "Problem waiting",
 		"working": "Working…",
-		"practiceSession": "Practice session"
+		"practiceSession": "Practice session",
+		"contextCompacted": "Context compacted"
 	},
 	"aria": {
 		"renameSession": "Rename session"
@@ -146,7 +150,10 @@
 		"refusalProviderKey": "No {provider} key is set — add one in Settings → Providers",
 		"agentThinking": "AGENT’S THINKING",
 		"retrying": "Retrying…",
-		"planChip": "Plan"
+		"planChip": "Plan",
+		"answerRemainingFirst": "Answer or discard the remaining question first.",
+		"nextProblem": "Next problem",
+		"setUpModels": "Set up your models"
 	},
 	"dialog": {
 		"deleteNodeAria": "Delete node",
@@ -184,7 +191,8 @@
 		"contributionsLine": "Removes these sources' contributions to propositions and reasoning chains. Knowledge supported by other sources survives; knowledge supported only by these sources is removed.",
 		"diskLine": "Imported source records are removed, but original files on disk are never changed. Selected folders are removed only when empty; folders needed by kept sessions remain.",
 		"alsoDeleteSessions": "Also delete the {count} selected {count, plural, one {session} other {sessions}}",
-		"sessionsNote": "Unchecked, conversations stay in their current folders and can be extracted again. Either way, their graph contributions and extraction coverage are cleared. Checking this also permanently deletes their messages and background jobs."
+		"sessionsNote": "Unchecked, conversations stay in their current folders and can be extracted again. Either way, their graph contributions and extraction coverage are cleared. Checking this also permanently deletes their messages and background jobs.",
+		"extractionRunning": "An extraction is running — try again when the activity dock drains."
 	},
 	"activity": {
 		"totalRunningCost": "Total running cost (inferred)",
@@ -216,7 +224,8 @@
 		"manageChatGptUsage": "Manage ChatGPT usage",
 		"unpricedTurns": "Unpriced turns",
 		"usage": "Usage",
-		"totalCost": "Total cost"
+		"totalCost": "Total cost",
+		"sessionStats": "Session stats"
 	},
 	"answeredCard": {
 		"answeredDontKnow": "Answered “I don't know”.",
@@ -241,7 +250,8 @@
 		"compactingSession": "compacting session…",
 		"enterSubmits": "↵ submits · ⇧↵ newline",
 		"submitThinking": "Submit thinking",
-		"submit": "Submit"
+		"submit": "Submit",
+		"yourThinking": "YOUR THINKING"
 	},
 	"chains": {
 		"addFolder": "Add folder",
@@ -299,7 +309,9 @@
 		"sessions": "Sessions",
 		"noSessionsRecorded": "No sessions recorded.",
 		"blur": "Blur",
-		"chainsButton": "Chains"
+		"chainsButton": "Chains",
+		"pipelineCosts": "Graph pipeline costs",
+		"depthAnchor": "Depth anchor"
 	},
 	"plan": {
 		"planDiagram": "Plan diagram",
@@ -311,7 +323,8 @@
 		"zoomOut": "Zoom out",
 		"fitPlan": "Fit plan to screen",
 		"zoomIn": "Zoom in",
-		"liveHint": "live — statuses derive from your check outcomes"
+		"liveHint": "live — statuses derive from your check outcomes",
+		"noPlanYet": "No plan in this session yet."
 	},
 	"overlay": {
 		"close": "Close",
@@ -337,7 +350,8 @@
 		"extract": "Extract",
 		"running": "Running",
 		"extracting": "extracting…",
-		"fullyExtracted": "fully extracted"
+		"fullyExtracted": "fully extracted",
+		"title": "Extraction coverage"
 	},
 	"mdBlocks": {
 		"copyDiagramSource": "Copy diagram source",
@@ -367,7 +381,13 @@
 		"missClass": "Miss class",
 		"retest": "Retest",
 		"yourThinking": "YOUR THINKING",
-		"mode": "Mode"
+		"mode": "Mode",
+		"solved": "Solved",
+		"solvedWithHints": "Solved with hints",
+		"movedOn": "Moved on",
+		"surrendered": "Surrendered",
+		"dismissed": "Dismissed",
+		"problemDismissed": "Problem dismissed."
 	},
 	"pluginQuestionDock": {
 		"preparingQuestion": "Preparing question…",
@@ -402,19 +422,29 @@
 		"predictionLabel": "Prediction",
 		"checkLabel": "Check",
 		"didntKnow": "didn't know",
-		"selectAllThatApply": " · select all that apply"
+		"selectAllThatApply": " · select all that apply",
+		"confidenceLabel": "Confidence",
+		"percentValue": "{value} percent"
 	},
 	"citationComment": {
 		"commentAria": "Comment on selected text",
 		"commentPlaceholder": "Add an optional comment...",
 		"commentLimit": "Comments can contain up to 8,000 characters.",
 		"cancel": "Cancel",
-		"commentKeys": "Enter to save the citation comment; Command/Ctrl+Enter to save and send; Shift+Enter for a new line."
+		"commentKeys": "Enter to save the citation comment; Command/Ctrl+Enter to save and send; Shift+Enter for a new line.",
+		"shortenComment": "Shorten comment",
+		"save": "Save"
 	},
 	"pluginChrome": {
 		"graphActions": "Plugin graph actions",
 		"moreActions": "More plugin actions",
-		"extract": "Extract"
+		"extract": "Extract",
+		"pluginDock": "Plugin panel",
+		"resizeDock": "Resize panel",
+		"collapseDock": "Collapse panel",
+		"expandDock": "Expand panel",
+		"codeBlockFailed": "Plugin code block ({language})",
+		"imageAttached": "[Image attached to the model: {mime}]"
 	},
 	"pluginView": {
 		"pluginSettings": "Plugin settings",
@@ -456,7 +486,10 @@
 		"startSideDictation": "Start side dictation",
 		"dictateSideQuestion": "Dictate side question",
 		"stopSideAnswer": "Stop side answer",
-		"sendSideQuestion": "Send side question"
+		"sendSideQuestion": "Send side question",
+		"ask": "Ask",
+		"askAboutSelection": "Ask a side question about this selection",
+		"shortenSelection": "Shorten selection"
 	},
 	"dictation": {
 		"stopDictationHint": "Stop dictation (Esc)",
@@ -472,7 +505,13 @@
 		"micBusy": "The microphone is busy in another app",
 		"micUnsupported": "This microphone does not support the required settings",
 		"micAborted": "Microphone access was interrupted",
-		"sttTokenUnavailable": "Speech service is unavailable — add a Deepgram key in Settings → Providers"
+		"sttTokenUnavailable": "Speech service is unavailable — add a Deepgram key in Settings → Providers",
+		"detectLanguage": "Auto-detect language",
+		"detectLanguageHint": "中英自动切换，无需手动选语言",
+		"autoSend": "Auto-send",
+		"autoSendHint": "听写出结果后自动发送到输入框",
+		"continuousReadback": "Continuous readback",
+		"continuousReadbackHint": "听写完成后自动朗读回放"
 	},
 	"shortcuts": {
 		"title": "Keyboard shortcuts",
@@ -516,7 +555,9 @@
 		"levelsFooter": "Levels this model actually supports",
 		"noModelsHint": "No models — add a provider key in Keys",
 		"sessionModelFooter": "This session's model",
-		"strongTierFooter": "Strong tier — the default for new sessions"
+		"strongTierFooter": "Strong tier — the default for new sessions",
+		"noThinkingLevels": "No thinking levels.",
+		"pickModelFirst": "Pick a model first."
 	},
 	"pluginQuestionPart": {
 		"questionDismissed": "Question dismissed",
@@ -531,13 +572,17 @@
 		"close": "Close"
 	},
 	"readingThinking": {
-		"readingPlaceholder": "Whatever comes to mind as you read."
+		"readingPlaceholder": "Whatever comes to mind as you read.",
+		"thinkingWhileReading": "Thinking while reading"
 	},
 	"selectionToolbar": {
 		"selectionActions": "Selection actions"
 	},
 	"updateBanner": {
-		"dismissUpdate": "Dismiss update notification"
+		"dismissUpdate": "Dismiss update notification",
+		"ready": "LearnHarness {version} is ready",
+		"restartHint": " — restart to finish installing.",
+		"restart": "Restart"
 	},
 	"setup": {
 		"provider": "Provider",
@@ -559,11 +604,22 @@
 		"slotVision": "Vision",
 		"slotVisionRoster": "Visual maker + PDF reader",
 		"slotModelAria": "{slot} model",
-		"slotThinkingAria": "{slot} thinking"
+		"slotThinkingAria": "{slot} thinking",
+		"saveFailed": "Save failed. Check your connection and try again.",
+		"pickModel": "Pick a model…",
+		"noVisionModels": "No image-capable models. Add a provider key with access to a vision model.",
+		"pickModelFirst": "Pick a model first.",
+		"noThinkingLevels": "no thinking levels",
+		"addProviderKey": "Add a provider key",
+		"setUpModels": "Set up your models",
+		"chooseProviderHint": "Choose your AI provider and paste its API key. You'll pick your models next.",
+		"pickModelsHint": "Pick the model for each tier. All three are required before chats can start."
 	},
 	"dictationLang": {
 		"language": "Language",
-		"searchLanguages": "Search languages…"
+		"searchLanguages": "Search languages…",
+		"search": "Search dictation languages",
+		"noMatch": "No languages match."
 	},
 	"notesImport": {
 		"extractHint": "Extract files into the graph",
@@ -639,7 +695,11 @@
 		"tierFooter": "Runs every agent of this tier",
 		"usedBy": "Used by {users}",
 		"promptInUse": "In use",
-		"promptsHint": "Each row shows a fragment of the agent's instructions. Show the text, edit it and save to create your own version — the switch then lets you flip between your version and the built-in one."
+		"promptsHint": "Each row shows a fragment of the agent's instructions. Show the text, edit it and save to create your own version — the switch then lets you flip between your version and the built-in one.",
+		"restrictedFolders": "Only listed folders and subfolders.",
+		"restrictedNone": "Restricted: no folders allowed. Add a folder to enable access.",
+		"versionInUse": "Your version is in use",
+		"chunkBudget": "Extraction chunk budget"
 	},
 	"settingsKeys": {
 		"pasteKey": "Paste key…",
@@ -683,7 +743,12 @@
 		"apiKeyMissing": "API key missing",
 		"leaveBlankKeepKey": "Leave blank to keep effective key",
 		"budgetHelp": "Budget pins do not resize backend context. Blank uses reported limits, then fallback (8192 context / 4096 output). Custom pricing is unknown.",
-		"reasoningHelp": "Reasoning support is a capability declaration. The effort picker’s Off may not disable a custom backend’s default thinking."
+		"reasoningHelp": "Reasoning support is a capability declaration. The effort picker’s Off may not disable a custom backend’s default thinking.",
+		"disconnectFailed": "Disconnect failed. Check your connection.",
+		"connectFailed": "Connect failed. Check your connection.",
+		"errors": {
+			"e16": "Failed to load keys. Please try again."
+		}
 	},
 	"settingsAppearance": {
 		"typography": "Typography",
@@ -722,7 +787,8 @@
 		"colorsNote": "overrides on top of the theme, kept when you switch",
 		"fontCommonUnreadable": "Common families — installed fonts could not be read",
 		"fontCommonDesktopOnly": "Common families — your installed list needs the desktop app",
-		"fontInstalledList": "Your installed fonts"
+		"fontInstalledList": "Your installed fonts",
+		"proseFontSize": "Prose font size"
 	},
 	"settingsPlugins": {
 		"corePluginsTitle": "Core plugins",
@@ -766,6 +832,10 @@
 			"ui-showcase": {
 				"name": "UI Showcase",
 				"description": "An ephemeral gallery of public host UI controls, local callbacks, and native session surfaces."
+			},
+			"resources": {
+				"name": "Resources",
+				"description": "A right-hand file browser: browse the local filesystem, preview PDFs, images, text, code and Office documents (docx/xlsx/pptx), and hand any file to the agent."
 			}
 		},
 		"noCorePlugins": "No Core plugins available.",
@@ -791,7 +861,8 @@
 		"checkingAria": "Checking for updates",
 		"autoUpdateAria": "auto update",
 		"downloadingUpdate": "Downloading update",
-		"checkingUpdates": "Checking for updates"
+		"checkingUpdates": "Checking for updates",
+		"updateError": "Couldn't check for updates. Try again later."
 	},
 	"settingsKeyboard": {
 		"keyboard": "Keyboard",
@@ -814,7 +885,8 @@
 			"question-next-row": "Question · next row",
 			"question-prev-row": "Question · previous row",
 			"question-pick-row": "Question · pick row",
-			"question-submit": "Question · submit"
+			"question-submit": "Question · submit",
+			"toggle-speech": "Toggle read aloud"
 		},
 		"fixedHint": "Fixed — part of this screen",
 		"pressKeys": "Press keys…",
@@ -852,7 +924,10 @@
 		"loadingFonts": "Loading fonts…",
 		"noThinkingLevels": "No thinking levels.",
 		"priceLabel": "USD per 1M tokens in/out",
-		"priceUnavailable": "Price unavailable"
+		"priceUnavailable": "Price unavailable",
+		"loadingModels": "Loading models…",
+		"noModelsMatch": "No models match.",
+		"cliBilling": "CLI billing"
 	},
 	"settingsClaudeCode": {
 		"installHint": "Install and authenticate Claude Code",
@@ -884,7 +959,9 @@
 		"signInAgain": "Sign in again",
 		"cancel": "Cancel",
 		"desktopOnly": "Subscription sign-in requires the desktop app's private server connection. API-key connections remain available here.",
-		"backgroundHint": "Allow LearnHarness helper agents and automatic follow-ups to use this connection."
+		"backgroundHint": "Allow LearnHarness helper agents and automatic follow-ups to use this connection.",
+		"copilotNotice": "Pi's native Copilot sign-in may enable additional models whose policy is not yet configured. Models explicitly disabled by policy are not enabled. Organization restrictions still apply.",
+		"controlError": "The connection could not be changed. Try again."
 	},
 	"settingsChatgpt": {
 		"chatgpt": "ChatGPT",
@@ -911,7 +988,14 @@
 		"disconnectAccountTitle": "Disconnect account?",
 		"disconnectAccountBody": "This removes the saved account and its credentials from this device.",
 		"disconnectAccountBodyWeb": "This removes the saved account and its credentials from the machine running LearnHarness.",
-		"revocationWarning": "Account disconnected locally. Remote revocation could not be confirmed."
+		"revocationWarning": "Account disconnected locally. Remote revocation could not be confirmed.",
+		"backgroundLabel": "Allow background use for all ChatGPT accounts",
+		"backgroundHint": "Background work counts toward your ChatGPT plan usage.",
+		"controlError": "The ChatGPT connection could not be changed. Try again.",
+		"close": "Close",
+		"continueWithChatgpt": "Continue with ChatGPT",
+		"noticeBody": "LearnHarness stores your ChatGPT account details and credentials in an unencrypted local file on this device. When this connection is used, relevant conversation context, learning material, and tool results are sent directly to OpenAI. ChatGPT plan limits apply; any additional credits are authorized and managed in ChatGPT, not LearnHarness.",
+		"noticeWebSuffix": " Complete ChatGPT sign-in in a browser on that same machine."
 	},
 	"phase": {
 		"probe": "Probing",
@@ -939,7 +1023,9 @@
 		"autoUpdateHint": "Check at startup and every 24 hours. Turning this off does not stop updates already in progress or ready to install."
 	},
 	"probeDone": {
-		"probeAssessment": "Probe assessment"
+		"probeAssessment": "Probe assessment",
+		"malformed": "The assessment was malformed — the prober retried with a corrected one.",
+		"writing": "Writing the assessment…"
 	},
 	"artifacts": {
 		"figure": "Figure",
@@ -958,7 +1044,16 @@
 		"inputStreaming": "Input (streaming)",
 		"taskDetails": "Task details",
 		"snapshotLoadFailed": "Image snapshot could not be loaded.",
-		"loadingImage": "Loading image…"
+		"loadingImage": "Loading image…",
+		"demoCompleted": "Demo completed, but the result could not be displayed.",
+		"interactiveDemo": "Interactive demo",
+		"sendToTeacher": "Send to teacher",
+		"imageCompleted": "Image shown, but it could not be displayed.",
+		"pdfCompleted": "PDF reading completed, but the result could not be displayed.",
+		"pdfBrief": "PDF brief",
+		"researchCompleted": "Research completed, but the result could not be displayed.",
+		"researchBrief": "Research brief",
+		"figureCompleted": "Figure completed, but the result could not be displayed."
 	},
 	"message": {
 		"prevBranch": "Previous branch",
@@ -1031,5 +1126,103 @@
 		"e15": "Use a Mod/Alt chord or function key. Escape, Tab and Enter are reserved.",
 		"e16": "Unable to inspect effective key. Reload configuration and retry.",
 		"e17": "Sign-in did not complete. Try connecting again."
+	},
+	"dispatchCard": {
+		"research": "Research agent",
+		"demo": "Demo agent",
+		"visual": "Figure agent",
+		"pdf": "PDF reader",
+		"plugin": "Plugin worker",
+		"needsModelSetup": "needs model setup",
+		"setUpModels": "Set up models",
+		"needsProviderKey": "needs a provider key",
+		"addKey": "Add a key"
+	},
+	"jobCard": {
+		"researchBrief": "Research brief",
+		"pdfReading": "PDF reading",
+		"failed": "failed",
+		"completedUndisplayed": "PDF reading completed, but the result could not be displayed."
+	},
+	"conversation": {
+		"noMessages": "No messages yet",
+		"startConversation": "Start a conversation to see messages here"
+	},
+	"citationActions": {
+		"cite": "Cite",
+		"citeSelection": "Cite selection in your input",
+		"shortenSelection": "Shorten selection"
+	},
+	"malformedQuestion": {
+		"requestReplacement": "Requests a replacement from the model.",
+		"cannotDisplay": "This question could not be displayed.",
+		"retryOrSend": "Retry it or send a message to continue.",
+		"retryQuestion": "Retry question"
+	},
+	"pluginUi": {
+		"uiFailed": "Plugin UI failed",
+		"uiReporterFailed": "Plugin UI error reporter failed"
+	},
+	"mermaid": {
+		"failedToRender": "Diagram failed to render",
+		"showSource": "Show diagram source",
+		"retry": "Retry"
+	},
+	"practiceDock": {
+		"yourThinking": "YOUR THINKING"
+	},
+	"extractionCoverage": {
+		"title": "Extraction coverage"
+	},
+	"statsBar": {
+		"sessionStats": "Session stats"
+	},
+	"speech": {
+		"readAloud": "Read aloud",
+		"stopReading": "Stop reading",
+		"readingElsewhere": "Reading something else",
+		"reading": "Reading…",
+		"synthesisFailed": "Speech synthesis failed: {error}",
+		"continuousMode": "Continuous reading",
+		"continuousModeHint": "Read every new answer as it arrives.",
+		"readCode": "Read code blocks",
+		"readCodeHint": "Code is read character by character — usually better read than spoken.",
+		"previewVoice": "Preview voice",
+		"previewing": "Previewing…",
+		"previewFailed": "Could not preview this voice.",
+		"noSpeechKey": "Speech needs a Deepgram key — add it in Settings → Keys.",
+		"nothingToRead": "There is nothing to read here."
+	},
+	"settingsSpeech": {
+		"title": "Speech",
+		"hint": "How the app reads answers aloud.",
+		"provider": "Speech provider",
+		"providerDeepgram": "Deepgram (built in)",
+		"providerCustom": "Custom endpoint",
+		"providerEdge": "Microsoft Edge (unofficial)",
+		"providerEdgeHint": "Unofficial endpoint: Microsoft does not support it and may change it at any time. Use it for personal or small-scale teaching only.",
+		"voice": "Voice",
+		"voiceHint": "The voice decides the language it speaks.",
+		"speed": "Speaking rate",
+		"language": "Reading language",
+		"languageAuto": "Follow the voice",
+		"languageZh": "Chinese",
+		"languageEn": "English",
+		"autoRead": "Continuous reading",
+		"autoReadHint": "Read every new answer as it arrives.",
+		"readCode": "Read code blocks",
+		"readCodeHint": "Off by default — code is easier read than spoken.",
+		"customModel": "Speech model",
+		"customModelHint": "The model id your endpoint exposes for text-to-speech.",
+		"customVoice": "Voice name",
+		"customVoiceHint": "The voice your endpoint exposes. Leave blank for the default.",
+		"format": "Audio format",
+		"noCustomEndpoint": "No custom endpoint — connect one in Settings → Agent → Model.",
+		"noVoices": "This endpoint does not publish a voice list.",
+		"saveFailed": "Could not save the speech settings.",
+		"keyMissing": "Add a Deepgram key in Settings → Keys to use the built-in provider.",
+		"preview": "Preview",
+		"readMath": "Read formulas",
+		"readMathHint": "Reads a formula aloud in words — on by default."
 	}
 }

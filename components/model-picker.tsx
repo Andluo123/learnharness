@@ -44,6 +44,8 @@ export function catalogLimits(catalog: Pick<ModelCatalogResponse, "models">): Ma
 export function ModelControl({ chatId, onModelChange }: { chatId?: string; onModelChange?: (model: string | undefined) => void }) {
 	const thinkingLabelOf = useThinkingLabel();
 	const t = useT("modelPicker");
+	// Top-level "errors" keys need a ROOT translator (see thinking-default.ts).
+	const r = useT();
 	const { catalog, refresh } = useModelCatalog();
 	const [models, setModels] = useState<ModelsSettings | undefined>();
 	// A successful read with no settings is a legacy session; undefined
@@ -169,7 +171,7 @@ export function ModelControl({ chatId, onModelChange }: { chatId?: string; onMod
 				setOpen(null);
 				notifySettingsSaved("models");
 			} catch {
-				setError(t("errors.e8"));
+				setError(r("errors.e8"));
 			}
 		},
 		[],
@@ -198,7 +200,7 @@ export function ModelControl({ chatId, onModelChange }: { chatId?: string; onMod
 				setSession({ settings: stored?.settings ?? next });
 				setOpen(null);
 			} catch {
-				setError(t("errors.e8"));
+				setError(r("errors.e8"));
 			}
 		},
 		[chatId],
@@ -342,7 +344,7 @@ export function ModelControl({ chatId, onModelChange }: { chatId?: string; onMod
 						levels={catalog ? levels : []}
 						effectiveLevel={effectiveLevel}
 						onPick={(level) => apply(effectiveProvider ?? "", effectiveId ?? "", level as ThinkingLevel)}
-						empty={catalog ? (effectiveId ? `${prettyModel(effectiveId)} has no thinking levels.` : "Pick a model first.") : "Loading…"}
+						empty={catalog ? (effectiveId ? `${prettyModel(effectiveId)} ${t("noThinkingLevels")}` : t("pickModelFirst")) : "Loading…"}
 						footer={t("levelsFooter")}
 					/>
 					{error && <div className="mt-1 text-destructive">{error}</div>}

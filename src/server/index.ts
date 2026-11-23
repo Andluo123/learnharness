@@ -65,3 +65,13 @@ export { claudeCodeInstallationResponse } from "./claude-code.ts";
 // No import side effects; the boot sync lives in stores.ts.
 export * from "./custom-provider.ts";
 export { customProviderGet, customProviderMutation } from "./custom-provider-http.ts";
+// The speech (TTS) synthesis seam: the renderer asks for audio, this side
+// holds the provider credential and normalizes the text for speaking.
+export {
+	SpeechSynthesisError,
+	speechVoices,
+	synthesizeSpeech,
+	SPEECH_REQUEST_MAX_CHARS,
+	type SpeechSynthesisRequest,
+	type SpeechSynthesisResult,
+} from "./speech.ts";

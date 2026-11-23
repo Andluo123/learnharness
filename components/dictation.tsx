@@ -5,7 +5,7 @@ import { Loader2Icon, MicIcon } from "lucide-react";
 import { useSettingsDialog } from "@/components/settings/settings-dialog";
 import { Hint } from "@/components/ui/hint";
 import { deepgramListenUrl, type DictationLanguage } from "@/src/core";
-import { useDictationLanguage } from "@/components/dictation-preference";
+import { useDictationSettings } from "@/components/dictation-preference";
 import { setDictationActive } from "@/components/dictation-state";
 import { dispatchFocusedPluginShortcut } from "@/components/plugin-input-focus";
 import { useT } from "@/i18n/use-t.ts";
@@ -345,9 +345,11 @@ export function useDictation({ append, destination = "primary", disabled = false
 	disabled?: boolean;
 }): Dictation {
 	const t = useT("dictation");
+	// Top-level "errors" keys need a ROOT translator (see thinking-default.ts).
+	const r = useT();
 	const primary = destination === "primary";
 	const owner = useRef(Symbol("dictation")).current;
-	const { getLanguage } = useDictationLanguage();
+	const { getSettings } = useDictationSettings();
 	const [phase, setPhaseState] = useState<DictationPhase>("idle");
 	const phaseRef = useRef<DictationPhase>("idle");
 	const setPhase = useCallback((next: DictationPhase) => {
@@ -444,7 +446,7 @@ export function useDictation({ append, destination = "primary", disabled = false
 			if (endGen !== genRef.current) return;
 			appendPendingRef.current = false;
 			appendFailureRef.current = failed;
-			if (failed) setError(failed.error instanceof Error ? failed.error.message : t("errors.e5"));
+			if (failed) setError(failed.error instanceof Error ? failed.error.message : r("errors.e5"));
 			if (recordingOwner === owner) {
 				recordingOwner = null;
 				recordingTarget = null;
@@ -469,11 +471,11 @@ export function useDictation({ append, destination = "primary", disabled = false
 
 	/** Open the Deepgram socket and wire its messages. `gen` guards staleness. */
 	const openSocket = useCallback(
-		(gen: number, token: string, language: DictationLanguage) => {
+		(gen: number, token: string, language: DictationLanguage, detectLanguage?: boolean) => {
 			// Minted JWTs authenticate via the "bearer" subprotocol — ["token",
 			// jwt] is rejected at the handshake (verified live; "token" is for
 			// raw API keys only, as in the owner's pi dictate extension).
-			const ws = new WebSocket(deepgramListenUrl(language), ["bearer", token]);
+			const ws = new WebSocket(deepgramListenUrl(language, detectLanguage), ["bearer", token]);
 			wsRef.current = ws;
 
 			ws.addEventListener("open", () => {
@@ -515,11 +517,11 @@ export function useDictation({ append, destination = "primary", disabled = false
 					reconnectsRef.current++;
 					mintFreshToken() // always FRESH — a stale warm token is the likely culprit
 						.then((t) => {
-							if (gen === genRef.current) openSocket(gen, t, language);
+							if (gen === genRef.current) openSocket(gen, t, language, detectLanguage);
 						})
 						.catch(() => {
 							if (gen === genRef.current) {
-								setError(t("errors.e6"));
+								setError(r("errors.e6"));
 								cleanup();
 							}
 						});
@@ -552,11 +554,14 @@ export function useDictation({ append, destination = "primary", disabled = false
 		pendingRef.current = []; // fresh run, fresh queue (mitigation A)
 		const gen = ++genRef.current;
 		let language: DictationLanguage;
+		let detectLanguage: boolean;
 		try {
-			language = await getLanguage();
+			const settings = await getSettings();
+			language = settings.language ?? "en";
+			detectLanguage = settings.detectLanguage ?? false;
 		} catch (e) {
 			if (gen !== genRef.current) return;
-			setError(e instanceof Error ? e.message : t("errors.e7"));
+			setError(e instanceof Error ? e.message : r("errors.e7"));
 			cleanup();
 			return;
 		}
@@ -636,8 +641,8 @@ export function useDictation({ append, destination = "primary", disabled = false
 		if (gen !== genRef.current) return;
 		// Mitigation B: the handshake fires the moment the graph is live,
 		// overlapping any remaining token wait — mic-gated, never before it.
-		openSocket(gen, token, language);
-	}, [openSocket, cleanup, getLanguage, owner, primary, setPhase]);
+		openSocket(gen, token, language, detectLanguage);
+	}, [openSocket, cleanup, getSettings, owner, primary, setPhase]);
 
 	const stop = useCallback(() => {
 		const gen = genRef.current;

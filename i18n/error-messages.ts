@@ -20,6 +20,11 @@ import type { AppLocale } from "./config.ts";
 
 /** English (thrown) → Simplified Chinese. Keep the English side verbatim. */
 export const ERROR_MESSAGES_ZH: Readonly<Record<string, string>> = {
+	// resources / recently surfaced
+	"Couldn’t open the session. Your message is still here. Try sending again.": "无法打开会话。你的消息仍在，请重新发送。",
+	"Could not load dictation language. Try again.": "无法加载听写语言，请重试。",
+	"Answer or discard the remaining question first.": "请先回答或忽略剩下的问题。",
+	"Operation aborted": "操作已中止",
 	// session-core
 	"The connection dropped before the turn completed.": "本轮完成前连接已断开。",
 	"Could not sync the saved session.": "无法同步已保存的会话。",

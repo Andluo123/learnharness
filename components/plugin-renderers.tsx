@@ -42,19 +42,20 @@ function RendererMount({ registration, mount, label, fallback }: {
 }
 
 export function PluginCodeBlock({ language, source, meta, incomplete, fallback }: Omit<PluginCodeBlockProps, "signal"> & { fallback: ReactNode }) {
+	const t = useT("pluginChrome");
 	const { snapshot } = usePlugins();
 	const registration = snapshot.codeBlocks.find(entry => entry.renderer.language === language);
 	const mount = useMemo<PluginMount>(() => (container, signal) => registration?.renderer.mount(container, { language, source, meta, incomplete, signal }),
 		[registration, language, source, meta, incomplete]);
 	if (!registration) return <>{fallback}</>;
-	return <RendererMount registration={registration} mount={mount} label={`Plugin code block (${language})`} fallback={fallback} />;
+	return <RendererMount registration={registration} mount={mount} label={t("codeBlockFailed", { language })} fallback={fallback} />;
 }
 
 /** Preserve native text (and an honest image attachment note) when no details
  * payload exists. Never serialize image bytes/base64 into the transcript. */
-export function nativeToolResultText(result: PluginToolRenderProps["result"]): string | undefined {
+export function nativeToolResultText(result: PluginToolRenderProps["result"], t?: (key: string, values?: Record<string, unknown>) => string): string | undefined {
 	if (!result) return;
-	return result.content.map(block => block.type === "text" ? block.text : `[Image attached to the model: ${block.mimeType}]`).join("\n");
+		return result.content.map(block => block.type === "text" ? block.text : t ? t("imageAttached", { mime: block.mimeType }) : `[Image attached to the model: ${block.mimeType}]`).join("\n");
 }
 
 export function toolFallbackPart(part: LhViewPart): ArtifactPartProps["part"] {

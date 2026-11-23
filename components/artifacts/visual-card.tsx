@@ -77,7 +77,8 @@ export function VisualOutputCard({
 	if (!result || typeof result.svg !== "string") {
 		return (
 			<div className="rounded-xl border bg-card p-4 text-sm text-muted-foreground">
-				Figure completed, but the result could not be displayed.
+				{t("figureCompleted")}
+
 			</div>
 		);
 	}

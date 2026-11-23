@@ -7,6 +7,7 @@ import { useT } from "@/i18n/use-t.ts";
 /** The 409 extraction_running line (owner phrasing, node interlude):
  *  the server's error names the extraction; the ACTIVITY DOCK is the
  *  surface the user actually watches drain. Exported pure for pins. */
+/** Kept as the English fallback (tests pin it); the dialog translates by key. */
 export const EXTRACTION_RETRY_LINE = "An extraction is running — try again when the activity dock drains.";
 
 /**
@@ -99,7 +100,7 @@ export function DeleteNodeBody({
 					className="mt-3 rounded-sm border border-border/60 px-3 py-2 text-xs"
 				>
 					<span className="text-foreground">
-						{failure.code === "extraction_running" ? EXTRACTION_RETRY_LINE : failure.error}
+						{failure.code === "extraction_running" ? t("extractionRunning") : failure.error}
 					</span>
 					<button
 						type="button"
@@ -108,7 +109,7 @@ export function DeleteNodeBody({
 						disabled={busy}
 						className="ml-3 text-xs text-foreground underline-offset-2 hover:underline disabled:opacity-40"
 					>
-						Try again
+						{t("tryAgain")}
 					</button>
 				</div>
 			)}
@@ -163,6 +164,7 @@ export function DeleteNodeDialog({
 	onDeleted: (nodeIds: string[], graphRevision: number) => void;
 }) {
 	const t = useT("dialog");
+	const r = useT(); // top-level "errors" keys need the ROOT translator
 	const [busy, setBusy] = useState(false);
 	const hasItems = Boolean(nodes?.length || folders.length);
 	const [failure, setFailure] = useState<{ code: string; error: string } | null>(null);
@@ -212,7 +214,7 @@ export function DeleteNodeDialog({
 			if (removedFolders.length > 0) onFoldersDeleted?.(removedFolders);
 			onDeleted(dead, revision);
 		} catch (error) {
-			setFailure({ code: "network", error: folders.length > 0 && error instanceof Error ? error.message : t("errors.e3") });
+			setFailure({ code: "network", error: folders.length > 0 && error instanceof Error ? error.message : r("errors.e3") });
 			if (removedFolders.length > 0) onFoldersDeleted?.(removedFolders);
 			setBusy(false);
 			if (dead.length > 0) onDeleted(dead, revision);

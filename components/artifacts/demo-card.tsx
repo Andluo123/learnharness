@@ -101,11 +101,13 @@ export function DemoOutputCard({
 	messageId?: string;
 	initialInverted?: boolean;
 }) {
+	const t = useT("artifacts");
 	const result = output as DemoResult | undefined;
 	if (!result || typeof result.html !== "string" || typeof result.title !== "string") {
 		return (
 			<div className="rounded-xl border bg-card p-4 text-sm text-muted-foreground">
-				Demo completed, but the result could not be displayed.
+				{t("demoCompleted")}
+
 			</div>
 		);
 	}
@@ -114,7 +116,7 @@ export function DemoOutputCard({
 		return (
 			<div className="rounded-xl border bg-card p-4 text-card-foreground" data-testid="demo-card-failed">
 				<div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-					Interactive demo
+					{t("interactiveDemo")}
 					<span className="rounded bg-error/15 px-1.5 py-0.5 text-error">failed</span>
 				</div>
 				<p className="mt-2 text-sm text-muted-foreground">{result.notes ?? "The demo could not be built."}</p>
@@ -264,7 +266,7 @@ export function DemoErrorChip({
 					className="rounded-md border border-error/40 px-2 py-1 text-xs font-medium hover:bg-error/15"
 					data-testid="demo-error-send"
 				>
-					Send to teacher
+					{t("sendToTeacher")}
 				</button>
 			)}
 		</div>

@@ -143,7 +143,7 @@ export function StatsBar({
 						className="absolute bottom-full left-1/2 mb-1.5 w-72 -translate-x-1/2 rounded-xl border bg-card p-3 text-xs shadow-xl"
 					>
 						<div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-							Session stats
+							{t("sessionStats")}
 						</div>
 						<div className="flex flex-col gap-1 text-muted-foreground">
 							<div className="flex justify-between gap-2">

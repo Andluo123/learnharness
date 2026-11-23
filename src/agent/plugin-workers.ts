@@ -188,6 +188,11 @@ export function createPluginWorkerService(deps: PluginWorkerServiceDeps): Plugin
 			});
 			let batchStart = t.record.messages.length;
 			const saveResult = (message: ToolResultMessage) => {
+				// DIRTY TOOL-CALL DEFENSE (the Agnes 400, 2026-11-18): never persist a
+				// result whose ids are empty — a hallucinated empty tool call makes
+				// pi synthesize one, and every later request then fails at
+				// OpenAI-compat endpoints ("missing field `tool_call_id`").
+				if (!message.toolCallId || !message.toolName) return;
 				const messages = [...t.record.messages];
 				const old = messages.findIndex((m, i) => i > batchStart && m.role === "toolResult" && m.toolCallId === message.toolCallId);
 				if (old >= 0) messages[old] = clone(message);

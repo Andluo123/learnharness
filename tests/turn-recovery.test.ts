@@ -87,4 +87,58 @@ describe("turn settlement recovery", () => {
 		const message = { role: "assistant", content: [{ type: "text", text: "Synthetic reply" }], stopReason: "stop", timestamp: 1 } as AgentMessage;
 		assert.throws(() => persistTurn(store, "fixture", 0, [message], false), /The reply could not be saved\./);
 	});
+
+	// DIRTY TOOL-CALL DEFENSE (the Agnes 400, 2026-11-18): a hallucinated empty
+	// tool call makes pi synthesize a toolResult with empty ids. Either shape in
+	// the record fails EVERY later request ("missing field `tool_call_id`"), so
+	// persistTurn must never write them.
+	it("never persists a tool result with empty ids", () => {
+		const saved: unknown[][] = [];
+		const store = {
+			getChat: () => ({ messages: [] }),
+			saveMessages(_id: string, messages: unknown[]) { saved.push(messages); },
+		} as unknown as ChatStore;
+		const dirty = { role: "toolResult", toolCallId: "", toolName: "", content: [{ type: "text", text: "Tool  not found" }], isError: true, timestamp: 2 } as unknown as AgentMessage;
+		const clean = { role: "toolResult", toolCallId: "call_ok", toolName: "read", content: [{ type: "text", text: "fine" }], isError: false, timestamp: 3 } as unknown as AgentMessage;
+		const stamped = persistTurn(store, "fixture", 0, [dirty, clean], false);
+		assert.equal(stamped.length, 1);
+		assert.equal((stamped[0] as { toolCallId: string }).toolCallId, "call_ok");
+	});
+
+	it("strips empty tool-call blocks from an assistant message but keeps its text", () => {
+		const store = {
+			getChat: () => ({ messages: [] }),
+			saveMessages() {},
+		} as unknown as ChatStore;
+		const assistant = {
+			role: "assistant",
+			content: [
+				{ type: "text", text: "Thinking out loud" },
+				{ type: "toolCall", id: "", name: "", arguments: {} },
+			],
+			stopReason: "toolUse",
+			timestamp: 4,
+		} as unknown as AgentMessage;
+		const stamped = persistTurn(store, "fixture", 0, [assistant], false);
+		assert.equal(stamped.length, 1);
+		const content = (stamped[0] as { content: Array<{ type: string }> }).content;
+		assert.deepEqual(content.map((c) => c.type), ["text"]);
+	});
+
+	it("leaves a well-formed assistant tool call untouched", () => {
+		const store = {
+			getChat: () => ({ messages: [] }),
+			saveMessages() {},
+		} as unknown as ChatStore;
+		const assistant = {
+			role: "assistant",
+			content: [{ type: "toolCall", id: "call_1", name: "quiz", arguments: { q: 1 } }],
+			stopReason: "toolUse",
+			timestamp: 5,
+		} as unknown as AgentMessage;
+		const stamped = persistTurn(store, "fixture", 0, [assistant], false);
+		const content = (stamped[0] as { content: Array<{ type: string; id?: string }> }).content;
+		assert.equal(content.length, 1);
+		assert.equal(content[0]!.id, "call_1");
+	});
 });

@@ -370,7 +370,7 @@ export function CoverageRingDetail({ coverage, chunkTokens }: { coverage: Sessio
 	return (
 		<>
 			<div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-				Extraction coverage
+				{t("title")}
 			</div>
 			<div className="flex flex-col gap-1 text-muted-foreground">
 				<div className="flex justify-between gap-2">

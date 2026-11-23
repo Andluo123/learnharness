@@ -47,7 +47,7 @@ function DictationLanguagePicker({ preference, disabled }: {
 		return () => document.removeEventListener("pointerdown", onPointerDown);
 	}, [open, interactions]);
 	const pick = async (code: DictationLanguage) => {
-		if (disabled || saving || language === undefined) return;
+		if (disabled || saving) return;
 		if (await save(code)) {
 			setOpen(false);
 			if (interactions.isElementEligible(triggerRef.current) || interactions.isPopupOrigin(triggerRef.current)) triggerRef.current?.focus();
@@ -65,7 +65,7 @@ function DictationLanguagePicker({ preference, disabled }: {
 				disabled={disabled || saving}
 				onClick={() => {
 					setOpen((value) => !value);
-					if (language === undefined) void load().catch(() => {});
+					void load().catch(() => {});
 				}}
 				className="min-w-20 max-w-[65%]"
 			/>
@@ -92,13 +92,13 @@ function DictationLanguagePicker({ preference, disabled }: {
 					searchTerms={(item) => [item.code, item.label]}
 					isSelected={(item) => item.code === language}
 					onPick={(item) => { void pick(item.code); }}
-					disabled={saving || language === undefined}
+					disabled={saving}
 					searchTestid="dictation-language-search"
 					listTestid="dictation-language-list"
 					optionTestid={(item) => `dictation-language-${item.code}`}
-					ariaLabel="Search dictation languages"
+					ariaLabel={t("search")}
 					placeholder={t("searchLanguages")}
-					empty="No languages match."
+					empty={t("noMatch")}
 					renderItem={(item) => <span className="text-card-foreground">{item.label}</span>}
 				/>
 			</div>

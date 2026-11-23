@@ -22,9 +22,11 @@ export * from "./chains.ts";
 export * from "./source-organization.ts";
 export * from "./source-selection.ts";
 export * from "./source-label.ts";
+export * from "./settings-write-queue.ts";
 export * from "./render-settings.ts";
 
 export * from "./question-core.ts";
+export * from "./quiz-figures.ts";
 // The event bus (push architecture, 2026-10-02): vocabulary + emit/subscribe
 // for every layer; the browser shell consumes the types + the runtime names
 // through this barrel (shell law: pure core via @/src/core only).
@@ -76,6 +78,13 @@ export * from "./file-access.ts";
 // the provider, Settings and the themes API.
 export * from "./themes.ts";
 export * from "./dictation.ts";
+// speech.ts (TTS wave, 2026-11-20): the provider vocabulary + settings
+// shape; speech-text.ts and speech-numbers.ts are the pure text layers the
+// server and the shell both use.
+export * from "./speech.ts";
+export * from "./speech-text.ts";
+export * from "./speech-numbers.ts";
+export * from "./speech-math.ts";
 // graph-deletion.ts (wave 6): the whole module is PURE but storage-port
 // driven — the deletion RUNS server-side only. The shell needs exactly one
 // two type-only things from it: the ChatDeleteMode union (the delete

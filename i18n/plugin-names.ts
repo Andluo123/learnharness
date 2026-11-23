@@ -20,7 +20,16 @@ export const PLUGIN_NAMES: Readonly<Record<string, string>> = {
 	"drawing-pad": "绘图板",
 	"rich-code-blocks": "学科代码块",
 	"ui-showcase": "组件示例库",
+	resources: "资源管理器",
 };
+
+/** use-intl echoes the key path when a message is missing — either as written
+ *  or upper-cased through the namespace. Neither is copy, so neither may paint. */
+export function isEchoedKey(value: string | undefined, key: string): boolean {
+	if (!value) return true;
+	const normalized = value.trim().toLowerCase();
+	return normalized === key.toLowerCase() || normalized === `settingsplugins.${key}`.toLowerCase();
+}
 
 /** The display name for a plugin, in the active language.
  *
@@ -44,9 +53,25 @@ export function pluginDisplayName(
 	if (translate) {
 		const key = `plugin.${id}.name`;
 		const viaCatalog = translate(key);
-		// use-intl echoes the key path when the message is missing.
-		if (viaCatalog && viaCatalog !== key) return viaCatalog;
+		if (!isEchoedKey(viaCatalog, key)) return viaCatalog;
 	}
 	// Unknown plugin: its own manifest name is the honest answer.
 	return manifestName ?? id;
+}
+
+/** The description for a plugin, in the active language: catalog entry, then the
+ *  manifest's own English text, then nothing (never a raw key path). */
+export function pluginDisplayDescription(
+	id: string,
+	manifestDescription: string | undefined,
+	locale: AppLocale,
+	translate?: (key: string) => string,
+): string | undefined {
+	if (locale === "en") return manifestDescription;
+	if (translate) {
+		const key = `plugin.${id}.description`;
+		const viaCatalog = translate(key);
+		if (!isEchoedKey(viaCatalog, key)) return viaCatalog;
+	}
+	return manifestDescription;
 }

@@ -19,7 +19,7 @@ const session = createPluginSessionActionContext({ placement: "top-bar", surface
 }));
 function plugin(id = "fixture"): FrontendPlugin {
 	return { info: pluginInfo(id), phase: "active", views: [{ id: "overview", name: "Overview", mount() {} }],
-		actions: [{ id: "run", name: "Run", run() {} }], placements: [], actionBusy: [], busy: false };
+		actions: [{ id: "run", name: "Run", run() {} }], docks: [], placements: [], actionBusy: [], busy: false };
 }
 
 describe("explicit plugin chrome", () => {

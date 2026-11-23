@@ -57,6 +57,8 @@ export function nextOverrides(
 
 export function KeyboardSection() {
 	const t = useT("settingsKeyboard");
+	// Top-level "errors" keys need a ROOT translator (see thinking-default.ts).
+	const r = useT();
 	const controller = useOptionalInteractionLayers();
 	const rootRef = useRef<HTMLDivElement>(null);
 	const [overrides, setOverrides] = useState<KeymapOverrides>({});
@@ -93,7 +95,7 @@ export function KeyboardSection() {
 			if (!binding) return;
 			const next = nextOverrides(loadOverrides(), rebinding, binding);
 			if (rebinding.startsWith("plugin:")) {
-				if (!isPluginShortcutBinding(binding)) { setRebindError(t("errors.e15")); return; }
+				if (!isPluginShortcutBinding(binding)) { setRebindError(r("errors.e15")); return; }
 				const row = resolvePluginShortcuts(candidates, next, coreShortcutBindings(next)).find(row => row.id === rebinding);
 				if (!row || row.status !== "active") { setRebindError(row?.reason ?? "This plugin action is no longer available."); return; }
 			}

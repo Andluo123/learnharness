@@ -12,6 +12,7 @@ import {
 import { builtinProviders } from "@earendil-works/pi-ai/providers/all";
 import { lazyApi, lazyStream } from "@earendil-works/pi-ai/api/lazy";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
+import type { TranscriptContext } from "@earendil-works/pi-ai";
 import { type ModelRole } from "../../config.ts";
 import { DEFAULT_THINKING_ORDER } from "../core/settings.ts";
 import packageMetadata from "../../package.json" with { type: "json" };
@@ -43,6 +44,48 @@ export const APP_IDENTITY = Object.freeze({
  * from pi-ai's static catalogs and stream through the same Models
  * collection.
  */
+
+
+/**
+ * THE REQUEST-BOUNDARY DIRTY PAIR SANITIZER (the Agnes 400, 2026-11-18).
+ *
+ * A model can hallucinate an empty tool call ({id:"",name:""}); pi-agent-core
+ * then executes it against no tool and synthesizes a "Tool  not found"
+ * toolResult whose ids are empty too. The pair lands in the agent's
+ * in-memory state within the SAME step, and the next request of that step
+ * ships it to the provider — persistTurn's write guard never sees it before
+ * the 400 fires (the record stays clean; the request still dies). So the
+ * same law applies at the request boundary: never send a tool result with
+ * empty ids, and strip empty tool-call blocks from assistant messages
+ * (their results are dropped too, so no dangling tool message survives).
+ *
+ * The TranscriptContext brand only lets normalizeContext() build one, so
+ * this replaces the message array in place — the agent loop rebuilds the
+ * context from its own state per request, and the record is untouched.
+ */
+export function sanitizeRequestContext(context: TranscriptContext): void {
+	const messages = context.messages;
+	let dirty = false;
+	for (const m of messages) {
+		if (m.role === "toolResult" && (!m.toolCallId || !m.toolName)) { dirty = true; break; }
+		if (m.role === "assistant" && m.content.some((c) => c.type === "toolCall" && (!c.id || !c.name))) { dirty = true; break; }
+	}
+	if (!dirty) return;
+	context.messages = messages.reduce<TranscriptContext["messages"]>((acc, m) => {
+		if (m.role === "toolResult") {
+			if (!m.toolCallId || !m.toolName) return acc;
+			acc.push(m);
+			return acc;
+		}
+		if (m.role === "assistant" && m.content.some((c) => c.type === "toolCall" && (!c.id || !c.name))) {
+			const content = m.content.filter((c) => c.type !== "toolCall" || Boolean(c.id && c.name));
+			acc.push({ ...m, content });
+			return acc;
+		}
+		acc.push(m);
+		return acc;
+	}, []);
+}
 
 export interface PiEngine {
 	model: Model<Api>;
@@ -162,6 +205,10 @@ export function piEngineForSpec(spec: ResolvedModelSpec, background: boolean | (
 		// = off on pi-ai's scale). Built-ins keep the factory clamp; custom
 		// requests re-resolve thinking against their current metadata below.
 		streamFn: (requestModel, context, options) => {
+			// The request-boundary dirty-pair sanitizer (the Agnes 400, 2026-11-18):
+			// covers every engine built here — the main chat loop, plugin agents,
+			// workers, subagents, custom endpoints, subscriptions, ChatGPT.
+			sanitizeRequestContext(context);
 			// Read the slot preference for every operation, not just engine creation.
 			// Unset adds NOTHING: native defaults/env and explicit caller options survive.
 			const retention = cacheRetention?.();

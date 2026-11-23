@@ -19,6 +19,7 @@
 
 import { Type, type Static } from "typebox";
 import { stripModelValueDebris } from "./value-debris.ts";
+import { figureProblem } from "./quiz-figures.ts";
 import { expandCitationsForModel } from "./citations.ts";
 import type { PluginSubmissionImages } from "./plugin-submissions.ts";
 
@@ -28,6 +29,10 @@ export interface QuizOption {
 	label: string;
 	value: string;
 	description?: string;
+	/** The tool-call id of a delivered visual figure shown with this
+	 *  option (quiz figures, owner 2026-11-18). A REFERENCE only — the SVG
+	 *  resolves from the session's own visual results at render time. */
+	figure?: string;
 }
 
 // ─── tool input schemas (the question contract) ─────────────────────────────
@@ -43,6 +48,17 @@ const quizOptionProps = {
 	value: Type.Optional(
 		Type.String({
 			description: "Optional machine-readable value returned for the option. Defaults to the label.",
+		}),
+	),
+	// Quiz figures (owner, 2026-11-18): an option may carry a figure — the
+	// picture renders INSIDE the option row ("which of these is axis-
+	// symmetric?" with four small figures). Reference, never content.
+	figure: Type.Optional(
+		Type.String({
+			description:
+				"Optional figure shown with this option: the tool-call id of a visual job that ALREADY delivered its " +
+				"figure in this session (copy the figure id from that result message). Not a file path, not a URL, " +
+				"not the SVG source. Omit when this option has no figure.",
 		}),
 	),
 };
@@ -110,12 +126,17 @@ export function askOptionProblems(options: Array<{ label: string; value?: string
 }
 
 /** The full quiz authoring contract: option sanity + correctAnswer must be
- *  gradeable. Empty result = a quiz the dock can arm and grade faithfully. */
+ *  gradeable. Empty result = a quiz the dock can arm and grade faithfully.
+ *  `figures` (quiz figures, owner 2026-11-18): the ids of the session's
+ *  DELIVERED visual figures. Absent = the seam cannot check references
+ *  (tests, probe wiring) and no figure problem is ever reported — a
+ *  mis-referenced figure degrades to no picture, never to a blocked quiz. */
 export function quizInputProblems(input: {
-	options: Array<{ label: string; value?: string }>;
+	options: Array<{ label: string; value?: string; figure?: string }>;
 	correctAnswer: string | string[];
 	multiSelect?: boolean;
-}): string[] {
+	figure?: string;
+}, figures?: readonly string[]): string[] {
 	const { problems, keys } = optionProblems(input.options);
 
 	// Preserve exact option keys before trying copy-syntax cleanup — the
@@ -139,6 +160,22 @@ export function quizInputProblems(input: {
 				`correctAnswer lists ${unique.length} values but multiSelect is not true — a single-select question with several ` +
 					"correct answers can never be answered correctly. Set multiSelect: true, or make exactly one option correct.",
 		);
+	}
+	// Figure references (quiz figures, owner 2026-11-18): checked only when
+	// the seam knows what the session delivered. A wrong id returns to the
+	// model with the copyable list — the same law as nodeId — because a
+	// silently dropped picture leaves the geometry question unanswerable.
+	if (figures) {
+		if (input.figure !== undefined && input.figure.trim().length > 0) {
+			const problem = figureProblem(input.figure, figures);
+			if (problem) problems.push(problem);
+		}
+		input.options.forEach((option, i) => {
+			if (option.figure !== undefined && option.figure.trim().length > 0) {
+				const problem = figureProblem(option.figure, figures);
+				if (problem) problems.push(`options[${i}].figure: ${problem}`);
+			}
+		});
 	}
 	return problems;
 }
@@ -191,6 +228,17 @@ export const quizInputBase = Type.Object({
 	}),
 	details: Type.Optional(
 		Type.String({ description: "Optional extra context or instructions shown under the question." }),
+	),
+	// Quiz figures (owner, 2026-11-18): the question's own figure renders
+	// ABOVE the question text, like a textbook problem figure. Same
+	// reference law as option figures.
+	figure: Type.Optional(
+		Type.String({
+			description:
+				"Optional figure for the question itself, shown above the question text: the tool-call id of a visual " +
+				"job that ALREADY delivered its figure in this session (copy the figure id from that result message). " +
+				"Not a file path, not a URL, not the SVG source. For per-option pictures use options[].figure instead.",
+		}),
 	),
 });
 
@@ -560,7 +608,7 @@ export function toggleOther(mode: SelectMode, sel: DockSelection): DockSelection
 // ─── options ────────────────────────────────────────────────────────────────
 
 export function normalizeOptions(
-	options: string | Array<{ label: string; value?: string; description?: string }> | undefined,
+	options: string | Array<{ label: string; value?: string; description?: string; figure?: string }> | undefined,
 ): QuizOption[] {
 	const seen = new Set<string>();
 	// The persisted tool call can carry GLM's string-encoded options —
@@ -568,13 +616,17 @@ export function normalizeOptions(
 	// prepareArguments runs pre-validation (see parseOptionsIfString).
 	const coerced = parseOptionsIfString(options);
 	const list = Array.isArray(coerced)
-		? (coerced as Array<{ label: string; value?: string; description?: string }>)
+		? (coerced as Array<{ label: string; value?: string; description?: string; figure?: string }>)
 		: [];
 	return list
 		.map((option) => ({
 			label: option.label.trim(),
 			value: option.value?.trim() || option.label.trim(),
 			description: option.description?.trim() || undefined,
+			// The figure reference survives trimming; an empty one is ABSENT
+			// rather than an empty key (the resolver treats absent and unknown
+			// identically: no picture), and old records keep their shape.
+			...(option.figure?.trim() ? { figure: option.figure.trim() } : {}),
 		}))
 		.filter((option) => {
 			if (option.label.length === 0) return false;

@@ -76,7 +76,7 @@ export function CitationCommentEditor({ initial, onDraftChange, onSave, onCancel
 			<div className="flex justify-end gap-2">
 				<Button type="button" size="xs" variant="outline" onPointerDown={(event) => event.preventDefault()} onClick={onCancel}>{t("cancel")}</Button>
 				<Button type="button" size="xs" disabled={tooLong} onPointerDown={(event) => event.preventDefault()} onClick={() => onSave(draft, false)}>
-					{tooLong ? "Shorten comment" : "Save"}
+					{tooLong ? t("shortenComment") : t("save")}
 				</Button>
 			</div>
 		</div>

@@ -16,10 +16,12 @@ export function subscriptionNotice(label: string, web = false): string { return 
 export function subscriptionDisconnectCopy(label: string, web = false): string { return `Disconnect ${label} from LearnHarness? This stops work using this connection and removes its saved credentials from ${web ? "the machine running LearnHarness" : "this device"}. It does not cancel your subscription or revoke access at the provider. Saved model choices will remain unavailable until you reconnect or change them.`; }
 export function emptySubscriptionStatus(providerId: NativeSubscriptionProviderId): NativeSubscriptionStatus { return { providerId, available: false, connected: false, pending: false, allowBackgroundUse: true, connectionId: null, epoch: 0, authorityRevision: 0, revision: 0 }; }
 const Context = createContext({ statuses: [] as NativeSubscriptionStatus[], busy: false, open: (_providerId: NativeSubscriptionProviderId) => {} });
-const CONTROL_ERROR = "The connection could not be changed. Try again.";
+const CONTROL_ERROR_KEY = "controlError";
 
 export function NativeSubscriptionUIProvider({ children }: { children: React.ReactNode }) {
 	const t = useT("settingsSubs");
+	// Top-level "errors" keys need a ROOT translator (see thinking-default.ts).
+	const r = useT();
 	const bridge = useNativeSubscriptionBridge();
 	const web = typeof window !== "undefined" && bridge !== window.lh?.subscriptions;
 	const [statuses, setStatuses] = useState<NativeSubscriptionStatus[]>([]);
@@ -43,7 +45,7 @@ export function NativeSubscriptionUIProvider({ children }: { children: React.Rea
 				return next && (!old || next.revision >= old.revision) ? next : old ?? emptySubscriptionStatus(providerId);
 			});
 			statusesRef.current = accepted; setStatuses(accepted);
-		} catch { if (mounted.current && request === sequence.current) setError(t("errors.e12")); }
+		} catch { if (mounted.current && request === sequence.current) setError(r("errors.e12")); }
 	}
 	useEffect(() => {
 		mounted.current = true; void refresh();
@@ -62,7 +64,7 @@ export function NativeSubscriptionUIProvider({ children }: { children: React.Rea
 		if (busy) return;
 		const owner = ++generation.current; setOperation("control"); setError(null);
 		try { await action(); await refresh(); if (mounted.current && owner === generation.current && close) setDialog(null); }
-		catch { if (mounted.current && owner === generation.current) setError(CONTROL_ERROR); }
+		catch { if (mounted.current && owner === generation.current) setError(t(CONTROL_ERROR_KEY)); }
 		finally { if (mounted.current && owner === generation.current) setOperation(null); }
 	}
 	function close(): CloseOutcome {
@@ -80,7 +82,7 @@ export function NativeSubscriptionUIProvider({ children }: { children: React.Rea
 		if (!dialog || !bridge || operation || !status?.available) return;
 		const owner = ++generation.current; setOperation("login"); setError(null);
 		try { await bridge.login(dialog, backgroundDirty ? background : undefined); await refresh(); if (mounted.current && generation.current === owner) setDialog(null); }
-		catch { if (mounted.current && generation.current === owner) setError(t("errors.e17")); }
+		catch { if (mounted.current && generation.current === owner) setError(r("errors.e17")); }
 		finally { if (mounted.current && generation.current === owner) setOperation(null); }
 	}
 	return <Context.Provider value={{ statuses, busy: !!operation, open }}>
@@ -92,7 +94,7 @@ export function NativeSubscriptionUIProvider({ children }: { children: React.Rea
 				<p className="mt-3 text-xs leading-relaxed text-muted-foreground">{subscriptionDisconnectCopy(descriptor.label, web)}</p>
 			</> : view === "notice" ? <>
 				<p className="mt-3 text-xs leading-relaxed text-muted-foreground" data-testid="subscription-privacy-notice">{subscriptionNotice(descriptor.label, web)}</p>
-				{dialog === "github-copilot" && <p className="mt-3 text-xs leading-relaxed text-muted-foreground" data-testid="copilot-policy-notice">{COPILOT_POLICY_NOTICE}</p>}
+				{dialog === "github-copilot" && <p className="mt-3 text-xs leading-relaxed text-muted-foreground" data-testid="copilot-policy-notice">{t("copilotNotice")}</p>}
 			</> : <>
 				<div className="mt-4 flex items-center gap-3 text-xs text-foreground">
 					<Toggle label={t("allowBackground")} checked={management ? status.allowBackgroundUse : background} disabled={busy || !!operation || status.pending || !status.available} onChange={(enabled) => { setBackground(enabled); if (management && bridge) void control(() => bridge.consent(dialog, enabled)); else setBackgroundDirty(true); }} />
@@ -103,7 +105,7 @@ export function NativeSubscriptionUIProvider({ children }: { children: React.Rea
 					{interaction.progress && <p role="status" className="text-muted-foreground">{interaction.progress}</p>}
 					{interaction.userCode && <p>{t("deviceCode")} <code className="select-text font-mono">{interaction.userCode}</code></p>}
 					{interaction.browser && <Button variant="outline" size="sm" disabled={busy} onClick={() => bridge && void bridge.open(dialog, interaction.attemptId, interaction.browser!.id).catch(() => setError("The browser could not be opened. Try again."))}>{t("openBrowser")}</Button>}
-					{prompt && <form className="space-y-2" onSubmit={(event) => { event.preventDefault(); if (bridge) void bridge.respond(dialog, interaction.attemptId, prompt.id, promptValue).catch(() => setError(CONTROL_ERROR)); }}>
+					{prompt && <form className="space-y-2" onSubmit={(event) => { event.preventDefault(); if (bridge) void bridge.respond(dialog, interaction.attemptId, prompt.id, promptValue).catch(() => setError(t(CONTROL_ERROR_KEY))); }}>
 						<label className="block" htmlFor="subscription-auth-prompt">{prompt.message}</label>
 						{prompt.type === "select" ? <select id="subscription-auth-prompt" value={promptValue} onChange={(event) => setPromptValue(event.target.value)} className="w-full rounded-sm border border-border bg-background px-2 py-1.5"><option value="" disabled>{t("select")}</option>{prompt.options?.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}</select> : <input id="subscription-auth-prompt" type={prompt.type === "secret" ? "password" : "text"} autoComplete="off" value={promptValue} placeholder={prompt.placeholder} onChange={(event) => setPromptValue(event.target.value)} className="w-full rounded-sm border border-border bg-background px-2 py-1.5" />}
 						<Button type="submit" variant="outline" size="sm" disabled={busy || (prompt.type === "select" && !promptValue)}>{t("continue")}</Button>

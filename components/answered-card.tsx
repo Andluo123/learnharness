@@ -9,8 +9,9 @@ import { ThinkingBlock } from "@/components/thinking-block";
 import { PathText } from "@/components/file-path-chip";
 import { cn } from "@/lib/utils";
 import { ToolContentResponse } from "@/components/ai-elements/message";
-import type { QuestionAnswerData } from "@/src/core";
-import { answerForPresentation, parseAskInput, parseQuizInput } from "@/src/core";
+import type { QuestionAnswerData, QuizFigure } from "@/src/core";
+import { answerForPresentation, normalizeOptions, parseAskInput, parseQuizInput, resolveQuizFigure, seededRandom, shuffleOptions } from "@/src/core";
+import { QuizFigureImage } from "@/components/quiz-figure";
 import { useT } from "@/i18n/use-t.ts";
 
 /**
@@ -23,7 +24,23 @@ import { useT } from "@/i18n/use-t.ts";
  * client — the card reveals his answer, the committed correct answer, and
  * the explanation, with NO verdict chips (owner ruling 2026-09-27).
  */
-export function AnsweredCard({ answer: savedAnswer, input }: { answer: QuestionAnswerData; input?: unknown }) {
+/** The absent-figure map: no reference resolves against nothing. */
+const NO_FIGURES = new Map<string, QuizFigure>();
+
+export function AnsweredCard({
+	answer: savedAnswer,
+	input,
+	toolCallId,
+	figures,
+}: {
+	answer: QuestionAnswerData;
+	input?: unknown;
+	/** The call's id re-seeds the display shuffle so figure references map
+	 *  back to the options as the learner saw them (quiz figures, owner
+	 *  2026-11-18). Absent = no option figures render. */
+	toolCallId?: string;
+	figures?: ReadonlyMap<string, QuizFigure>;
+}) {
 	const t = useT("answeredCard");
 	const answer = answerForPresentation(savedAnswer, input);
 	const [whyOpen, setWhyOpen] = useState(false); // the tucked explanation (predictions, owner 2026-10-03)
@@ -46,8 +63,22 @@ export function AnsweredCard({ answer: savedAnswer, input }: { answer: QuestionA
 	// snapshot (what the model sees, compactAnswerForModel) is untouched;
 	// any parse failure or absent input renders exactly the older card.
 	const askInput = answer.kind === "ask" ? parseAskInput(input) : undefined;
-	const parsedDetails = askInput?.details ?? (answer.kind === "quiz" ? parseQuizInput(input)?.details : undefined);
+	const quizInput = answer.kind === "quiz" ? parseQuizInput(input) : undefined;
+	const parsedDetails = askInput?.details ?? quizInput?.details;
 	const descByIndex = new Map((askInput?.options ?? []).map((o, i) => [i + 1, o.description]));
+	// Quiz figures (owner, 2026-11-18): the answer snapshot keys options by
+	// DISPLAY index; the call's options are in AUTHORING order. Re-seeding
+	// the dock's shuffle (toolCallId) restores the order the learner saw,
+	// so each row's figure reference resolves to the picture it had live.
+	const questionFigure = quizInput ? resolveQuizFigure(quizInput.figure, figures ?? NO_FIGURES) : null;
+	const figureByIndex = new Map<number, QuizFigure>();
+	if (quizInput && toolCallId && figures) {
+		const ordered = shuffleOptions(normalizeOptions(quizInput.options), seededRandom(toolCallId));
+		ordered.forEach((opt, i) => {
+			const figure = resolveQuizFigure(opt.figure, figures);
+			if (figure) figureByIndex.set(i + 1, figure);
+		});
+	}
 
 	return (
 		<>
@@ -91,6 +122,7 @@ export function AnsweredCard({ answer: savedAnswer, input }: { answer: QuestionA
 						<StatusBadge text={t("incorrect")} color="var(--lh-error)" />
 					))}
 			</div>
+			{questionFigure && <QuizFigureImage figure={questionFigure} size="question" />}
 			<div className="mb-3 font-medium">
 				<ToolContentResponse>{answer.questionText}</ToolContentResponse>
 			</div>
@@ -136,8 +168,11 @@ export function AnsweredCard({ answer: savedAnswer, input }: { answer: QuestionA
 										{(key || sel) && <GlyphMark kind={key ? "check" : "x"} className="size-3.5" />}
 									</span>
 								)}
-								<span className={cn(!sel && "text-muted-foreground")}>
+								<span className={cn("min-w-0 flex-1", !sel && "text-muted-foreground")}>
 									<ToolContentResponse>{opt.label}</ToolContentResponse>
+									{figureByIndex.get(opt.index) && (
+										<QuizFigureImage figure={figureByIndex.get(opt.index)!} size="option" />
+									)}
 									{descByIndex.get(opt.index) && (
 										// Ask-option subtext (owner, 2026-10-12): same markdown path
 										// as the pending dock — LaTeX included. Quiz options carry

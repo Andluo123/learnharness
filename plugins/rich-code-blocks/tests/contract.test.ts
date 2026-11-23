@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { CACHE_BYTES, CACHE_ENTRIES, DEFAULT_SETTINGS, INSTRUCTIONS, SOURCE_LIMITS, SVG_LIMIT, checkSource, checkSvgSize, parseChange, parseSettings } from "../src/contract.ts";
+import { CACHE_BYTES, CACHE_ENTRIES, DEFAULT_SETTINGS, INSTRUCTIONS, SOURCE_LIMITS, SVG_LIMIT, assertTikzCharacters, checkSource, checkSvgSize, normalizeTikzSource, parseChange, parseSettings } from "../src/contract.ts";
 import { RenderCache } from "../src/render.ts";
 
 test("strict versioned settings/change contracts retain false and reject unknown or malformed fields", () => {
@@ -36,6 +36,9 @@ test("technical-diagram instructions cover the observed TeX authoring failures",
   assert.match(instructions, /bundled PGFPlots version is 1\.16/);
   assert.ok(instructions.includes("\\pgfplotsset{compat=1.16}"));
   assert.match(instructions, /do not request 1\.18 or another newer version/);
+  assert.match(instructions, /bundled TeX fonts cover ASCII only/);
+  assert.ok(instructions.includes("$50^\\circ$ not 50°"));
+  assert.match(instructions, /% comments are ignored/);
 });
 
 test("UTF-8 source/output bounds are enforced without trimming valid payloads", () => {
@@ -56,4 +59,50 @@ test("volatile LRU bounds include keys, recency, replacement and clear", () => {
   assert.equal(cache.get("0"), undefined); assert.equal(cache.get("big")?.length, CACHE_BYTES - 3);
   cache.set("oversize", "x".repeat(CACHE_BYTES)); assert.equal(cache.get("oversize"), undefined);
   cache.clear(); assert.equal(cache.get("big"), undefined);
+});
+
+/** The engine's preloaded format already supplies \\documentclass{standalone}.
+ *  A model copy of that line aborts compilation with "Two \\documentclass
+ *  commands" and the block renders as raw code — the failure this normalizer
+ *  removes. Keep the surrounding document body intact. */
+test("tikz sources tolerate an engine-supplied documentclass line", () => {
+  const body = "\\usepackage{tikz}\n\\begin{document}\n\\begin{tikzpicture}\\draw (0,0)--(1,1);\\end{tikzpicture}\n\\end{document}";
+  assert.equal(normalizeTikzSource(`\\documentclass{standalone}\n${body}`), body);
+  assert.equal(normalizeTikzSource(`\\documentclass[border=2pt]{standalone}\n${body}`), body);
+  assert.equal(normalizeTikzSource(`\\documentstyle{standalone}\n${body}`), body);
+  assert.equal(normalizeTikzSource(`\\documentclass{article}\n\\documentclass{standalone}\n${body}`), body);
+  // Idempotent, and a clean source is untouched.
+  assert.equal(normalizeTikzSource(body), body);
+  assert.equal(normalizeTikzSource(normalizeTikzSource(body)), body);
+});
+
+/** The bundled Computer Modern fonts are ASCII-only. A real answer labelled an
+ *  angle "$50°$" and the engine aborted (or stalled on the missing tcrm1000
+ *  metric) instead of drawing. Catch the character before TeX starts, name the
+ *  TeX spelling, and leave % comments alone because they never reach TeX. */
+test("tikz sources reject characters the bundled ASCII fonts cannot typeset", () => {
+  const fail = (source: string): string => {
+    assert.throws(() => checkSource("tikz", source));
+    try { checkSource("tikz", source); } catch (error) { return (error as Error).message; }
+    throw new Error("unreachable");
+  };
+  const head = "\\usepackage{tikz}\n\\begin{document}\n\\begin{tikzpicture}\n";
+  const tail = "\n\\end{tikzpicture}\n\\end{document}";
+  const degree = fail(`${head}\\node at (0,0) {$50°$};${tail}`);
+  assert.match(degree, /TikZ source line 4, column 20/);
+  assert.ok(degree.includes('"°"') && degree.includes("U+00B0"));
+  assert.ok(degree.includes("$^\\circ$"), degree);
+  assert.ok(degree.includes("bundled TeX fonts cannot typeset"));
+  // No suggestion is invented for characters outside the common-symbol set.
+  const chinese = fail(`${head}\\node at (0,0) {中文};${tail}`);
+  assert.ok(chinese.includes("Use ASCII and TeX commands instead."), chinese);
+  const emoji = fail(`${head}\\node at (0,0) {😀};${tail}`);
+  assert.ok(emoji.includes("U+1F600"), emoji);
+  // \% is a literal percent, so what follows it is still TeX input.
+  assert.ok(fail(`${head}\\node {50\\% °};${tail}`).includes('"°"'));
+
+  // Comments, ASCII layout and a leading BOM stay accepted.
+  assert.doesNotThrow(() => assertTikzCharacters("% 这是一个三角形"));
+  assert.doesNotThrow(() => assertTikzCharacters("\\draw (0,0)--(1,1); % 50° here"));
+  assert.doesNotThrow(() => checkSource("tikz", "\uFEFF\\usepackage{tikz}\r\n\\begin{document}\r\n\t\\draw (0,0)--(1,1);\r\n\\end{document}"));
 });

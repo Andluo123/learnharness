@@ -1,5 +1,5 @@
 import { tex, dvi2svg, BrowserResourceLoader } from "isomorphic-tikzjax";
-import { checkSource, checkSvgSize } from "./contract.ts";
+import { checkSource, checkSvgSize, normalizeTikzSource } from "./contract.ts";
 
 const worker = globalThis as unknown as {
   onmessage: ((event: MessageEvent<{ id: number; source: string; resourcesUrl: string }>) => void) | null;
@@ -9,12 +9,13 @@ let loader: BrowserResourceLoader | undefined;
 let resourceUrl: string | undefined;
 worker.onmessage = async ({ data }) => {
   try {
-    checkSource("tikz", data.source);
+    const source = normalizeTikzSource(data.source);
+    checkSource("tikz", source);
     // Always use the plugin's explicit local resource root, never the package CDN default.
     const url = new URL(data.resourcesUrl);
     if (url.origin !== new URL(import.meta.url).origin) throw new Error("TeX resources must be local plugin assets.");
     if (!loader || resourceUrl !== url.href) { resourceUrl = url.href; loader = new BrowserResourceLoader(url.href); }
-    const dvi = await tex(data.source, { showConsole: false }, loader);
+    const dvi = await tex(source, { showConsole: false }, loader);
     // The library's DOM parse is NOT a sanitizer. Our main-thread static SVG
     // rebuilder is the only admission path to the page. No DOM/SVGO runs here.
     const raw = await dvi2svg(dvi, { disableSanitize: true, embedFontCss: false });

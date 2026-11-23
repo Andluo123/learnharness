@@ -6,6 +6,7 @@ import { JobsContext } from "@/components/jobs-context";
 import { ChatActionsContext } from "@/components/chat";
 import { isModelsRefusal, isProviderKeyRefusal, type JobKind, type JobRecord } from "@/src/core";
 import { BrailleSpinner } from "@/components/braille-spinner";
+import { useT } from "@/i18n/use-t.ts";
 
 /**
  * The dispatch card (contracts.ts "THE ASYNC PROTOCOL" §4): the tool-call
@@ -19,18 +20,20 @@ import { BrailleSpinner } from "@/components/braille-spinner";
  *                 itself arrives in the steer message right below, so the
  *                 box must not duplicate it.
  */
+/** Job-kind ids; the label is catalog copy (dispatchCard.*). */
 const KIND_LABEL: Record<JobKind, string> = {
-	research: "Research agent",
-	demo: "Demo agent",
-	visual: "Figure agent",
-	pdf: "PDF reader",
-	plugin: "Plugin worker",
+	research: "research",
+	demo: "demo",
+	visual: "visual",
+	pdf: "pdf",
+	plugin: "plugin",
 };
 
 export function DispatchCard({ toolCallId, kind }: { toolCallId: string; kind: JobKind }) {
 	const jobs = useContext(JobsContext);
 	const job = jobs.find((j) => j.toolCallId === toolCallId) ?? null;
-	const label = kind === "plugin" ? job?.plugin?.label || job?.plugin?.toolName || KIND_LABEL.plugin : KIND_LABEL[kind];
+	const t = useT("dispatchCard");
+	const label = kind === "plugin" ? job?.plugin?.label || job?.plugin?.toolName || t(KIND_LABEL.plugin) : t(KIND_LABEL[kind]);
 
 	if (!job || job.status === "running") {
 		return <DispatchActivityCard job={job} label={label} />;
@@ -42,10 +45,10 @@ export function DispatchCard({ toolCallId, kind }: { toolCallId: string; kind: J
 	// whose key is gone reads as the key being needed — the deep-link
 	// lands on the SetupDialog's first-key stage on its own.
 	if (isModelsRefusal(job.error)) {
-		return <DispatchRefusedCard label={label} line="needs model setup" button="Set up models" />;
+		return <DispatchRefusedCard label={label} line={t("needsModelSetup")} button={t("setUpModels")} />;
 	}
 	if (isProviderKeyRefusal(job.error)) {
-		return <DispatchRefusedCard label={label} line="needs a provider key" button="Add a key" />;
+		return <DispatchRefusedCard label={label} line={t("needsProviderKey")} button={t("addKey")} />;
 	}
 	const failed = job.status === "error";
 	return (

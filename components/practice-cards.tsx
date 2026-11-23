@@ -78,11 +78,11 @@ export function ProblemCard({ part }: ArtifactPartProps) {
 }
 
 const OUTCOME_LABEL: Record<string, string> = {
-	solved: "Solved",
-	solvedWithHints: "Solved with hints",
-	movedOn: "Moved on",
-	surrendered: "Surrendered",
-	dismissed: "Dismissed",
+	solved: "solved",
+	solvedWithHints: "solvedWithHints",
+	movedOn: "movedOn",
+	surrendered: "surrendered",
+	dismissed: "dismissed",
 };
 
 /* The outcome chips (owner round 3, 2026-10-05): the EXACT register of the
@@ -115,7 +115,7 @@ export function ConcludeCard({ part }: ArtifactPartProps) {
 	if (outcome === "dismissed") {
 		return (
 			<div data-testid="conclude-card" className="my-1 px-1 text-sm text-muted-foreground/70">
-				Problem dismissed.
+				{t("problemDismissed")}
 			</div>
 		);
 	}
@@ -128,7 +128,7 @@ export function ConcludeCard({ part }: ArtifactPartProps) {
 			<div className="mb-1 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
 				Concluded
 				{(OUTCOME_LABEL[outcome] ?? "") !== "" && outcome !== "dismissed" && (
-					<StatusBadge text={OUTCOME_LABEL[outcome] ?? ""} color={OUTCOME_COLOR[outcome]} />
+					<StatusBadge text={t(OUTCOME_LABEL[outcome] ?? "")} color={OUTCOME_COLOR[outcome]} />
 				)}
 			</div>
 			{/* The verdict — plain prose under the heading, no 'Verdict:' label

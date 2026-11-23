@@ -201,6 +201,9 @@ export function resolveSettings(record: UserSettings | null): EffectiveSettings 
 		},
 		dictation: {
 			language: record?.dictation?.language ?? FACTORY_SETTINGS.dictation.language,
+			detectLanguage: record?.dictation?.detectLanguage ?? FACTORY_SETTINGS.dictation.detectLanguage,
+			autoSend: record?.dictation?.autoSend ?? FACTORY_SETTINGS.dictation.autoSend,
+			continuousReadback: record?.dictation?.continuousReadback ?? FACTORY_SETTINGS.dictation.continuousReadback,
 		},
 		agent: {
 			workerRequestConcurrency: agent.workerRequestConcurrency ?? FACTORY_SETTINGS.agent.workerRequestConcurrency,

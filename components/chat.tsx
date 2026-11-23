@@ -8,9 +8,10 @@ import { PluginSubmissionRunner, SubmissionModelEpoch, type SubmissionAttempt } 
 import { submissionImages, type BuiltinSubmissionCapture, type PrepareBuiltinSubmission, type PrepareThinkingSubmission, type PreparePluginQuestionSubmission, type PreparePluginProblemSubmission } from "./plugin-submission-adapters";
 import { SubmittedImages } from "./submitted-images";
 import { usePageSurfaceBoundary, SurfaceRegion } from "./plugin-surfaces";
+import { createDockCapabilities, PluginDock, PluginDockTopBarToggle } from "./plugin-dock";
 import { findSurfaceBoundary } from "./plugin-surface-targets";
 import { scheduleOpeningSubmission } from "./plugin-submission-opening";
-import { activeProblemOccurrenceOf, buildAnswer, toClientQuestion, type PluginSubmission, type PluginSubmissionTarget, type QuestionData } from "@/src/core";
+import { activeProblemOccurrenceOf, buildAnswer, deliveredFigures, toClientQuestion, type PluginDockCapabilities, type PluginSubmission, type PluginSubmissionTarget, type QuestionData } from "@/src/core";
 import { validatePluginBuiltinSubmissionAnswer } from "@/src/core";
 import { visibleQueuedSteers } from "@/components/session-core";
 import { SetupDialog } from "@/components/setup-dialog";
@@ -24,7 +25,11 @@ import {
 	ConversationEmptyState,
 	ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { Message, MessageContent, MessageResponse } from "@/components/ai-elements/message";
+import { Message, MessageActions, MessageContent, MessageResponse } from "@/components/ai-elements/message";
+import { SpeakButton } from "@/components/speak-button";
+import { createSpeakSelectionAction } from "@/components/speech-actions";
+import { SpeechAutoRead, latestAssistantAnswer } from "@/components/speech-auto-read";
+import { SpeechShortcut } from "@/components/speech-shortcuts";
 import { PathText } from "@/components/file-path-chip";
 import { Reasoning, ReasoningContent, ReasoningTrigger } from "@/components/ai-elements/reasoning";
 import { Shimmer } from "@/components/ai-elements/shimmer";
@@ -63,9 +68,9 @@ import {
 	type LhMessage,
 	type ModelSlotName,
 } from "@/src/core";
-import { useT } from "@/i18n/use-t.ts";
-import { localizeError } from "@/i18n/error-messages.ts";
-import { useActiveLocale } from "@/i18n/use-active-locale.ts";
+import { useT } from "@/i18n/use-t.ts";
+import { localizeError } from "@/i18n/error-messages.ts";
+import { useActiveLocale } from "@/i18n/use-active-locale.ts";
 import type { AppLocale } from "@/i18n/config.ts";
 import { PlanBlock, PlanPopup, latestTree } from "@/components/plan-block";
 import { PlanMarginalia, planExists } from "@/components/plan-window";
@@ -103,7 +108,7 @@ import { PluginSessionTopBarActions } from "@/components/plugin-chrome";
 import { usePluginShortcutPage } from "@/components/plugin-shortcuts";
 import { createPluginSessionActionContext, type PluginSessionViewInput } from "@/src/core";
 import type { SessionInputViewReader, SessionViewTargets, NativeQuestionViewState, ViewReaderRef } from "./session-view-readers";
-import type { JobRecord, Phase3, QuestionAnswerData, QuestionFormDraft, TurnUsage, SessionPricing } from "@/src/core";
+import type { JobRecord, Phase3, QuestionAnswerData, QuestionFormDraft, QuizFigure, TurnUsage, SessionPricing } from "@/src/core";
 import type { LhViewMessage } from "@/src/core";
 import { PhaseChip, PhaseDivider } from "@/components/phase-divider";
 import {
@@ -388,6 +393,14 @@ export function Chat({
 	const scrollContextRef = useRef<StickToBottomContext | null>(null);
 	const sourceTextParts = useMemo(() => firstSourceTextParts(messages), [messages]);
 	const sideEntries = useMemo(() => sideEntryPoints(nativeMessages, messages), [nativeMessages, messages]);
+	// Quiz figures (owner, 2026-11-18): the session's delivered visuals by
+	// tool-call id — the reference space quiz cards resolve against. The
+	// record is the source (steer details carry the SVG), so a reloaded
+	// session shows the same pictures as the live one.
+	const quizFigures = useMemo(() => deliveredFigures(nativeMessages), [nativeMessages]);
+	// The newest answer — the read-aloud chord reads it, and the
+	// continuous mode watches the same passage.
+	const latestAnswer = useMemo(() => latestAssistantAnswer(messages), [messages]);
 
 	// The reattach settled terminal → the sync-and-continue seam (below).
 	setReattachSettled(() => reattachSettledRef.current());
@@ -724,6 +737,13 @@ export function Chat({
 		textRef.current = v; composerEditRevision.current++;
 		setComposerDraftRevision((revision) => revision + 1);
 	}, []);
+	// The dock column's host services. Reading/writing the composer draft through
+	// these keeps plugins out of the composer's internals: text goes in as an
+	// ordinary edit and the learner still decides when to send.
+	const dockCapabilities = useMemo<PluginDockCapabilities>(
+		() => createDockCapabilities(applyText, () => textRef.current),
+		[applyText],
+	);
 	const recordComposerText = useCallback((v: string) => {
 		textRef.current = v; composerEditRevision.current++;
 	}, []);
@@ -1092,8 +1112,11 @@ export function Chat({
 		return () => window.removeEventListener(kbdEventForChat("toggle-question-thread"), toggleQuestionThread);
 	}, [toggleQuestionThread]);
 	// Advancing the lesson does not close or disable an old conversation.
-	const sideActions = useMemo(() => createSideQuestionActions({ open: openSideThread }), [openSideThread]);
-	const selectionActions = useMemo(() => [citeAction, ...sideActions], [citeAction, sideActions]);
+	const sideCopy = useT("sideThread");
+	const sideActions = useMemo(() => createSideQuestionActions({ open: openSideThread, t: sideCopy }), [openSideThread, sideCopy]);
+	const speechCopy = useT("speech");
+	const speakAction = useMemo(() => createSpeakSelectionAction(speechCopy), [speechCopy]);
+	const selectionActions = useMemo(() => [citeAction, ...sideActions, speakAction], [citeAction, sideActions, speakAction]);
 	const router = useRouter();
 	const transcriptElementRef = useRef<HTMLElement | null>(null);
 	transcriptElementRef.current = transcriptElement;
@@ -1779,9 +1802,14 @@ export function Chat({
 						<PhaseChip phase={phases.at(-1) ?? "probe"} />
 					)}
 					<PluginSessionTopBarActions readContext={actionContext} captureContext={captureActionContext} refreshRef={refreshPluginActions} />
+					<PluginDockTopBarToggle />
 				</TopBar>
 
 				<SessionFind scopeRef={sessionFindScopeRef} scrollContextRef={scrollContextRef} />
+				{/* The read-aloud surfaces (continuous mode + the Mod+Shift+V
+					    chord) listen; they render nothing. */}
+				<SpeechAutoRead messages={messages} streaming={status === "streaming" || status === "submitted"} />
+				<SpeechShortcut latest={latestAnswer} />
 				<div ref={sessionFindScopeRef} className="relative flex min-h-0 flex-1">
 				<Conversation className="h-full min-w-0 flex-1" initial="instant" contextRef={scrollContextRef}>
 					<SessionMessageNavigation />
@@ -1846,7 +1874,7 @@ export function Chat({
 														className="my-4 flex items-center justify-center gap-1.5 font-ui text-xs font-medium uppercase tracking-wide text-muted-foreground"
 													>
 														<ArrowRightIcon className="size-3" />
-														Next problem
+														{t("nextProblem")}
 													</div>
 												);
 											default:
@@ -1984,7 +2012,7 @@ export function Chat({
 													case "tool-recall": {
 														const malformed = !busy && malformedQuestions.find(call => call.messageId === part.sourceMessageId && call.contentIndex === part.sourceContentIndex && call.toolCallId === part.toolCallId);
 														if (malformed) return <MalformedQuestion key={pi} disabled={!!pending || compacting}
-															reason={pending ? "Answer or discard the remaining question first." : undefined}
+															reason={pending ? t("answerRemainingFirst") : undefined}
 															onRetry={() => {
 																draftRef.current = null;
 																void send({ type: "retry-question", messageId: malformed.messageId, contentIndex: malformed.contentIndex, toolCallId: malformed.toolCallId });
@@ -1993,7 +2021,7 @@ export function Chat({
 														// transcript; answered ones render as graded records.
 														if (part.state === "output-available") {
 															return (
-																<AnsweredCard key={pi} answer={part.output as QuestionAnswerData} input={part.input} />
+																<AnsweredCard key={pi} answer={part.output as QuestionAnswerData} input={part.input} toolCallId={part.toolCallId} figures={quizFigures} />
 															);
 														}
 														return null;
@@ -2007,6 +2035,16 @@ export function Chat({
 												}
 											})}
 										</MessageContent>
+										{m.role === "assistant" && (
+											<MessageActions
+												className="opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100"
+											>
+												<SpeakButton
+													text={m.parts.filter((p) => p.type === "text").map((p) => p.text).join("\n")}
+													label={`message-${m.id}`}
+												/>
+											</MessageActions>
+										)}
 										{m.role === "assistant" && renderSideEntry(sideEntries.get(m.id)?.get(m.parts.length))}
 									</Message>
 									)}
@@ -2106,6 +2144,7 @@ export function Chat({
 						prepareSubmission: preparePluginProblem, send, preparing: submissionRunner.occupied, compactionRunning: compacting, onEscape: dictation.cancel,
 					} : undefined}
 					compactionRunning={compacting}
+					quizFigures={quizFigures}
 					onSubmitThinking={submitThinking}
 					chatId={chatId}
 					onModelChange={recordSelectedModel}
@@ -2136,7 +2175,8 @@ export function Chat({
 										onClick={() => setSetupOpen(true)}
 										className="rounded-sm border border-border bg-card px-3 py-1.5 font-ui text-xs text-foreground transition-colors hover:border-muted-foreground/50 hover:bg-accent cursor-pointer"
 									>
-										Set up your models
+										{t("setUpModels")}
+
 									</button>
 								</div>
 							)
@@ -2260,6 +2300,9 @@ export function Chat({
 				<AbortTurnDialog mode={abortAsk} onClose={closeAbortAsk} onConfirm={confirmAbort} busy={busy} />
 				</div>
 			</div>
+			{/* The dock column is a full-height sibling of the session column, so it
+			    never covers the transcript and the divider resizes both. */}
+			<PluginDock capabilities={dockCapabilities} toggleInTopBar />
 		</div>
 		</CitationActionsContext.Provider>
 		</JobsContext.Provider>
@@ -2423,6 +2466,7 @@ export function DockOverlay({
 	workingRef,
 	practice, pluginPractice,
 	compactionRunning,
+	quizFigures,
 	onSubmitThinking,
 	requiresReveal,
 	readingThinking,
@@ -2473,6 +2517,10 @@ export function DockOverlay({
 	/** Compaction running for this chat (round 14) — the docks' submit
 	 *  affordance gate (the server's registry is the real one). */
 	compactionRunning: boolean;
+	/** The session's delivered visual figures by tool-call id (quiz
+	 *  figures, owner 2026-11-18) — the pending quiz card resolves its
+	 *  figure references against this map. */
+	quizFigures: ReadonlyMap<string, QuizFigure>;
 	/** The ACTIVE practice problem (practice sessions, 2026-10-04):
 	 *  {toolCallId, input} — dock ownership exactly like a pending
 	 *  question (the composer is replaced); null in teaching sessions. */
@@ -2958,6 +3006,7 @@ export function DockOverlay({
 									onEscape={dictationCancel}
 									dictationClaim={!revealPending}
 									compactionRunning={compactionRunning}
+									figures={quizFigures}
 								/>
 							) : pluginPractice ? (
 								<PluginProblemDock {...pluginPractice} viewReader={customViewReader} expanded={expanded} onExpand={() => { setExpanded(true); void suppressFoldDuringReveal(); }} />

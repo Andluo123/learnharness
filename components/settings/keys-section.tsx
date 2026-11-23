@@ -34,7 +34,7 @@ import {
 	type CustomModel,
 	type CustomModelOverride,
 } from "@/src/core";
-import { SettingsGroup } from "./controls.tsx";
+import { SettingsGroup, SettingsRow, Toggle } from "./controls.tsx";
 import { SubscriptionConnections } from "./subscription-connections.tsx";
 import { ClaudeCodeInstallationStatus } from "./claude-code-status.tsx";
 import { ProviderMenuList } from "./model-menu.tsx";
@@ -43,6 +43,7 @@ import { isInteractionScopeEligible } from "@/components/plugin-input-focus";
 import { MenuShell } from "@/components/menu-shell";
 import { notifySettingsSaved } from "@/components/settings-signal";
 import { DictationLanguageSetting } from "@/components/dictation-language";
+import { useDictationSettings } from "@/components/dictation-preference";
 import { useT } from "@/i18n/use-t.ts";
 
 /** One pi-ai provider with plain API-key auth (the Platform seam —
@@ -374,6 +375,7 @@ export function KeysSection({
 	initialRow?: string;
 }) {
 	const t = useT("settingsKeys");
+	const dt = useT("dictation");
 	const [statuses, setStatuses] = useState<AuthKeyStatus[] | null>(null);
 	const [providers, setProviders] = useState<ProviderKeyInfo[] | undefined>(undefined);
 	const [loading, setLoading] = useState(true);
@@ -605,6 +607,15 @@ export function KeysSection({
 				))}
 				{label === "dictation" && <>
 					<DictationLanguageSetting />
+					<SettingsRow label={dt("detectLanguage")} hint={dt("detectLanguageHint")} testid="row-dictation-detect-language">
+						<DictationToggle field="detectLanguage" label={dt("detectLanguage")} dt={dt} />
+					</SettingsRow>
+					<SettingsRow label={dt("autoSend")} hint={dt("autoSendHint")} testid="row-dictation-auto-send">
+						<DictationToggle field="autoSend" label={dt("autoSend")} dt={dt} />
+					</SettingsRow>
+					<SettingsRow label={dt("continuousReadback")} hint={dt("continuousReadbackHint")} testid="row-dictation-continuous-readback">
+						<DictationToggle field="continuousReadback" label={dt("continuousReadback")} dt={dt} />
+					</SettingsRow>
 					<p data-testid="dictation-setup-hint" className="px-1 text-[11px] leading-relaxed text-muted-foreground/70">
 						{t("deepgramHintBefore")} <a
 							href="https://console.deepgram.com/"
@@ -1059,5 +1070,27 @@ function CustomEndpointEditor({
 				</p>
 			)}
 		</div>
+	);
+}
+
+/** A boolean toggle bound to one dictation preference field. */
+function DictationToggle({
+	field,
+	label,
+	dt,
+}: {
+	field: "detectLanguage" | "autoSend" | "continuousReadback";
+	label: string;
+	dt: ReturnType<typeof useT>;
+}) {
+	const preference = useDictationSettings();
+	return (
+		<Toggle
+			checked={preference[field] ?? false}
+			label={label ?? dt(field)}
+			onChange={(value: boolean) => {
+				void preference.save({ [field]: value });
+			}}
+		/>
 	);
 }

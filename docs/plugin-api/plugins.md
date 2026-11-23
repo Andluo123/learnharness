@@ -13,6 +13,8 @@
 - [PluginCleanup](#plugincleanup)
 - [PluginCodeBlockProps](#plugincodeblockprops)
 - [PluginCodeBlockRenderer](#plugincodeblockrenderer)
+- [PluginDock](#plugindock)
+- [PluginDockCapabilities](#plugindockcapabilities)
 - [PluginFrontendContext](#pluginfrontendcontext)
 - [PluginFrontendModule](#pluginfrontendmodule)
 - [PluginGraphFileData](#plugingraphfiledata)
@@ -652,6 +654,128 @@ mount(container: HTMLElement, block: PluginCodeBlockProps): void | PluginCleanup
 
 **Returns:** `void \| PluginCleanup \| Promise<void \| PluginCleanup>`.
 
+## PluginDock
+
+Public SDK type, exported as `PluginDock`. Import with `import type`; the SDK has no runtime exports.
+
+A right-hand docked panel: a persistent column beside the session body, not an
+overlay. Only one dock is visible per window; registered docks share the column
+and appear as switcher buttons.
+
+```ts
+export interface PluginDock {
+    id: string;
+    name: string;
+    icon?: string;
+    mount(container: HTMLElement, signal: AbortSignal, capabilities: PluginDockCapabilities): void | PluginCleanup | Promise<void | PluginCleanup>;
+}
+```
+
+**Related types:** [PluginCleanup](plugins.md#plugincleanup), [PluginDockCapabilities](plugins.md#plugindockcapabilities).
+
+**Member index** (including nested object members; inherited members are defined in the linked base types):
+
+- [id](#plugindock-id)
+- [name](#plugindock-name)
+- [icon](#plugindock-icon)
+- [mount](#plugindock-mount)
+
+### PluginDock id
+
+```ts
+id: string;
+```
+
+### PluginDock name
+
+```ts
+name: string;
+```
+
+### PluginDock icon
+
+Trusted plugin SVG markup for the dock switcher.
+
+```ts
+icon?: string;
+```
+
+### PluginDock mount
+
+Mount only the panel body; the host owns the switcher chrome, the divider
+and the close affordance. Switching docks, closing and disable abort this
+mount signal. Return sync/async cleanup and scope child UI to this signal.
+
+```ts
+mount(container: HTMLElement, signal: AbortSignal, capabilities: PluginDockCapabilities): void | PluginCleanup | Promise<void | PluginCleanup>;
+```
+
+| Parameter | Type |
+| --- | --- |
+| `container` | `HTMLElement` |
+| `signal` | `AbortSignal` |
+| `capabilities` | `PluginDockCapabilities` |
+
+**Returns:** `void \| PluginCleanup \| Promise<void \| PluginCleanup>`.
+
+## PluginDockCapabilities
+
+Public SDK type, exported as `PluginDockCapabilities`. Import with `import type`; the SDK has no runtime exports.
+
+Host services a docked panel may use. Everything is scoped to the live mount:
+the session it was opened against, and this panel's own lifetime.
+
+```ts
+export interface PluginDockCapabilities {
+    pickFolder(): Promise<string | null>;
+    insertComposerText(text: string): boolean;
+    close(): void;
+}
+```
+
+**Member index** (including nested object members; inherited members are defined in the linked base types):
+
+- [pickFolder](#plugindockcapabilities-pickfolder)
+- [insertComposerText](#plugindockcapabilities-insertcomposertext)
+- [close](#plugindockcapabilities-close)
+
+### PluginDockCapabilities pickFolder
+
+Open the native folder picker and resolve its absolute path, or null when
+the user cancelled or this window has no native bridge (browser build).
+Plugins must offer a manual-path fallback for null.
+
+```ts
+pickFolder(): Promise<string | null>;
+```
+
+**Returns:** `Promise<string \| null>`.
+
+### PluginDockCapabilities insertComposerText
+
+Insert text into the current session's composer draft without sending it.
+Inert outside a native teaching/practice session; returns whether it landed.
+
+```ts
+insertComposerText(text: string): boolean;
+```
+
+| Parameter | Type |
+| --- | --- |
+| `text` | `string` |
+
+**Returns:** `boolean`.
+
+### PluginDockCapabilities close
+
+Close the dock this panel is mounted in. Idempotent.
+
+```ts
+close(): void;
+```
+
+**Returns:** `void`.
+
 ## PluginFrontendContext
 
 Public SDK type, exported as `PluginFrontendContext`. Import with `import type`; the SDK has no runtime exports.
@@ -665,6 +789,7 @@ export interface PluginFrontendContext {
     readonly signal: AbortSignal;
     cleanup(dispose: PluginCleanup): void;
     registerView(view: PluginView): () => void;
+    registerDock(dock: PluginDock): () => void;
     registerAction(action: PluginAction): () => void;
     placeAction(placement: PluginActionPlacement): () => void;
     refreshActions(): void;
@@ -696,12 +821,14 @@ export interface PluginFrontendContext {
         openSession(id: string): void;
         openHome(): void;
         openView(id: string): void;
+        openDock(id: string): void;
+        closeDock(): void;
         openSettings(): void;
     };
 }
 ```
 
-**Related types:** [PluginAction](plugins.md#pluginaction), [PluginActionPlacement](plugins.md#pluginactionplacement), [PluginCleanup](plugins.md#plugincleanup), [PluginCodeBlockRenderer](plugins.md#plugincodeblockrenderer), [PluginManifest](plugins.md#pluginmanifest), [PluginNotification](plugins.md#pluginnotification), [PluginProblemRenderer](plugin-problems.md#pluginproblemrenderer), [PluginQuestionRenderer](plugin-questions.md#pluginquestionrenderer), [PluginSettingsRegistration](plugins.md#pluginsettingsregistration), [PluginSettingsSchema](plugin-ui.md#pluginsettingsschema), [PluginSubmissionInterceptor](plugin-submissions.md#pluginsubmissioninterceptor), [PluginToolRenderer](plugins.md#plugintoolrenderer), [PluginUi](plugin-ui.md#pluginui), [PluginView](plugins.md#pluginview), [PluginWidgetHandle](plugin-ui.md#pluginwidgethandle), [ServerEvent](events.md#serverevent).
+**Related types:** [PluginAction](plugins.md#pluginaction), [PluginActionPlacement](plugins.md#pluginactionplacement), [PluginCleanup](plugins.md#plugincleanup), [PluginCodeBlockRenderer](plugins.md#plugincodeblockrenderer), [PluginDock](plugins.md#plugindock), [PluginManifest](plugins.md#pluginmanifest), [PluginNotification](plugins.md#pluginnotification), [PluginProblemRenderer](plugin-problems.md#pluginproblemrenderer), [PluginQuestionRenderer](plugin-questions.md#pluginquestionrenderer), [PluginSettingsRegistration](plugins.md#pluginsettingsregistration), [PluginSettingsSchema](plugin-ui.md#pluginsettingsschema), [PluginSubmissionInterceptor](plugin-submissions.md#pluginsubmissioninterceptor), [PluginToolRenderer](plugins.md#plugintoolrenderer), [PluginUi](plugin-ui.md#pluginui), [PluginView](plugins.md#pluginview), [PluginWidgetHandle](plugin-ui.md#pluginwidgethandle), [ServerEvent](events.md#serverevent).
 
 **Member index** (including nested object members; inherited members are defined in the linked base types):
 
@@ -709,6 +836,7 @@ export interface PluginFrontendContext {
 - [signal](#pluginfrontendcontext-signal)
 - [cleanup](#pluginfrontendcontext-cleanup)
 - [registerView](#pluginfrontendcontext-registerview)
+- [registerDock](#pluginfrontendcontext-registerdock)
 - [registerAction](#pluginfrontendcontext-registeraction)
 - [placeAction](#pluginfrontendcontext-placeaction)
 - [refreshActions](#pluginfrontendcontext-refreshactions)
@@ -731,6 +859,8 @@ export interface PluginFrontendContext {
 - [app.openSession](#pluginfrontendcontext-appopensession)
 - [app.openHome](#pluginfrontendcontext-appopenhome)
 - [app.openView](#pluginfrontendcontext-appopenview)
+- [app.openDock](#pluginfrontendcontext-appopendock)
+- [app.closeDock](#pluginfrontendcontext-appclosedock)
 - [app.openSettings](#pluginfrontendcontext-appopensettings)
 
 ### PluginFrontendContext manifest
@@ -775,6 +905,23 @@ registerView(view: PluginView): () => void;
 | Parameter | Type |
 | --- | --- |
 | `view` | `PluginView` |
+
+**Returns:** `() => void`.
+
+### PluginFrontendContext registerDock
+
+Register a right-hand docked panel. Registration alone shows nothing: the
+panel appears in the window's dock switcher, and the learner (or this
+plugin's ctx.app.openDock) opens it. Invalid/duplicate IDs throw; returned
+unregister removes the panel and aborts its live mount.
+
+```ts
+registerDock(dock: PluginDock): () => void;
+```
+
+| Parameter | Type |
+| --- | --- |
+| `dock` | `PluginDock` |
 
 **Returns:** `() => void`.
 
@@ -1074,6 +1221,8 @@ app: {
     openSession(id: string): void;
     openHome(): void;
     openView(id: string): void;
+    openDock(id: string): void;
+    closeDock(): void;
     openSettings(): void;
 };
 ```
@@ -1123,6 +1272,33 @@ openView(id: string): void;
 | Parameter | Type |
 | --- | --- |
 | `id` | `string` |
+
+**Returns:** `void`.
+
+### PluginFrontendContext app.openDock
+
+Open this plugin's own registered dock panel in the current window's
+dock column, switching to it if another dock is showing. Inert after
+activation expiry. Does not navigate or create a session.
+
+```ts
+openDock(id: string): void;
+```
+
+| Parameter | Type |
+| --- | --- |
+| `id` | `string` |
+
+**Returns:** `void`.
+
+### PluginFrontendContext app.closeDock
+
+Close the window's dock column when this plugin's dock is showing it;
+another plugin's open dock is left alone.
+
+```ts
+closeDock(): void;
+```
 
 **Returns:** `void`.
 

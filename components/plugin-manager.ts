@@ -2,6 +2,7 @@ import type {
 	PluginAction, PluginCleanup, PluginFrontendContext, PluginFrontendModule, PluginInfo,
 	PluginNotification, PluginView, ServerEvent, PluginCodeBlockRenderer, PluginToolRenderer,
 	PluginActionContext, PluginActionPlacement, PluginSettingsRegistration, PluginPageActionContext, PluginActionShortcut,
+	PluginDock,
 } from "@/src/core";
 
 import { preparePluginShortcut, copyPluginSubmissionTarget, preparePluginSubmissionInterceptor, type PluginSubmissionInterceptor, type PluginSubmissionTarget } from "../src/core/index.ts";
@@ -22,6 +23,7 @@ export interface FrontendPlugin {
 	error?: string;
 	views: PluginView[];
 	actions: PluginAction[];
+	docks: PluginDock[];
 	shortcuts?: readonly { actionId: string; shortcut: PluginActionShortcut }[];
 	placements: PluginActionPlacement[];
 	actionBusy: string[];
@@ -51,6 +53,7 @@ interface Lifecycle {
 	teardown?: Promise<void>;
 	views: Map<string, PluginView>;
 	actions: Map<string, PluginAction>;
+	docks: Map<string, PluginDock>;
 	shortcuts: Map<string, PluginActionShortcut>;
 	placements: Map<string, PluginActionPlacement>;
 	actionBusy: Set<string>;
@@ -75,6 +78,10 @@ export interface PluginHost {
 	pathname(): string;
 	navigate(path: string): void;
 	openSettings?(pluginId: string): void;
+	/** Show this plugin's dock panel without navigating; supplied by the window. */
+	openDock?(pluginId: string, dockId: string): void;
+	/** Close the dock column when this plugin's panel owns it. */
+	closeDock?(pluginId: string): void;
 	createUi?(options: { signal: AbortSignal; pluginId?: string; onError: (error: unknown) => void }): import("@/src/core/plugin-ui").PluginUi;
 	style?(url: string, onError: () => void): PluginCleanup;
 }
@@ -127,6 +134,8 @@ export class PluginFrontendManager {
 	private rendererMounts = new WeakMap<object, Set<() => void>>();
 	private submissionPredicateErrors = new WeakMap<object, string>();
 	private requestGeneration = 0;
+	/** Dock ids are window-unique across plugins: the dock column shows one. */
+	private dockOwners = new Map<string, string>();
 	private mutations = 0;
 	private disposed = false;
 	private started = false;
@@ -150,7 +159,7 @@ export class PluginFrontendManager {
 			return {
 				info, phase: life?.phase ?? (info.enabled ? (info.status === "error" ? "error" : "active") : "disabled"),
 				error: life?.error ?? this.cleanupErrors.get(info.id) ?? info.error, views: [...(life?.views.values() ?? [])],
-				actions: [...(life?.actions.values() ?? [])], shortcuts: [...(life?.shortcuts ?? [])].map(([actionId, shortcut]) => ({ actionId, shortcut })), placements: [...(life?.placements.values() ?? [])],
+				actions: [...(life?.actions.values() ?? [])], docks: [...(life?.docks.values() ?? [])], shortcuts: [...(life?.shortcuts ?? [])].map(([actionId, shortcut]) => ({ actionId, shortcut })), placements: [...(life?.placements.values() ?? [])],
 				actionBusy: [...(life?.actionBusy ?? [])], settings: life?.settings, busy: this.pending.has(info.id),
 			};
 		}) };
@@ -201,7 +210,7 @@ export class PluginFrontendManager {
 		if (this.lives.get(life.id) === life) this.lives.delete(life.id);
 		if (life.teardown) return life.teardown;
 		life.controller.abort();
-		life.views.clear(); life.actions.clear(); life.placements.clear(); life.actionBusy.clear(); life.settings = undefined;
+		life.views.clear(); life.actions.clear(); life.docks.clear(); life.placements.clear(); life.actionBusy.clear(); life.settings = undefined;
 		life.codeBlocks.clear(); life.toolRenderers.clear(); life.questionRenderers.clear(); life.problemRenderers.clear(); life.submissionInterceptors.clear();
 		life.notifications.clear(); life.events.clear(); life.resyncs.clear();
 		const cleanups = [...life.cleanups].reverse();
@@ -252,7 +261,7 @@ export class PluginFrontendManager {
 			const life: Lifecycle = {
 				id: info.id, revision: info.revision, controller: new AbortController(), cleanups: new Set(),
 				activation: Promise.resolve(), tasks: new Set(),
-				views: new Map(), actions: new Map(), shortcuts: new Map(), placements: new Map(), actionBusy: new Set(), codeBlocks: new Map(), toolRenderers: new Map(), questionRenderers: new Map(), problemRenderers: new Map(), submissionInterceptors: new Map(),
+				views: new Map(), actions: new Map(), docks: new Map(), shortcuts: new Map(), placements: new Map(), actionBusy: new Set(), codeBlocks: new Map(), toolRenderers: new Map(), questionRenderers: new Map(), problemRenderers: new Map(), submissionInterceptors: new Map(),
 				notifications: new Set(), events: new Set(), resyncs: new Set(), phase: "loading",
 			};
 			this.cleanupErrors.delete(info.id);
@@ -361,6 +370,24 @@ export class PluginFrontendManager {
 			cleanup: cleanup => { this.addCleanup(life, cleanup); },
 			registerView: view => register(life.views, view, "mount"),
 			registerAction: action => register(life.actions, action, "run"),
+			registerDock: dock => {
+				if (!this.current(life)) return () => {};
+				if (!dock || typeof dock.id !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(dock.id)) {
+					throw new Error("Plugin dock id must be a route-safe string of 1–128 characters, starting with a letter or number");
+				}
+				if (typeof dock.name !== "string" || !dock.name.trim()) throw new Error("Plugin dock name must be a nonempty string");
+				if (dock.icon !== undefined && typeof dock.icon !== "string") throw new Error("Plugin dock icon must be SVG markup");
+				if (typeof dock.mount !== "function") throw new Error("Plugin dock mount must be a function");
+				if (this.dockOwners.has(dock.id)) throw new Error(`Duplicate plugin dock registration: ${dock.id}`);
+				this.dockOwners.set(dock.id, life.id);
+				life.docks.set(dock.id, dock); this.publish();
+				let registered = true;
+				return () => {
+					if (!registered) return;
+					registered = false;
+					if (life.docks.get(dock.id) === dock) { life.docks.delete(dock.id); this.dockOwners.delete(dock.id); this.publish(); }
+				};
+			},
 			placeAction: placement => {
 				if (!this.current(life)) return () => {};
 				if (!placement || typeof placement.id !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(placement.id)) throw new Error("Plugin placement id must be a route-safe string");
@@ -467,6 +494,8 @@ export class PluginFrontendManager {
 				openHome: () => { if (this.current(life)) this.host.navigate("/"); },
 				openSession: id => { if (this.current(life)) this.host.navigate(`/chat/${encodeURIComponent(id)}`); },
 				openView: id => { if (this.current(life)) this.host.navigate(pluginViewPath(info.id, id)); },
+				openDock: id => { if (this.current(life) && life.docks.has(id)) this.host.openDock?.(info.id, id); },
+				closeDock: () => { if (this.current(life)) this.host.closeDock?.(info.id); },
 				openSettings: () => { if (this.current(life)) this.host.openSettings?.(info.id); },
 			},
 		};
@@ -618,14 +647,17 @@ export class PluginFrontendManager {
 		const mounts = this.rendererMounts.get(registration)!;
 		const off = this.mount(registration.pluginId, (child, signal) => {
 			if (isRegistered()) return mount(child, signal);
-		}, container, onError);
+		}, container, onError, false);
 		const release = () => { mounts.delete(release); off(); };
 		mounts.add(release);
 		return release;
 	}
 	/** Each mount gets a private child. A late cleanup can never erase a new
-	 * view's DOM, including when navigating away and immediately back. */
-	mount(id: string, mount: PluginMount, container: HTMLElement, onError: (error: string) => void): () => void {
+	 * view's DOM, including when navigating away and immediately back.
+	 * Renderer mounts pass reportFailure=false: a code block or tool result that
+	 * fails to present is visible in its own surface, and must not turn into a
+	 * sticky plugin-level error on the settings page. */
+	mount(id: string, mount: PluginMount, container: HTMLElement, onError: (error: string) => void, reportFailure = true): () => void {
 		const life = this.lives.get(id);
 		if (!life || !this.current(life)) return () => {};
 		let alive = true;
@@ -643,6 +675,35 @@ export class PluginFrontendManager {
 			if (!alive || !this.current(life)) return;
 			try {
 				const cleanup = await mount(child, controller.signal);
+				if (typeof cleanup === "function") {
+					if (!alive || !this.current(life)) this.disposeCallback(life, cleanup);
+					else returned = cleanup;
+				}
+			} catch (error) {
+				if (alive && this.current(life)) { onError(message(error)); if (reportFailure) this.report(life, error); off(); }
+			}
+		}));
+		return off;
+	}
+	/** Dock panels mount with host capabilities, so they need the third argument
+	 * that plain views do not take. Same lifetime rules as mount(). */
+	mountDock(id: string, dock: PluginDock, container: HTMLElement, onError: (error: string) => void, capabilities: import("@/src/core").PluginDockCapabilities): () => void {
+		const life = this.lives.get(id);
+		if (!life || !this.current(life) || life.docks.get(dock.id) !== dock) return () => {};
+		let alive = true;
+		const controller = new AbortController();
+		let returned: PluginCleanup | undefined;
+		const child = container.ownerDocument.createElement("div");
+		child.className = "flex min-h-0 min-w-0 flex-1 flex-col";
+		container.appendChild(child);
+		const off = this.addCleanup(life, () => {
+			alive = false; controller.abort(); child.remove();
+			if (returned) { const cleanup = returned; returned = undefined; this.disposeCallback(life, cleanup); }
+		});
+		this.track(life, Promise.resolve().then(async () => {
+			if (!alive || !this.current(life)) return;
+			try {
+				const cleanup = await dock.mount(child, controller.signal, capabilities);
 				if (typeof cleanup === "function") {
 					if (!alive || !this.current(life)) this.disposeCallback(life, cleanup);
 					else returned = cleanup;

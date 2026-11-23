@@ -1,0 +1,11 @@
+{
+  "apiVersion": 1,
+  "id": "resources",
+  "name": "Resources",
+  "version": "0.1.0",
+  "minAppVersion": "0.4.1",
+  "description": "A right-hand file browser: browse the local filesystem, preview PDFs, images, text, code and Office documents (docx/xlsx/pptx), and hand any file to the agent.",
+  "main": "main.js",
+  "backend": "backend.cjs",
+  "styles": "styles.css"
+}

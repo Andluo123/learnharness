@@ -154,14 +154,23 @@ afterPack: scripts/after-pack.cjs
 win:
   icon: build/icon.ico
   target:
+    # nsis = the installer; portable = ONE self-contained executable that runs
+    # without installing (a no-install build for Windows).
     - target: nsis
       arch:
         - x64
+    - target: portable
+      arch:
+        - x64
+  # nsis keeps the -setup suffix; portable gets its own name below.
   artifactName: "${productName}-${version}-${arch}-setup.${ext}"
   # Unsigned Windows release (owner ruling): preserve icon/version metadata,
   # skip signing, and do not require a publisher signature for updates.
   signExecutable: false
   verifyUpdateCodeSignature: false
+portable:
+  # One self-contained executable; no installation, no Start-menu entry.
+  artifactName: "${productName}-${version}-${arch}-portable.${ext}"
 nsis:
   oneClick: true
   perMachine: false

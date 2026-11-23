@@ -4,6 +4,7 @@ import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "
 import type { ViewReaderRef } from "./session-view-readers";
 import { ChevronRightIcon } from "lucide-react";
 import { ToolContentResponse } from "@/components/ai-elements/message";
+import { SpeakButton } from "@/components/speak-button";
 import { Button } from "@/components/ui/button";
 import { joinDictation, useDictationTarget } from "@/components/dictation";
 import { useEnterSubmits } from "@/components/enter-submits";
@@ -149,7 +150,10 @@ export function PracticeDock({ viewReader, problemCallId, input, expanded, onExp
 			    markdown + LaTeX rendered, capped by the measured column
 			    (--dock-max-h; the old fixed 40vh cut long problems short). */}
 			<div data-dock-scroll-area="" className="max-h-[var(--dock-max-h,40vh)] overflow-y-auto px-4 pt-3 pb-2">
-				<div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("problem")}</div>
+				<div className="mb-1 flex items-start justify-between gap-2">
+				<span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("problem")}</span>
+				<SpeakButton text={input.statement} label={`practice-${problemCallId}`} />
+			</div>
 				<div className="lh-prose text-[15px]">
 					<ToolContentResponse>{input.statement}</ToolContentResponse>
 				</div>
@@ -164,7 +168,7 @@ export function PracticeDock({ viewReader, problemCallId, input, expanded, onExp
 				className="m-1.5 rounded-[10px] border border-border/70 bg-background/60 transition-colors focus-within:border-primary/50"
 			>
 				<div className="px-2.5 pt-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-					YOUR THINKING
+					{t("yourThinking")}
 				</div>
 				<PathInput
 					value={thinking}

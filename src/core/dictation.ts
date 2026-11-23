@@ -82,9 +82,10 @@ export function isDictationLanguage(value: unknown): value is DictationLanguage 
 }
 
 /** Only language varies. Keep the owner's tuned streaming parameters. */
-export function deepgramListenUrl(language: DictationLanguage): string {
-	return "wss://api.deepgram.com/v1/listen" +
+export function deepgramListenUrl(language: DictationLanguage, detectLanguage?: boolean): string {
+	const url = "wss://api.deepgram.com/v1/listen" +
 		"?model=nova-3&encoding=linear16&sample_rate=16000&channels=1" +
 		"&smart_format=true&punctuate=true&endpointing=300" +
 		`&language=${encodeURIComponent(language)}`;
+	return detectLanguage ? url + "&detect_language=true" : url;
 }

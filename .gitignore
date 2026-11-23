@@ -29,3 +29,10 @@ xai-credentials.json*
 
 # dev-fresh launcher scratch (fresh-user sim): disposable per launch
 .fresh-data/
+
+# Local QA scratch (screenshots, real test media with device serials or
+# licensed documents). Never part of the project; kept out of git entirely.
+qa/
+
+# x18n CLI scratch dumps (check/keys/doctor --json output) — local only.
+x18n-*.json

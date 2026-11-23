@@ -28,11 +28,19 @@ import type {
 	ModelsSettings,
 	ModelSlot,
 	RoleModelOverride,
+	SpeechSettingsRecord,
 } from "../core/settings.ts";
 import { BACKGROUND_MODEL_ROLES, CACHE_RETENTIONS, COMPACTION_THRESHOLD_FLOOR, CUSTOM_MODEL_PIN_FLOOR, EXTRACTION_CHUNK_TOKENS_FLOOR, MODEL_SLOTS } from "../core/settings.ts";
 import { WRITABLE_TOOL_KEYS } from "../core/pending.ts";
 import { isSearchEngineId, SEARCH_ENGINES } from "../core/search.ts";
 import { isDictationLanguage } from "../core/dictation.ts";
+import {
+	SPEECH_PROVIDER_IDS,
+	clampSpeechSpeed,
+	isSpeechAudioFormat,
+	isSpeechLanguageStrategy,
+	isSpeechProviderId,
+} from "../core/speech.ts";
 import { parseFileAccessSettings } from "../core/file-access.ts";
 
 /** Parsed-or-rejected — `ok: false` carries the 400's error message. */
@@ -446,13 +454,82 @@ export function parseCompactionSettingsBody(body: unknown): SettingsBodyResult<C
 	return { ok: true, settings };
 }
 
-/** dictation: { language?: one of Nova-3's supported language codes } */
+/** speech: the TTS preferences (speech wave, 2026-11-20). Every field is
+ *  optional; the voice/model ids are free text because a custom endpoint
+ *  may name its voices however it likes. The speed clamps to the
+ *  provider range instead of rejecting — a rate the provider cannot honor
+ *  is not the user's mistake. */
+export function parseSpeechSettingsBody(body: unknown): SettingsBodyResult<SpeechSettingsRecord> {
+	const raw = asRecord(body);
+	if (!raw) return { ok: false, error: "Invalid JSON body" };
+	const settings: SpeechSettingsRecord = {};
+	if (raw.provider !== undefined) {
+		if (!isSpeechProviderId(raw.provider)) {
+			return { ok: false, error: `Unsupported speech provider (supported: ${SPEECH_PROVIDER_IDS.join(", ")})` };
+		}
+		settings.provider = raw.provider;
+	}
+	if (raw.voice !== undefined) {
+		if (typeof raw.voice !== "string") return { ok: false, error: "voice must be a string" };
+		if (raw.voice.trim()) settings.voice = raw.voice.trim();
+	}
+	if (raw.speed !== undefined) {
+		if (typeof raw.speed !== "number" || !Number.isFinite(raw.speed)) {
+			return { ok: false, error: "speed must be a number" };
+		}
+		settings.speed = clampSpeechSpeed(raw.speed);
+	}
+	if (raw.language !== undefined) {
+		if (!isSpeechLanguageStrategy(raw.language)) {
+			return { ok: false, error: "language must be one of: auto, zh, en" };
+		}
+		settings.language = raw.language;
+	}
+	if (raw.autoRead !== undefined) {
+		if (typeof raw.autoRead !== "boolean") return { ok: false, error: "autoRead must be a boolean" };
+		settings.autoRead = raw.autoRead;
+	}
+	if (raw.readCode !== undefined) {
+		if (typeof raw.readCode !== "boolean") return { ok: false, error: "readCode must be a boolean" };
+		settings.readCode = raw.readCode;
+	}
+	if (raw.readMath !== undefined) {
+		if (typeof raw.readMath !== "boolean") return { ok: false, error: "readMath must be a boolean" };
+		settings.readMath = raw.readMath;
+	}
+	if (raw.customModel !== undefined) {
+		if (typeof raw.customModel !== "string") return { ok: false, error: "customModel must be a string" };
+		settings.customModel = raw.customModel.trim();
+	}
+	if (raw.customVoice !== undefined) {
+		if (typeof raw.customVoice !== "string") return { ok: false, error: "customVoice must be a string" };
+		settings.customVoice = raw.customVoice.trim();
+	}
+	if (raw.format !== undefined) {
+		if (!isSpeechAudioFormat(raw.format)) {
+			return { ok: false, error: "format must be one of: mp3, wav, opus" };
+		}
+		settings.format = raw.format;
+	}
+	return { ok: true, settings };
+}
+
+/** dictation: { language?, detectLanguage?, autoSend?, continuousReadback? } */
 export function parseDictationSettingsBody(body: unknown): SettingsBodyResult<DictationSettings> {
 	const raw = asRecord(body);
 	if (!raw) return { ok: false, error: "Invalid JSON body" };
-	if (raw.language === undefined) return { ok: true, settings: {} };
-	if (!isDictationLanguage(raw.language)) return { ok: false, error: "Unsupported dictation language" };
-	return { ok: true, settings: { language: raw.language } };
+	const settings: DictationSettings = {};
+	if (raw.language !== undefined) {
+		if (!isDictationLanguage(raw.language)) return { ok: false, error: "Unsupported dictation language" };
+		settings.language = raw.language;
+	}
+	for (const field of ["detectLanguage", "autoSend", "continuousReadback"] as const) {
+		const v = raw[field];
+		if (v === undefined) continue;
+		if (typeof v !== "boolean") return { ok: false, error: `${field} for dictation must be true or false` };
+		(settings as Record<string, boolean>)[field] = v;
+	}
+	return { ok: true, settings };
 }
 
 /** The custom endpoint's per-model pins (PATCH /api/custom-provider): the
@@ -505,6 +582,7 @@ export const SETTINGS_SECTIONS = {
 	compaction: parseCompactionSettingsBody,
 	models: parseModelsSettingsBody,
 	dictation: parseDictationSettingsBody,
+	speech: parseSpeechSettingsBody,
 	claudeCode: parseClaudeCodeSettingsBody,
 } as const;
 

@@ -186,6 +186,12 @@ export function createPluginAgentService(deps: PluginAgentServiceDeps): PluginAg
 				});
 				run.agent = agent;
 				const saveResult = (message: ToolResultMessage) => {
+					// Defensive: never persist a tool result with an empty toolCallId/toolName.
+					// A model can emit an empty tool call ({id:"",name:""}); pi-agent-core then
+					// synthesizes a "Tool not found" toolResult with empty ids. If that lands in
+					// the record, every later request sends it to Agnes and gets a 400
+					// ("missing field tool_call_id"). Reject it here instead.
+					if (!message.toolCallId || !message.toolName) return;
 					const messages = [...s.record.messages];
 					const old = messages.findIndex((m, i) => i > batchStart && m.role === "toolResult" && m.toolCallId === message.toolCallId);
 					if (old >= 0) messages[old] = clone(message);

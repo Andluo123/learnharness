@@ -23,6 +23,7 @@ these are separate numbers, not interchangeable compatibility guarantees.
 | Submission interception, images and surfaces | [Session extensions](plugin-session-extension-contract.md) |
 | Current session snapshots and drafts | [View context](plugin-view-context.md) |
 | Controlled trees | [Tree contract](plugin-tree-contract.md) |
+| A persistent right-hand panel | [Right-hand dock panels](#right-hand-dock-panels) |
 | Modal, menu, focus and Escape rules | [Interaction contract](dialog-overlay-contract.md) |
 | Host ownership and implementation boundaries | [Architecture](plugin-architecture.md) |
 
@@ -152,7 +153,7 @@ built packages in app `core-plugins/<id>/`, loaded directly without a user-data 
 copy. Their writable settings/records live in `<learning data>/core-plugin-data/<id>/`.
 Always use `ctx.directory` for code and `ctx.dataDirectory` for writable records; do not
 infer one from the other. Core plugins update with the app and are managed in
-**Settings → Core plugins**; all four start disabled, existing explicit choices survive
+**Settings → Core plugins**; all of them start disabled, existing explicit choices survive
 updates, and disabling never deletes data. Their IDs (`flashcards`, `coding-questions`,
 `drawing-pad`, `rich-code-blocks`) are reserved even if a core package is broken/missing.
 Conflicting community folders are skipped with a diagnostic and are not modified.
@@ -455,6 +456,51 @@ then fields/headings/frame. No async autofocus retry or focus-on-update is promi
 Shared modal/menu/Escape/focus ownership follows the [interaction contract](dialog-overlay-contract.md);
 Tab/Shift+Tab do not become browser focus navigation. See the [surface contract](plugin-session-extension-contract.md#8-public-surface-contract)
 for lifetime, stacking, close and return-focus rules.
+
+### Right-hand dock panels
+
+A dock is a **persistent column beside the session body**, not an overlay: the
+transcript narrows and the panel sits next to it, so a learner can read a document
+while the lesson keeps running. This is the extension point for file browsers,
+readers and any reference pane.
+
+```ts
+ctx.registerDock({
+  id: "library", name: "Library", icon: FOLDER_SVG,
+  mount(container, signal, capabilities) {
+    // capabilities: { pickFolder(), insertComposerText(text), close() }
+    return () => { /* release listeners, revoke object URLs */ };
+  },
+});
+```
+
+Registration alone shows nothing. The panel appears in the window's dock switcher,
+and the learner opens it from a placed action or this plugin calls
+`ctx.app.openDock("library")`. `ctx.app.closeDock()` folds it away when this
+plugin's panel owns the column; another plugin's open panel is left alone.
+
+| Rule | Detail |
+| --- | --- |
+| One column | Docks share a single right-hand column. Registering several gives the switcher more buttons; only one mounts at a time. |
+| Identity lifetime | `mount` re-runs only when the dock identity changes. Collapsing and resizing are presentation — the host keeps the body mounted so the plugin's own state (current folder, open file) survives. Do not re-key your UI on size. |
+| Signal scope | The `signal` aborts when the panel is replaced, the plugin is disabled, or the page leaves. Scope child UI and cleanup to it, not to the activation signal. |
+| Width | The learner resizes 280–720 px with the divider; the width is remembered. The transcript keeps a readable minimum. |
+| Collapsed | Folds to a single top-bar toggle. `close()` from `capabilities` collapses; it does not destroy your mount. |
+
+Capabilities are supplied per mount and are the ONLY supported route to host
+services here:
+
+- `pickFolder()` resolves an absolute path from the native picker, or `null` when
+  the learner cancels **or the window has no native bridge** (browser build). Always
+  offer a manual path entry for `null`.
+- `insertComposerText(text)` puts text in the current session's composer draft
+  without sending it, and reports whether it landed. It is inert outside a native
+  teaching/practice session.
+- `close()` collapses this panel.
+
+Dock copy is **plugin-owned**: the host does not translate `name` or anything you
+render. Read `document.documentElement.lang` and ship your own catalog, the same
+way other bundled plugins do.
 
 ### Dedicated settings
 

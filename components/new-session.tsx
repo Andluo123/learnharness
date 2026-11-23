@@ -9,6 +9,7 @@ import { DictationBar, joinDictation, useDictation } from "@/components/dictatio
 import { useFieldCycle } from "@/components/field-cycle";
 import { useOptionalInteractionLayers } from "./interaction-layers";
 import { isInteractionScopeEligible } from "./plugin-input-focus";
+import { useMemo } from "react";
 import { SidebarToggle } from "@/components/sidebar";
 import { SetupDialog } from "@/components/setup-dialog";
 import { useModelSetup, selectedModelUnavailable, openModelPicker, ZeroKeysPill } from "@/components/setup-cta";
@@ -18,6 +19,7 @@ import { ComposerActions, NodePickerControl } from "@/components/composer-action
 import { OPENING_PROMPT_FAILURE } from "@/components/opening-prompt";
 import { SessionStarter } from "@/components/start-session";
 import type { ChatSettings, GraphSnapshot } from "@/src/core";
+import { createDockCapabilities, PluginDock } from "@/components/plugin-dock";
 import { useT } from "@/i18n/use-t.ts";
 
 /** The draft's pick set (owner round 10): the SAME shape the home pick
@@ -84,11 +86,14 @@ export function DraftShell({
 	onOpenPicker,
 	onClearPicks,
 	overlay,
+	dockSlot,
 }: {
 	busy: boolean;
 	text: string;
 	onChange: (v: string) => void;
 	onSend: () => void;
+	/** The right-hand plugin dock, owned by the parent (it owns the draft text). */
+	dockSlot?: ReactNode;
 	startError?: boolean;
 	/** The practice draft (owner, 2026-10-04): ?mode=practice — the
 	 *  created session carries kind:"practice" and the copy changes
@@ -237,11 +242,14 @@ export function DraftShell({
 					<SidebarToggle />
 				</div>
 			</header>
+			{dockSlot}
 		</div>
 	);
 }
 
 export function NewSession({ initialConfigured, mode = "teach" }: { initialConfigured: boolean; mode?: "teach" | "practice" }) {
+	const t = useT("setup");
+
 	const router = useRouter();
 	const [text, setText] = useState("");
 	/* The draft MIRROR ("nothing gets lost" round, 2026-10-01): the shell's
@@ -330,9 +338,15 @@ export function NewSession({ initialConfigured, mode = "teach" }: { initialConfi
 			});
 	}, [router, configured, zeroKeys, catalog, mode]);
 
+	const dockCapabilities = useMemo(
+		() => createDockCapabilities(applyText, () => textRef.current),
+		[],
+	);
+
 	return (
 		<>
 			<DraftShell
+				dockSlot={<PluginDock capabilities={dockCapabilities} />}
 				busy={busy}
 				startError={startError}
 				text={text}
@@ -378,7 +392,8 @@ export function NewSession({ initialConfigured, mode = "teach" }: { initialConfi
 								onClick={() => setSetupOpen(true)}
 								className="rounded-sm border border-border bg-card px-3 py-1.5 font-ui text-xs text-foreground transition-colors hover:border-muted-foreground/50 hover:bg-accent cursor-pointer"
 							>
-								Set up your models
+								{t("setUpModels")}
+
 							</button>
 						)
 					)

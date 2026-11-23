@@ -24,9 +24,9 @@ of replacing these primary examples.
 
 ## Core references are not Community packages
 
-The four IDs **`flashcards`**, **`coding-questions`**, **`drawing-pad`** and
-**`rich-code-blocks`** are reserved for app-shipped Core plugins, even when a Core
-package is disabled, broken or missing. Their sources are included for study and
+The IDs **`flashcards`**, **`coding-questions`**, **`drawing-pad`**,
+**`rich-code-blocks`** and **`resources`** are reserved for app-shipped Core plugins,
+even when a Core package is disabled, broken or missing. Their sources are included for study and
 adaptation, not installation as Community duplicates. Enable the app-supplied features
 in **Settings → Core plugins**. App updates supply Core code; writable records live
 under `<learning data>/core-plugin-data/<id>/`, separate from that code.
@@ -108,7 +108,7 @@ and copies required assets/notices. Build cleanup refuses symlinked `dist/` and
 misplaced `dist/data/` and preserves sibling `data/`. It does not start/build the host,
 install/enable a plugin, call a model or update Core code. For a newly identified
 Community fork or UI Showcase, follow the [Community installation guide](plugin-authoring.md#package-and-installation);
-do not install the four reserved-ID references.
+do not install the reserved-ID references.
 
 ## Reading routes
 
@@ -253,6 +253,28 @@ explicitly started**, may send audio to the configured speech provider and can i
 cost. The knowledge picker is the actual host control: explicit source-management
 actions affect real sources, even though gallery selection stays local. Use synthetic
 data; do not start dictation to inspect the gallery.
+
+### Resources: a read-only dock panel over the local filesystem
+
+The [README](../plugins/resources/README.md) lists the preview formats. What makes this
+plugin a useful reference:
+
+1. [`src/main.ts`](../plugins/resources/src/main.ts) registers a **dock**
+   (`ctx.registerDock`) rather than a view or a surface. `mount(container, signal,
+   capabilities)` receives the host services it needs — `pickFolder()`,
+   `insertComposerText()` and `close()` — and owns every element it appends. The
+   breadcrumb, list and preview are plain DOM with no framework.
+2. [`src/backend.cjs`](../plugins/resources/src/backend.cjs) shows a whole backend in one
+   file: `ctx.handle` operations, path resolution before every read, and the Office
+   converters (mammoth for `.docx`, SheetJS for `.xlsx`, a zip/XML reader for `.pptx`).
+   Read the docx path for the sanitizer: a document is untrusted input even when the
+   learner chose the file, so its HTML is rebuilt from an allow-list.
+3. [`tests/backend.test.ts`](../plugins/resources/tests/backend.test.ts) shows how to test
+   a backend without a host: build fake `ctx`, call the registered operations directly,
+   and assert on the payload the panel would render.
+
+Everything the plugin does is a **read**. There is no write, delete, move or execute path,
+and a test scans the source to keep it that way.
 
 ## Focused recipes for gaps
 

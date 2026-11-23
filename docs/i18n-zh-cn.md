@@ -11,7 +11,7 @@ LearnHarness 现已完整支持简体中文界面。本文档说明架构、扩�
 | 区域 | 状态 |
 |------|------|
 | 核心 Web 界面（`app/` + `components/`） | ✅ 完整 |
-| 5 个内置插件 UI（flashcards / coding-questions / drawing-pad / rich-code-blocks / ui-showcase） | ✅ 主要界面 |
+| 5 个核心插件 UI（flashcards / coding-questions / drawing-pad / rich-code-blocks / resources） | ✅ 主要界面 |
 | Electron 原生菜单 | ✅ 完整 |
 | AI 代理的教学语言 | ✅ 通过提示词指令注入 |
 | 服务端错误信息 | ✅ 按 `code` 本地化 |

@@ -70,7 +70,10 @@ describe("floating/docked raw side conversation", () => {
 
 describe("side entry points", () => {
 	it("has one quiet selection Ask action, independent of whether a companion is already open", () => {
-		const actions = createSideQuestionActions({ open() {} });
+		// The factory takes a translator now; this fixture is the English catalog,
+		// which is the same wording the assertion below pins.
+		const english = (key: string) => ({ ask: "Ask", askAboutSelection: "Ask a side question about this selection", shortenSelection: "Shorten selection" } as Record<string, string>)[key] ?? key;
+		const actions = createSideQuestionActions({ open() {}, t: english });
 		assert.deepEqual(actions.map((action) => action.label), ["Ask"]);
 		assert.equal(actions[0]!.visible({ messageId: "lesson", range: render().createRange(), selector: { text: "Words", start: 0, end: 5, prefix: "", suffix: "" } }), true);
 	});

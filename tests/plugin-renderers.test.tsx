@@ -105,7 +105,9 @@ describe("shared Markdown renderer dispatch", () => {
 			await h.render(<MessageResponse>{"```broken\nraw recovery source\n```"}</MessageResponse>);
 			assert.ok(document.querySelector('[role="alert"]')?.textContent?.includes("code renderer exploded"));
 			assert.ok(document.querySelector('[data-testid="md-code"]')?.textContent?.includes("raw recovery source"));
-			assert.match(h.manager.getSnapshot().plugins[0]!.error!, /code renderer exploded/);
+			// A block that cannot present itself is reported in its own surface,
+			// never as a sticky plugin-level error on the settings page.
+			assert.equal(h.manager.getSnapshot().plugins[0]!.error, undefined);
 		} finally { await h.close(); }
 	});
 
@@ -183,6 +185,7 @@ describe("native tool renderer dispatch", () => {
 			await h.render(<ToolPartRenderer part={nativePart({ result: { content: [{ type: "text", text: "readable native fallback" }], details: undefined, isError: false } })} />);
 			assert.ok(document.querySelector('[role="alert"]')?.textContent?.includes("tool renderer exploded"));
 			assert.ok(document.querySelector('[data-testid="tool-call-card"]')?.textContent?.includes("readable native fallback"));
+			assert.equal(h.manager.getSnapshot().plugins[0]!.error, undefined);
 			await act(async () => { h.manager.reconcile([{ ...packageInfo, enabled: false, status: "disabled" }]); });
 			assert.equal(ctx.signal.aborted, true); assert.ok(document.body.textContent?.includes("readable native fallback"));
 		} finally { await h.close(); }

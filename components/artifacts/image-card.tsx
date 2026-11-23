@@ -48,12 +48,15 @@ export function imageSvgDocument(image: ImageSnapshot): string {
 }
 
 export function ImageCard({ part }: ArtifactPartProps) {
+	const t = useT("artifacts");
+
 	if (part.state !== "output-available") return <ToolCallCard part={part} />;
 	const image = part.output;
 	if (!isShowImageDetails(image)) {
 		return (
 			<div className="rounded-xl border bg-card p-4 text-sm text-muted-foreground">
-				Image shown, but it could not be displayed.
+				{t("imageCompleted")}
+
 			</div>
 		);
 	}

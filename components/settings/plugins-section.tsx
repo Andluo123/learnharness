@@ -6,7 +6,7 @@ import type { FrontendPlugin } from "@/components/plugin-manager";
 import { Button } from "@/components/ui/button";
 import { SettingsRow, SettingsSection, Toggle } from "./controls";
 import { useT } from "@/i18n/use-t.ts";
-import { pluginDisplayName } from "@/i18n/plugin-names.ts";
+import { pluginDisplayDescription, pluginDisplayName } from "@/i18n/plugin-names.ts";
 import { useActiveLocale } from "@/i18n/use-active-locale.ts";
 import { LOCALE_LABELS, isAppLocale, type AppLocale } from "@/i18n/config.ts";
 
@@ -60,6 +60,7 @@ function PluginRow({ plugin, onSettings }: { plugin: FrontendPlugin; onSettings:
 	const { manager, snapshot } = usePlugins();
 	const { info } = plugin;
 	const name = pluginDisplayName(info.id, info.manifest?.name, activeLocale, t);
+	const description = pluginDisplayDescription(info.id, info.manifest?.description, activeLocale, t);
 	return <div className="border-t border-border/60 pt-3" data-testid={`plugin-${info.id}`}>
 		<SettingsRow label={name} hint={[info.origin === "community" ? info.manifest?.version : undefined, plugin.busy ? t("saving") : plugin.error ? t("pluginError") : plugin.phase === "loading" ? t("pluginLoading") : info.enabled ? t("enabled") : t("disabled")].filter(Boolean).join(" · ")}>
 			<div className="flex shrink-0 items-center gap-2">
@@ -69,7 +70,7 @@ function PluginRow({ plugin, onSettings }: { plugin: FrontendPlugin; onSettings:
 				<Toggle label={t("enablePlugin", { name })} checked={info.enabled} disabled={!manager || plugin.busy || snapshot.refreshing || (!info.manifest && !info.enabled)} onChange={enabled => void manager?.setEnabled(info.id, enabled)} />
 			</div>
 		</SettingsRow>
-		{info.manifest?.description && <p className="mt-1 font-prose text-sm text-muted-foreground">{t(`plugin.${info.id}.description`)}</p>}
+		{description && <p className="mt-1 font-prose text-sm text-muted-foreground">{description}</p>}
 		{plugin.error && <p role="alert" className="mt-2 break-words text-xs text-destructive">{plugin.error}</p>}
 	</div>;
 }

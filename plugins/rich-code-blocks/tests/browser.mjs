@@ -348,6 +348,22 @@ C \arrow[r,"k"'] & D
   const blankAbcHeader = await render('blank-abc-header', 'abc', 'X:\nM:4/4\nL:1/4\nK:C\nC D E F|');
   assert.ok(blankAbcHeader.error, 'An empty header cannot consume the next line as its value.');
   const capped = await render("oversize", "tikz", "x".repeat(32 * 1024 + 1)); assert.match(capped.error, /32 KiB/);
+  // A real answer labelled an angle "$50°$"; that Unicode glyph aborted TeX (or
+  // stalled on the missing tcrm1000 metric). It must fail fast, name the
+  // character and the TeX spelling, stay readable, and never start the worker.
+  const postsBeforeRejection = await page.evaluate(() => window.texPosts);
+  const unicode = await render("rejected-unicode", "tikz", String.raw`\begin{document}\begin{tikzpicture}\node at (0,0) {$50°$};\end{tikzpicture}\end{document}`);
+  assert.match(unicode.error, /line 1, column \d+ contains "°" \(U\+00B0\)/);
+  assert.ok(unicode.error.includes("$^\\circ$"), unicode.error);
+  assert.ok(unicode.source.includes("$50°$"), "Rejected source stays intact and readable.");
+  assert.ok(unicode.ms < 1000, `Rejected input must not reach the TeX deadline (${Math.round(unicode.ms)} ms).`);
+  assert.equal(await page.evaluate(() => window.texPosts), postsBeforeRejection, "Rejected characters never start TeX.");
+  const unicodeFixed = await render("unicode-fixed", "tikz", String.raw`\begin{document}\begin{tikzpicture}\node at (0,0) {$50^\circ$};\end{tikzpicture}\end{document}`);
+  assert.ok(unicodeFixed.svg, JSON.stringify(unicodeFixed));
+  // A comment never reaches TeX, so non-ASCII remarks remain accepted.
+  const unicodeComment = await render("unicode-comment", "tikz", String.raw`\begin{document}\begin{tikzpicture}\draw (0,0)--(1,1); % 三角形 50°
+\end{tikzpicture}\end{document}`);
+  assert.ok(unicodeComment.svg, JSON.stringify(unicodeComment));
   // A genuinely nonterminating TeX macro must not block the page event loop.
   const endless = String.raw`\begin{document}\def\spin{\spin}\spin\end{document}`;
   await page.evaluate(source => { window.pending=host.render('cancelled','tikz',source); }, endless);

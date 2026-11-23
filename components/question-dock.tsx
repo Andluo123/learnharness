@@ -10,8 +10,11 @@ import { useOptionalInteractionLayers } from "./interaction-layers";
 import { isInteractionScopeEligible } from "./plugin-input-focus";
 import { PathInput } from "@/components/path-input";
 import { MalformedQuestion } from "@/components/malformed-question";
+import { QuizFigureImage } from "@/components/quiz-figure";
+import { resolveQuizFigure, type QuizFigure } from "@/src/core";
 import { ToolContentResponse } from "@/components/ai-elements/message";
 import { QuestionPreview } from "@/components/question-preview";
+import { SpeakButton } from "@/components/speak-button";
 import { cn } from "@/lib/utils";
 import {
 	buildAnswer,
@@ -111,6 +114,11 @@ export interface QuestionDockProps {
 	 *  and say so in the hint row. The server registry is the real gate;
 	 *  this is the affordance. */
 	compactionRunning?: boolean;
+	/** The session's delivered visual figures by tool-call id (quiz
+	 *  figures, owner 2026-11-18): a quiz's `figure` / `options[].figure`
+	 *  references resolve here so the picture renders INSIDE the card.
+	 *  Absent = no figure ever renders (never a crash, never a hole). */
+	figures?: ReadonlyMap<string, QuizFigure>;
 }
 
 export function QuestionDock({
@@ -132,6 +140,7 @@ export function QuestionDock({
 	dictationClaim = true,
 	compactionRunning = false,
 	workingRef,
+	figures,
 }: QuestionDockProps) {
 	const t = useT("questionDock");
 	// The probe-phase names (owner, 2026-10-09) canonicalize onto their
@@ -190,11 +199,16 @@ export function QuestionDock({
 					workingRef={workingRef}
 					dictationClaim={dictationClaim}
 					compactionRunning={compactionRunning}
+					figures={figures}
 				/>
 			</div>
 		</>
 	);
 }
+
+/** The absent-figure map: no reference resolves against nothing.
+ *  (Module-level so every render shares one identity.) */
+const NO_FIGURES = new Map<string, QuizFigure>();
 
 /** The collapsed strip. Two species (W5): "collapsed" is the scroll minimization
  *  (kind chip + one-liner + Answer ↓); "reveal" is the teach-check invitation —
@@ -284,6 +298,7 @@ function QuestionDockForm({
 	dictationClaim = true,
 	compactionRunning = false,
 	workingRef,
+	figures,
 }: Omit<QuestionDockProps, "expanded" | "onExpand" | "reveal">) {
 	const t = useT("questionDock");
 	const kind = toolQuestionKind(toolName);
@@ -340,6 +355,11 @@ function QuestionDockForm({
 		}
 		return q;
 	}, [toolCallId, kind, input]);
+
+	// Quiz figures (owner, 2026-11-18): references resolve against the
+	// session's delivered visuals. An unknown id, a failed figure, or no
+	// map at all resolves to nothing — the card renders without a picture.
+	const questionFigure = kind === "quiz" ? resolveQuizFigure((input as { figure?: string }).figure, figures ?? NO_FIGURES) : null;
 
 	// The selection state machine lives in question-core (pure, tested):
 	// single-select displaces, multi-select coexists — picking the ask
@@ -622,20 +642,30 @@ function QuestionDockForm({
 			    Capped by the measured column (--dock-max-h; the old fixed 55dvh cut
 			    long questions short — owner round, 2026-10-05). */}
 			<div data-dock-scroll-area="" data-session-find-root="" className="max-h-[var(--dock-max-h,55dvh)] overflow-y-auto px-4 pt-3">
-				<div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-					{toolName === "probe"
-						? t("probeLabel")
-						: toolName === "recall"
-							? t("recallLabel")
-							: kind === "quiz"
-								? qd.questionType === "predict"
-									? t("predictionLabel")
-									: t("checkLabel")
-									: kind === "explain"
-										? t("explainLabel")
-											: t("questionLabel")}
-					{qd.mode === "multi-select" && t("selectAllThatApply")}
+				<div className="mb-1 flex items-start justify-between gap-2">
+					<span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+						{toolName === "probe"
+							? t("probeLabel")
+							: toolName === "recall"
+								? t("recallLabel")
+								: kind === "quiz"
+									? qd.questionType === "predict"
+										? t("predictionLabel")
+										: t("checkLabel")
+										: kind === "explain"
+											? t("explainLabel")
+												: t("questionLabel")}
+						{qd.mode === "multi-select" && t("selectAllThatApply")}
+					</span>
+					{/* The question and its options read together — one passage, one voice. */}
+					<SpeakButton
+						text={[qd.question, qd.context, ...qd.options.map((opt) => opt.label)].filter(Boolean).join("\n")}
+						label={`question-${qd.id ?? "current"}`}
+					/>
 				</div>
+				{/* The question's own figure ABOVE the text (owner, 2026-11-18):
+				    a geometry problem shows its diagram first, like the textbook. */}
+				{questionFigure && <QuizFigureImage figure={questionFigure} size="question" />}
 				<div className="mb-3 font-medium">
 					<ToolContentResponse>{qd.question}</ToolContentResponse>
 				</div>
@@ -649,6 +679,7 @@ function QuestionDockForm({
 					<div className="flex flex-col gap-2 pb-2" role={qd.mode === "multi-select" ? "group" : "radiogroup"}>
 						{qd.options.map((opt, i) => {
 							const isSel = sel.selected.has(i);
+							const optionFigure = kind === "quiz" ? resolveQuizFigure(opt.figure, figures ?? NO_FIGURES) : null;
 							return (
 								<button
 									key={opt.value}
@@ -676,8 +707,9 @@ function QuestionDockForm({
 											</span>
 										)}
 									</span>
-									<span>
+									<span className="min-w-0 flex-1">
 										<ToolContentResponse>{opt.label}</ToolContentResponse>
+										{optionFigure && <QuizFigureImage figure={optionFigure} size="option" />}
 										{kind !== "quiz" && opt.description && (
 											// Option subtext renders in Source Sans 3 (owner's mockup);
 											// the t("idk") copy stays JetBrains Mono. QUIZ options render
@@ -822,7 +854,7 @@ function QuestionDockForm({
 								sel.dontKnow ? "text-muted-foreground/50" : "text-muted-foreground",
 							)}
 						>
-							Confidence
+							{t("confidenceLabel")}
 						</span>
 						<div
 							className={cn("relative h-4 min-w-0 flex-1", sel.dontKnow && "opacity-40")}
@@ -852,7 +884,7 @@ function QuestionDockForm({
 								value={CONFIDENCE_STOPS[confIdx]}
 								disabled={sel.dontKnow}
 								aria-label={t("confidenceAria")}
-								aria-valuetext={`${CONFIDENCE_STOPS[confIdx]} percent`}
+								aria-valuetext={t("percentValue", { value: CONFIDENCE_STOPS[confIdx] })}
 								title={t("confidenceTitle")}
 								data-testid="confidence-slider"
 								onChange={(e) => {

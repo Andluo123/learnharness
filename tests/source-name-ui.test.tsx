@@ -20,13 +20,13 @@ it("one Escape cancels inline source/folder editing without closing the overlay 
 		if (init?.method === "POST") writes++;
 		return Response.json({ organization: { version: 1, folders: [], placements: {} }, sources: [{ id: "chat", kind: "chat", label: "Unextracted", createdAt: "2026-10-30" }] });
 	};
-	const root = createRoot(document);
+	const root = createRoot(document.body);
 	const onWindow = (event: KeyboardEvent) => { if (!event.defaultPrevented) windowEscapes++; };
 	window.addEventListener("keydown", onWindow);
 	try {
-		await act(async () => { root.render(<html><head /><body><InteractionLayersProvider><ServerEventsProvider connect={() => ({ close() {}, onOpen() {}, onEvent() {} })}>
+		await act(async () => { root.render(<InteractionLayersProvider><ServerEventsProvider connect={() => ({ close() {}, onOpen() {}, onEvent() {} })}>
 			<ChainTableOverlay open nodes={[]} chains={[]} sessions={{}} fileSources={{}} onClose={() => { closed++; }} />
-		</ServerEventsProvider></InteractionLayersProvider></body></html>); });
+		</ServerEventsProvider></InteractionLayersProvider>); });
 		for (const raw of ["null", "3", '"text"', "{"]) {
 			const drop = new dom.window.Event("drop", { bubbles: true, cancelable: true });
 			Object.defineProperty(drop, "dataTransfer", { value: { getData: () => raw } });

@@ -19,6 +19,8 @@ export function claudeCodeStatusLabel(status: ClaudeCodeStatus | null): string {
 
 export function ClaudeCodeInstallationStatus() {
 	const t = useT("settingsClaudeCode");
+	// Top-level "errors" keys need a ROOT translator (see thinking-default.ts).
+	const r = useT();
 	const [enabled, setEnabled] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 	const [saving, setSaving] = useState(false);
@@ -44,7 +46,7 @@ export function ClaudeCodeInstallationStatus() {
 				setError(null);
 			}
 		} catch {
-			if (!controller.signal.aborted) setError(t("errors.e13"));
+			if (!controller.signal.aborted) setError(r("errors.e13"));
 		}
 	}, []);
 	useEffect(() => {
@@ -70,7 +72,7 @@ export function ClaudeCodeInstallationStatus() {
 				notifySettingsSaved("claudeCode");
 			}
 		} catch {
-			if (!controller.signal.aborted) setError(t("errors.e14"));
+			if (!controller.signal.aborted) setError(r("errors.e14"));
 		} finally {
 			if (!controller.signal.aborted) setSaving(false);
 		}

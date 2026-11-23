@@ -167,7 +167,8 @@ export function SetupKeysBody({
 	return (
 		<div className="flex flex-col gap-3 px-6 py-5" data-testid="setup-stage-keys">
 			<p className="text-xs text-muted-foreground">
-				Choose your AI provider and paste its API key. You’ll pick your models next.
+				{t("chooseProviderHint")}
+
 			</p>
 			<div className="flex flex-col gap-2">
 				<div ref={menuAnchor} className="relative max-w-96">
@@ -384,7 +385,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 		setKeySaving(false);
 		if (!res || !res.ok) {
 			const body = (await res?.json().catch(() => ({}))) as { error?: string } | undefined;
-			setKeyError(res ? (body?.error ?? `Save failed (${res.status})`) : "Save failed. Check your connection and try again.");
+			setKeyError(res ? (body?.error ?? `Save failed (${res.status})`) : t("saveFailed"));
 			return;
 		}
 		setKeyProvider(null);
@@ -413,7 +414,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 		}).catch(() => null);
 		if (!res || !res.ok) {
 			setSaving(false);
-			setError(res ? `Save failed: ${(await res.json().catch(() => ({}))).error ?? res.status}` : "Save failed. Check your connection and try again.");
+			setError(res ? `Save failed: ${(await res.json().catch(() => ({}))).error ?? res.status}` : t("saveFailed"));
 			return;
 		}
 		notifySettingsSaved("models");
@@ -469,7 +470,8 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 				) : (
 					<div className="flex flex-col gap-4 overflow-y-auto px-6 py-5" data-testid="setup-stage-pickers">
 						<p className="text-xs text-muted-foreground">
-							Pick the model for each tier. All three are required before chats can start.
+							{t("pickModelsHint")}
+
 						</p>
 						{SLOT_ORDER.map((slot) => {
 							const entry = picked[slot];
@@ -498,7 +500,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 									{slot !== "strong" && <><ChatGPTBackgroundAccess provider={entry?.provider} /><NativeSubscriptionBackgroundAccess provider={entry?.provider} /></>}
 									<div className="flex items-center gap-2">
 										<div className="relative flex-1">
-											<Hint label={entry ? `${entry.provider}:${entry.id}` : "Pick a model…"}>
+											<Hint label={entry ? `${entry.provider}:${entry.id}` : t("pickModel")}>
 											<button
 												type="button"
 												aria-label={t("slotModelAria", { slot: t(SLOT_META[slot].labelKey) })}
@@ -507,7 +509,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 												onClick={() => setOpenMenu(openMenu?.slot === slot && openMenu.kind === "model" ? null : { slot, kind: "model" })}
 												className="flex h-7 min-w-40 w-full items-center gap-1 rounded-sm border border-border bg-background px-1.5 font-ui text-xs text-foreground transition-colors hover:border-muted-foreground/50"
 											>
-												<span className="min-w-0 flex-1 truncate">{entry ? prettyModel(entry.id) : "Pick a model…"}</span>
+												<span className="min-w-0 flex-1 truncate">{entry ? prettyModel(entry.id) : t("pickModel")}</span>
 												<span aria-hidden className="text-muted-foreground">
 													▾
 												</span>
@@ -549,7 +551,7 @@ function OpenSetupDialog({ onClose, onDone }: SetupDialogProps) {
 															}));
 															setOpenMenu(null);
 														}}
-														footer={slotCatalog && slotCatalog.length === 0 && slot === "vision" ? "No image-capable models. Add a provider key with access to a vision model." : undefined}
+														footer={slotCatalog && slotCatalog.length === 0 && slot === "vision" ? t("noVisionModels") : undefined}
 													/>
 												</MenuShell>
 											)}

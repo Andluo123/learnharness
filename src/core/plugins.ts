@@ -203,6 +203,32 @@ export interface PluginView {
 	 * and scope child UI to this signal, not merely to the longer activation. */
 	mount(container: HTMLElement, signal: AbortSignal): void | PluginCleanup | Promise<void | PluginCleanup>;
 }
+/** Host services a docked panel may use. Everything is scoped to the live mount:
+ * the session it was opened against, and this panel's own lifetime. */
+export interface PluginDockCapabilities {
+	/** Open the native folder picker and resolve its absolute path, or null when
+	 * the user cancelled or this window has no native bridge (browser build).
+	 * Plugins must offer a manual-path fallback for null. */
+	pickFolder(): Promise<string | null>;
+	/** Insert text into the current session's composer draft without sending it.
+	 * Inert outside a native teaching/practice session; returns whether it landed. */
+	insertComposerText(text: string): boolean;
+	/** Close the dock this panel is mounted in. Idempotent. */
+	close(): void;
+}
+/** A right-hand docked panel: a persistent column beside the session body, not an
+ * overlay. Only one dock is visible per window; registered docks share the column
+ * and appear as switcher buttons. */
+export interface PluginDock {
+	id: string;
+	name: string;
+	/** Trusted plugin SVG markup for the dock switcher. */
+	icon?: string;
+	/** Mount only the panel body; the host owns the switcher chrome, the divider
+	 * and the close affordance. Switching docks, closing and disable abort this
+	 * mount signal. Return sync/async cleanup and scope child UI to this signal. */
+	mount(container: HTMLElement, signal: AbortSignal, capabilities: PluginDockCapabilities): void | PluginCleanup | Promise<void | PluginCleanup>;
+}
 export type * from "./plugin-view-context.ts";
 export type { PluginActionShortcut, PluginShortcutViewScope } from "./plugin-shortcuts.ts";
 export type PluginPageActionContext =
@@ -284,6 +310,11 @@ export interface PluginFrontendContext {
 	/** Register a plugin-owned body view with host chrome. Invalid/duplicate IDs
 	 * throw; returned unregister removes the view without deleting plugin data. */
 	registerView(view: PluginView): () => void;
+	/** Register a right-hand docked panel. Registration alone shows nothing: the
+	 * panel appears in the window's dock switcher, and the learner (or this
+	 * plugin's ctx.app.openDock) opens it. Invalid/duplicate IDs throw; returned
+	 * unregister removes the panel and aborts its live mount. */
+	registerDock(dock: PluginDock): () => void;
 	/** Register an invokable action and optional shortcut, but no button placement.
 	 * Invalid/duplicate registrations throw. Returns unregister; shortcut scope and
 	 * default are captured here, not changed by refreshActions. */
@@ -361,6 +392,13 @@ export interface PluginFrontendContext {
 		openHome(): void;
 		/** Navigate to this plugin's registered view ID, not another plugin's view. */
 		openView(id: string): void;
+		/** Open this plugin's own registered dock panel in the current window's
+		 * dock column, switching to it if another dock is showing. Inert after
+		 * activation expiry. Does not navigate or create a session. */
+		openDock(id: string): void;
+		/** Close the window's dock column when this plugin's dock is showing it;
+		 * another plugin's open dock is left alone. */
+		closeDock(): void;
 		/** Open this plugin's dedicated Settings page, not package management. */
 		openSettings(): void;
 	};

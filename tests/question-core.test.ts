@@ -68,9 +68,15 @@ describe("the schema's argument order (reasoning before the pick)", () => {
 				keys.indexOf("explanation") < keys.indexOf("correctAnswer"),
 				`explanation must precede correctAnswer in the emitted schema (got: ${keys.join(", ")})`,
 			);
+			// `figure` trails the required pair and every content field (quiz
+			// figures, owner 2026-11-18): it is OPTIONAL, so the glm drop-order
+			// law keeps it last — a model that runs out of steam loses the
+			// picture, never the commitment. The base is shared, so the probe
+			// schema carries it too; probing has no visual job, so a probe
+			// reference resolves to no picture (graceful, never an error).
 			assert.deepEqual(keys, schema === quizInputSchema
-				? ["type", "nodeId", "question", "options", "multiSelect", "explanation", "correctAnswer", "details"]
-				: ["question", "options", "multiSelect", "explanation", "correctAnswer", "details"]);
+				? ["type", "nodeId", "question", "options", "multiSelect", "explanation", "correctAnswer", "details", "figure"]
+				: ["question", "options", "multiSelect", "explanation", "correctAnswer", "details", "figure"]);
 		}
 	});
 });

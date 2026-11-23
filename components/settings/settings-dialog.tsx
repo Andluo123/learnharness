@@ -33,7 +33,7 @@ import {
 	type ReactNode,
 	type RefObject,
 } from "react";
-import { BotIcon, KeyIcon, KeyboardIcon, PaletteIcon, PlugIcon, PuzzleIcon, SettingsIcon, WaypointsIcon, type LucideIcon } from "lucide-react";
+import { BotIcon, KeyIcon, KeyboardIcon, PaletteIcon, PlugIcon, PuzzleIcon, SettingsIcon, Volume2Icon, WaypointsIcon, type LucideIcon } from "lucide-react";
 import { HostDialog } from "@/components/host-dialog";
 import { useInteractionLayers, type CloseOutcome } from "@/components/interaction-layers";
 import {
@@ -48,6 +48,7 @@ import { useAppearance } from "./appearance.tsx";
 import { SettingsSection } from "./controls.tsx";
 import { UpdateSettings } from "./update-settings.tsx";
 import { LanguageSettings } from "./language-settings.tsx";
+import { SpeechSection } from "./speech-section.tsx";
 import { AgentSection } from "./agent-section.tsx";
 import type { ModelsSettings } from "@/src/core";
 import { MENU_CLOSE_EVENT, MENU_OPEN_EVENT } from "@/components/menu-shell";
@@ -58,7 +59,7 @@ import { AppearanceSection, GraphSection } from "./appearance-section.tsx";
 import { KeyboardSection } from "./keyboard-section.tsx";
 import { PluginsSection } from "./plugins-section.tsx";
 import { PluginSettingsPage } from "./plugin-settings-page.tsx";
-import { usePlugins } from "@/components/plugins";
+import { usePlugins } from "@/components/plugins";
 import { useT } from "@/i18n/use-t.ts";
 import { ChatGPTUIProvider } from "./chatgpt-connection.tsx";
 import { NativeSubscriptionUIProvider } from "./subscription-connections.tsx";
@@ -69,7 +70,7 @@ import { LOCALE_LABELS, isAppLocale, type AppLocale } from "@/i18n/config.ts";
 /** Owner (2026-09-20): hints earn their place — mechanics-explaining
  *  prose is out; only the keyboard note stays (storage location is a
  *  real question users ask). */
-type CoreSectionId = "keys" | "agent" | "appearance" | "graph" | "keyboard" | "general";
+type CoreSectionId = "keys" | "agent" | "appearance" | "graph" | "keyboard" | "speech" | "general";
 interface NavSectionSpec {
 	id: CoreSectionId;
 	labelKey: string;
@@ -82,6 +83,7 @@ const SECTIONS: readonly NavSectionSpec[] = [
 	{ id: "appearance", labelKey: "sections.appearance", icon: PaletteIcon },
 	{ id: "graph", labelKey: "sections.graph", icon: WaypointsIcon },
 	{ id: "keyboard", labelKey: "sections.keyboard", icon: KeyboardIcon, hintKey: "keyboardHint" },
+	{ id: "speech", labelKey: "sections.speech", icon: Volume2Icon, hintKey: "speechHint" },
 	{ id: "general", labelKey: "sections.general", icon: SettingsIcon },
 ];
 type SectionId = CoreSectionId | "plugins" | "core-plugins" | `plugin:${string}`;
@@ -546,6 +548,15 @@ export function SettingsDialogBody({
 									testid="section-keyboard"
 								>
 									<KeyboardSection />
+								</SettingsSection>
+							)}
+							{active === "speech" && (
+								<SettingsSection
+									title={t("sections.speech")}
+									hint={t("speechHint")}
+									testid="section-speech"
+								>
+									<SpeechSection />
 								</SettingsSection>
 							)}
 						</div>

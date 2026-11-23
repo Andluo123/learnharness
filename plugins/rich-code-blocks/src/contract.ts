@@ -30,6 +30,7 @@ export const INSTRUCTIONS: Record<Family, string> = {
     "Every block is compiled independently. Put all required package and library declarations before \\begin{document}, then the diagram, then \\end{document}. The engine supplies the standalone document class: never include \\documentclass or \\documentstyle, and never rely on declarations from another block.",
     "Explicitly load the packages required by the diagram: \\usepackage{tikz}, \\usepackage{circuitikz}, \\usepackage{tikz-cd}, or \\usepackage{pgfplots}. For labels using \\text{...} or aligned equations, also load \\usepackage{amsmath}. Declare needed TikZ libraries with \\usetikzlibrary in the preamble.",
     "Place the tikzpicture, circuitikz, or tikzcd environment directly inside document. Do not wrap the diagram in \\[...\\], $$...$$, or an equation environment. Use $...$ for math in TikZ node labels; tikzcd cells already use math mode.",
+    "The bundled TeX fonts cover ASCII only. Write labels with TeX commands, never Unicode symbols: $50^\\circ$ not 50°, $\\alpha$ not α, $\\times$ not ×, $\\pm$ not ±, $\\le$ not ≤, $\\to$ not →. A single non-ASCII character fails the whole block; only % comments are ignored.",
     "The bundled PGFPlots version is 1.16. For plots, put \\pgfplotsset{compat=1.16} in the preamble; do not request 1.18 or another newer version.",
     "Write explanations outside the block. Author notation, not raw SVG, JavaScript, or external resources.",
   ].join("\n\n"),
@@ -64,9 +65,65 @@ export function parseChange(value: unknown): { family: Family; enabled: boolean 
   return { family: record.family as Family, enabled: record.enabled };
 }
 
+/** The TeX engine supplies its own \documentclass{standalone} preamble, so a
+ *  source that writes one fails with "Two \documentclass commands" and renders
+ *  nothing. Models copy that line anyway (it is valid LaTeX everywhere else),
+ *  and a silent failed render is worse than tolerating it: drop the engine-
+ *  supplied declaration instead of rejecting the block. Idempotent. */
+export function normalizeTikzSource(source: string): string {
+	return source.replace(/^[ \t]*\\document(?:class|style)\s*(?:\[[^\]]*\])?\s*\{[^}]*\}[ \t]*\r?\n?/gm, "");
+}
+
+/** Unicode symbols the bundled Computer Modern fonts cannot typeset, paired
+ *  with the TeX spelling a model should have used instead. */
+const TEX_ALTERNATIVES: Record<string, string> = {
+  "°": "$^\\circ$", "±": "$\\pm$", "×": "$\\times$", "÷": "$\\div$",
+  "≤": "$\\le$", "≥": "$\\ge$", "≠": "$\\ne$", "≈": "$\\approx$",
+  "→": "$\\to$", "←": "$\\leftarrow$", "∞": "$\\infty$", "·": "$\\cdot$",
+  "α": "$\\alpha$", "β": "$\\beta$", "γ": "$\\gamma$", "δ": "$\\delta$",
+  "θ": "$\\theta$", "λ": "$\\lambda$", "μ": "$\\mu$", "π": "$\\pi$",
+  "σ": "$\\sigma$", "φ": "$\\phi$", "ω": "$\\omega$", "Δ": "$\\Delta$", "Ω": "$\\Omega$",
+};
+
+/** Index of the first unescaped % (TeX comment), or the line length. */
+function commentStart(line: string): number {
+  for (let index = 0; index < line.length; index++) {
+    if (line[index] !== "%") continue;
+    let slashes = 0;
+    for (let back = index - 1; back >= 0 && line[back] === "\\"; back--) slashes++;
+    if (slashes % 2 === 0) return index;
+  }
+  return line.length;
+}
+
+/** The engine's fonts are ASCII-only. A single stray glyph ("°", "α", "→")
+ *  aborts compilation, and a missing font metric can even stall the run until
+ *  the timeout, so reject those characters before TeX starts and name the TeX
+ *  spelling to use instead. Text after an unescaped % never reaches the
+ *  engine, so comments stay allowed (models write Chinese remarks there). */
+export function assertTikzCharacters(source: string): void {
+  const lines = source.split(/\r?\n/);
+  for (let row = 0; row < lines.length; row++) {
+    const line = lines[row]!;
+    const end = commentStart(line);
+    let column = 0;
+    for (const char of line.slice(0, end)) {
+      column++;
+      const code = char.codePointAt(0)!;
+      if (code === 9 || code === 13 || (code >= 0x20 && code <= 0x7e)) continue;
+      if (row === 0 && column === 1 && code === 0xfeff) continue; // UTF-8 BOM
+      const alternative = TEX_ALTERNATIVES[char];
+      throw new Error(`TikZ source line ${row + 1}, column ${column} contains "${char}" `
+        + `(U+${code.toString(16).toUpperCase().padStart(4, "0")}), which the bundled TeX fonts cannot typeset. `
+        + (alternative ? `Write ${alternative} instead.` : "Use ASCII and TeX commands instead."));
+    }
+  }
+}
+
 export function checkSource(language: Language, source: string): void {
   if (new TextEncoder().encode(source).byteLength > SOURCE_LIMITS[language]) throw new Error(`${language} source exceeds the ${SOURCE_LIMITS[language] / 1024} KiB limit.`);
   if (!source.trim()) throw new Error(`Empty ${language} source.`);
+  if (language === "tikz") assertTikzCharacters(source);
 }
 
 export function checkSvgSize(svg: string): void {

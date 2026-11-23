@@ -351,6 +351,8 @@ export function GraphCostControl({ costs }: { costs: GraphCostSummary }) {
  * naming-kind runs never reach the list.
  */
 function GraphCostPanel({ costs }: { costs: GraphCostSummary }) {
+	const t = useT("graph");
+
 	const stageRows: [string, GraphCostSummary["stages"]["extraction"]][] = [
 		["Extraction", costs.stages.extraction],
 		["Audit", costs.stages.audit],
@@ -362,7 +364,7 @@ function GraphCostPanel({ costs }: { costs: GraphCostSummary }) {
 		<div className="w-80 max-w-[calc(100vw-1.5rem)] rounded-xl border bg-card/95 p-3 text-xs shadow-lg backdrop-blur">
 			<div className="mb-2 flex items-baseline justify-between">
 				<span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-					Graph pipeline costs
+					{t("pipelineCosts")}
 				</span>
 				<span className="text-foreground tabular-nums">
 					{graphUsageLabel(costs)}
@@ -733,7 +735,7 @@ function GraphSettingsControl({
 							    controls at the very bottom — the grayed group reads
 							    as a self-contained sub-section. */}
 							<label className="flex items-center justify-between gap-2 text-xs">
-								Depth anchor
+								{t("depthAnchor")}
 								<select
 									className="rounded border bg-background px-1 py-0.5 text-xs"
 									value={physicsTuning.depthMode}

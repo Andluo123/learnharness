@@ -238,7 +238,8 @@ export function Home({
 									onClick={() => setSetupOpen(true)}
 									className="rounded-sm border border-border bg-card px-3 py-1.5 font-ui text-xs text-foreground transition-colors hover:border-muted-foreground/50 hover:bg-accent cursor-pointer"
 								>
-									Set up your models
+									{t("setUpModels")}
+
 								</button>
 							)
 						)}

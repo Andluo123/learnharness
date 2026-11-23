@@ -37,7 +37,8 @@ export type KeyAction =
 	| "question-submit"
 	| "open-settings"
 	| "toggle-user-thinking"
-	| "toggle-question-thread";
+	| "toggle-question-thread"
+	| "toggle-speech";
 
 /** Where the cheat sheet groups an action (display only — dispatch is
  *  global; a seam that isn't mounted simply no-ops). */
@@ -57,6 +58,7 @@ export interface KeyActionDef {
 
 export const KEYBOARD_ACTIONS: readonly KeyActionDef[] = [
 	{ id: "toggle-dictation", label: "Toggle dictation", scope: "global", binding: "mod+d" },
+	{ id: "toggle-speech", label: "Toggle read aloud", scope: "global", binding: "mod+shift+v" },
 	{ id: "open-settings", label: "Open settings", scope: "global", binding: "mod+," },
 	{ id: "open-model-picker", label: "Model selector", scope: "global", binding: "mod+k" },
 	{ id: "cycle-thinking", label: "Cycle thinking level", scope: "global", binding: "shift+tab" },

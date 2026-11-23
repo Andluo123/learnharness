@@ -196,6 +196,12 @@ is provided by this plugin.
   Generated SVG is capped at **2 MiB**; TeX admits at most **16 waiting jobs**.
   One volatile LRU holds at most **32 successful outputs / 8 MiB**, including keys.
   There is no persistent render cache or model inference request.
+- The bundled TeX fonts are ASCII-only (Computer Modern). A non-ASCII character in
+  TikZ input (for example `°`, `α`, `×`, `→`) aborts compilation and can stall on a
+  missing font metric, so it is rejected **before** TeX starts with the line, column,
+  character and the TeX spelling to use instead (`$^\circ$`, `$\alpha$`, ...). Text
+  after an unescaped `%` is a comment and never reaches the engine, so it may contain
+  any characters. Sources are never rewritten.
 - TeX's fixed WASM linear memory is about **69 MiB**. That is not a total Worker
   memory cap: JS conversion, decompressed assets and fonts use additional memory.
   TeX CPU work cannot freeze the page event loop, but the browser still consumes

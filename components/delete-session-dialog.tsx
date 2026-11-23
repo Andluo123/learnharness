@@ -56,6 +56,8 @@ export function DeleteSessionDialog({
 }) {
 	const [traces, setTraces] = useState(false);
 	const t = useT("dialog");
+	// Top-level "errors" keys need a ROOT translator (see thinking-default.ts).
+	const r = useT();
 	const [busy, setBusy] = useState(false);
 	// Retry IS pressing Delete again: the mode always derives from the
 	// checkbox's current state (a toggle between failure and retry is a
@@ -94,7 +96,7 @@ export function DeleteSessionDialog({
 			}
 			onDeleted(chat.id, mode, body.graphRevision ?? 0);
 		} catch {
-			setFailure({ code: "network", error: t("errors.e3") });
+			setFailure({ code: "network", error: r("errors.e3") });
 			setBusy(false);
 		}
 	};

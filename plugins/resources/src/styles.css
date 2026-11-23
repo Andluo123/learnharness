@@ -1,0 +1,315 @@
+/* Resources dock panel. Every color comes from a host theme variable so the
+   panel follows light/dark/custom themes without a separate palette. */
+
+.lh-resources {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	height: 100%;
+	min-height: 0;
+	overflow: hidden;
+	font-family: var(--font-ui, ui-monospace, monospace);
+	font-size: 12px;
+	color: var(--foreground, #eee);
+}
+
+.lh-resources-header {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 8px 10px;
+	border-bottom: 1px solid var(--border, #333);
+	background: var(--background, transparent);
+}
+
+.lh-resources-crumbs {
+	display: flex;
+	align-items: center;
+	gap: 1px;
+	flex: 1;
+	min-width: 0;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scrollbar-width: none;
+	white-space: nowrap;
+	font-size: 11px;
+	color: var(--muted-foreground, #999);
+}
+.lh-resources-crumbs::-webkit-scrollbar { display: none; }
+
+.lh-resources-crumb {
+	flex-shrink: 0;
+	max-width: 9rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--muted-foreground, #999);
+	font: inherit;
+	font-size: 11px;
+	line-height: 1.4;
+	padding: 2px 5px;
+	cursor: pointer;
+	transition: background-color 120ms ease, color 120ms ease;
+}
+.lh-resources-crumb:hover { background: var(--accent, #333); color: var(--foreground, #eee); }
+.lh-resources-crumb:focus-visible { outline: 2px solid var(--ring, #6b8afd); outline-offset: -2px; }
+
+.lh-resources-crumb-static {
+	cursor: default;
+	opacity: 0.6;
+}
+.lh-resources-crumb-static:hover { background: transparent; color: var(--muted-foreground, #999); }
+
+.lh-resources-crumb-current {
+	cursor: default;
+	color: var(--foreground, #eee);
+	font-weight: 600;
+}
+.lh-resources-crumb-current:hover { background: transparent; color: var(--foreground, #eee); }
+
+.lh-resources-crumb-separator {
+	flex-shrink: 0;
+	padding: 0 1px;
+	opacity: 0.5;
+	font-size: 11px;
+	line-height: 1;
+}
+
+.lh-resources-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	flex-shrink: 0;
+	cursor: pointer;
+	border: 1px solid var(--border, #444);
+	border-radius: 6px;
+	background: transparent;
+	color: var(--foreground, #eee);
+	font: inherit;
+	font-size: 11px;
+	padding: 3px 8px;
+	transition: background-color 120ms ease, border-color 120ms ease;
+}
+.lh-resources-button:hover:not(:disabled) { background: var(--accent, #333); }
+.lh-resources-button:disabled { cursor: default; opacity: 0.4; }
+
+.lh-resources-icon-button {
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	font-size: 12px;
+}
+
+.lh-resources-body {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	padding: 4px;
+}
+
+.lh-resources-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.lh-resources-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	padding: 4px 6px;
+	text-align: left;
+}
+.lh-resources-row:hover { background: var(--accent, #333); }
+.lh-resources-row:focus-visible { outline: 2px solid var(--ring, #6b8afd); outline-offset: -2px; }
+
+.lh-resources-row-icon {
+	flex-shrink: 0;
+	font-size: 11px;
+	line-height: 1;
+}
+
+.lh-resources-row-name {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.lh-resources-row-size {
+	flex-shrink: 0;
+	font-size: 10px;
+	color: var(--muted-foreground, #999);
+}
+
+.lh-resources-hint {
+	margin: 10px 8px;
+	font-size: 11px;
+	line-height: 1.6;
+	color: var(--muted-foreground, #999);
+}
+
+.lh-resources-status {
+	flex-shrink: 0;
+	padding: 4px 8px;
+	border-top: 1px solid var(--border, #333);
+	font-size: 10px;
+	color: var(--muted-foreground, #999);
+	min-height: 22px;
+}
+
+.lh-resources-preview {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+	gap: 6px;
+}
+
+.lh-resources-preview-title {
+	font-weight: 600;
+	font-size: 12px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding: 2px 4px 0;
+}
+
+.lh-resources-preview-actions {
+	display: flex;
+	gap: 4px;
+	padding: 0 4px;
+}
+
+.lh-resources-hand {
+	border-color: var(--lh-success, #22c55e);
+	color: var(--lh-success, #22c55e);
+}
+
+.lh-resources-preview-content {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
+	padding: 2px;
+}
+
+.lh-resources-image {
+	display: block;
+	max-width: 100%;
+	max-height: 100%;
+	margin: 0 auto;
+	border-radius: 4px;
+	object-fit: contain;
+}
+
+.lh-resources-text {
+	margin: 0;
+	padding: 6px;
+	white-space: pre-wrap;
+	word-break: break-word;
+	font-family: var(--font-ui, ui-monospace, monospace);
+	font-size: 11px;
+	line-height: 1.55;
+	color: var(--foreground, #eee);
+}
+
+.lh-resources-frame {
+	flex: 1;
+	min-height: 0;
+	width: 100%;
+	border: 1px solid var(--border, #333);
+	border-radius: 4px;
+	background: #fff;
+}
+
+.lh-resources-preview-meta {
+	flex-shrink: 0;
+	padding: 2px 4px 4px;
+	font-size: 10px;
+	color: var(--muted-foreground, #999);
+}
+
+/* The resize drag must not select text or show a text caret mid-drag. */
+body.lh-dock-resizing,
+body.lh-dock-resizing * {
+	cursor: col-resize !important;
+	user-select: none !important;
+}
+
+
+/* ── Office previews ─────────────────────────────────────────────────────
+   docx comes from mammoth as a small HTML subset; xlsx is a real table;
+   pptx is per-slide text. All of it is themed through host variables. */
+
+.lh-resources-docx {
+	font-family: var(--font-sans3, inherit);
+	font-size: 12px;
+	line-height: 1.7;
+	word-break: break-word;
+}
+.lh-resources-docx p { margin: 0 0 0.6em; }
+.lh-resources-docx h1,
+.lh-resources-docx h2,
+.lh-resources-docx h3,
+.lh-resources-docx h4 { margin: 0.9em 0 0.4em; font-size: 1.1em; }
+.lh-resources-docx ul,
+.lh-resources-docx ol { margin: 0 0 0.6em; padding-left: 1.3em; }
+.lh-resources-docx table,
+.lh-resources-table {
+	border-collapse: collapse;
+	width: 100%;
+	margin: 0 0 0.6em;
+	font-size: 11px;
+}
+.lh-resources-docx td,
+.lh-resources-docx th,
+.lh-resources-table td {
+	border: 1px solid var(--border, #333);
+	padding: 2px 5px;
+	vertical-align: top;
+	text-align: left;
+}
+
+.lh-resources-sheet { margin-bottom: 14px; }
+.lh-resources-sheet-name,
+.lh-resources-slide-name {
+	margin: 0 0 4px;
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--muted-foreground, #999);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.lh-resources-slide {
+	margin-bottom: 12px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid var(--border, #333);
+}
+.lh-resources-slide:last-child { border-bottom: none; }
+.lh-resources-slide-line { margin: 0 0 4px; font-size: 12px; line-height: 1.55; }
+
+.lh-resources-office-notes {
+	margin-top: 10px;
+	padding-top: 8px;
+	border-top: 1px dashed var(--border, #333);
+	font-size: 10px;
+	color: var(--muted-foreground, #999);
+}
+.lh-resources-office-notes p { margin: 0 0 2px; }
+
