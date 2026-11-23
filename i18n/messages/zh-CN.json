@@ -55,7 +55,9 @@
 		"practiceSession": "练习会话",
 		"rename": "重命名",
 		"exportMarkdown": "导出为 Markdown…",
-		"deleteMenu": "删除…"
+		"deleteMenu": "删除…",
+		"dismiss": "关闭",
+		"moveOutsideFolders": "移出文件夹"
 	},
 	"settings": {
 		"title": "设置",
@@ -699,7 +701,8 @@
 		"restrictedFolders": "仅限所列文件夹及其子文件夹。",
 		"restrictedNone": "受限：未允许任何文件夹。添加一个文件夹以启用访问。",
 		"versionInUse": "你使用的是这个版本",
-		"chunkBudget": "提取分块预算"
+		"chunkBudget": "提取分块预算",
+		"segmentsUnavailable": "无法读取提示词。"
 	},
 	"settingsKeys": {
 		"pasteKey": "粘贴密钥…",

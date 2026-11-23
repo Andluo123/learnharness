@@ -55,7 +55,9 @@
 		"practiceSession": "Practice session",
 		"rename": "Rename",
 		"exportMarkdown": "Export as Markdown…",
-		"deleteMenu": "Delete…"
+		"deleteMenu": "Delete…",
+		"dismiss": "Dismiss",
+		"moveOutsideFolders": "Move outside folders"
 	},
 	"settings": {
 		"title": "Settings",
@@ -699,7 +701,8 @@
 		"restrictedFolders": "Only listed folders and subfolders.",
 		"restrictedNone": "Restricted: no folders allowed. Add a folder to enable access.",
 		"versionInUse": "Your version is in use",
-		"chunkBudget": "Extraction chunk budget"
+		"chunkBudget": "Extraction chunk budget",
+		"segmentsUnavailable": "Couldn't load the prompts."
 	},
 	"settingsKeys": {
 		"pasteKey": "Paste key…",
