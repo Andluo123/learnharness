@@ -1003,9 +1003,11 @@ export function AgentSection({
 				<p className="mb-1 text-xs leading-relaxed text-muted-foreground/70">
 					{prompts ? t("promptsHint") : t("loadingSegments")}
 				</p>
-				{promptListStatus === "failed" && (
+				{promptListStatus !== "ready" && (
 					<div className="flex items-center gap-2">
-						<p role="alert" className="text-xs text-error">{t("segmentsUnavailable")}</p>
+						{promptListStatus === "failed"
+							? <p role="alert" className="text-xs text-error">{t("segmentsUnavailable")}</p>
+							: <p role="status" className="text-xs text-muted-foreground">{t("loadingSegments")}</p>}
 						<Button type="button" size="xs" variant="outline" onClick={() => void readPrompts()}>{t("retry")}</Button>
 					</div>
 				)}

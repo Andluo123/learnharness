@@ -88,7 +88,8 @@
     "loadError": "Settings could not be loaded — refresh to retry.",
     "settingTitleAria": "Settings",
     "loadingPlugins": "Loading plugins…",
-    "closeSettings": "Close settings"
+    "closeSettings": "Close settings",
+    "promptRenderedMarkdown": "Rendered Markdown"
   },
   "composer": {
     "placeholder": "What do you want to learn?",
@@ -314,7 +315,11 @@
     "blur": "Blur",
     "chainsButton": "Chains",
     "pipelineCosts": "Graph pipeline costs",
-    "depthAnchor": "Depth anchor"
+    "depthAnchor": "Depth anchor",
+    "showFolders": "Show folders",
+    "showAll": "Show all",
+    "noFoldersWithGraph": "No folders contain graph material yet.",
+    "graphFilteredByFolder": "Graph filtered by folder"
   },
   "plan": {
     "planDiagram": "Plan diagram",
@@ -706,7 +711,7 @@
     "segmentsUnavailable": "Couldn't load the prompts.",
     "modelCatalog": "Model catalog",
     "refreshModelCatalog": "Refresh model catalog",
-    "promptSegmentAddOverride": "Add override",
+    "promptSegmentAddOverride": "+ Add override",
     "promptSegmentDefault": "Default",
     "promptSegmentDiscardChanges": "Discard changes",
     "promptSegmentDiscardUnsaved": "Discard unsaved changes?",
@@ -901,7 +906,7 @@
     "autoUpdateAria": "auto update",
     "downloadingUpdate": "Downloading update",
     "checkingUpdates": "Checking for updates",
-    "updateError": "Couldn't check for updates. Try again later."
+    "updateError": "Couldn’t check for updates. Try again later."
   },
   "settingsKeyboard": {
     "keyboard": "Keyboard",
@@ -1263,5 +1268,8 @@
     "preview": "Preview",
     "readMath": "Read formulas",
     "readMathHint": "Reads a formula aloud in words — on by default."
+  },
+  "startupMessage": {
+    "closeAnnouncement": "Close announcement"
   }
 }

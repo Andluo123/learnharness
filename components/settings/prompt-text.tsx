@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, type RefObject } from "react";
 import { HostMarkdown } from "@/components/host-markdown";
 import { cn } from "@/lib/utils";
+import { useT } from "@/i18n/use-t.ts";
 
 export function PromptText({ text, preview, fieldRef, onChange, busy }: {
 	text: string;
@@ -11,6 +12,7 @@ export function PromptText({ text, preview, fieldRef, onChange, busy }: {
 	onChange?: (text: string) => void;
 	busy?: boolean;
 }) {
+	const t = useT("settings");
 	const gutter = useRef<HTMLDivElement>(null);
 	const lines = text.split(/\r\n|\r|\n/);
 	const wrapping = "whitespace-pre-wrap [overflow-wrap:anywhere]";
@@ -57,7 +59,7 @@ export function PromptText({ text, preview, fieldRef, onChange, busy }: {
 				/>
 			</div>
 		</div>
-		{preview && <div className="h-full overflow-auto p-4" tabIndex={0} aria-label="Rendered Markdown">
+		{preview && <div className="h-full overflow-auto p-4" tabIndex={0} aria-label={t("promptRenderedMarkdown")}>
 			<HostMarkdown text={text} />
 		</div>}
 	</div>;

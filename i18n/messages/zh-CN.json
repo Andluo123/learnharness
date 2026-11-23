@@ -88,7 +88,8 @@
     "loadError": "设置加载失败 —— 请刷新重试。",
     "settingTitleAria": "设置",
     "loadingPlugins": "正在加载插件…",
-    "closeSettings": "关闭设置"
+    "closeSettings": "关闭设置",
+    "promptRenderedMarkdown": "渲染后的 Markdown"
   },
   "composer": {
     "placeholder": "你想学习什么？",
@@ -314,7 +315,11 @@
     "blur": "模糊",
     "chainsButton": "推理链",
     "pipelineCosts": "图谱流水线成本",
-    "depthAnchor": "深度锚点"
+    "depthAnchor": "深度锚点",
+    "showFolders": "显示文件夹",
+    "showAll": "显示全部",
+    "noFoldersWithGraph": "尚无包含图谱内容的文件夹。",
+    "graphFilteredByFolder": "图谱已按文件夹筛选"
   },
   "plan": {
     "planDiagram": "计划图",
@@ -1263,5 +1268,8 @@
     "preview": "试听",
     "readMath": "朗读公式",
     "readMathHint": "把公式转成口语朗读——默认开启。"
+  },
+  "startupMessage": {
+    "closeAnnouncement": "关闭公告"
   }
 }

@@ -59,6 +59,7 @@ export function updateStatusText(
 			case "upToDate": return "No newer version was found at the last check.";
 			case "versionReady": return `Version ${values?.version} is ready. It will install when you quit the app.`;
 			case "updateReady": return "An update is ready. It will install when you quit the app.";
+			case "updateError": return UPDATE_ERROR;
 			default: return key;
 		}
 	});

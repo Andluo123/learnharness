@@ -11,8 +11,7 @@ let loader: BrowserResourceLoader | undefined;
 let resourceUrl: string | undefined;
 worker.onmessage = async ({ data }) => {
   try {
-    const source = normalizeTikzSource(data.source);
-    checkSource("tikz", source);
+    checkSource("tikz", data.source);
     // Always use the plugin's explicit local resource root, never the package CDN default.
     const url = new URL(data.resourcesUrl);
     if (url.origin !== new URL(import.meta.url).origin) throw new Error("TeX resources must be local plugin assets.");
