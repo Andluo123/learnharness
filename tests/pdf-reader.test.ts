@@ -220,6 +220,46 @@ describe("pdf-reader loop (faux engine)", () => {
 		assert.equal(headless.calls.filter(c => c.startsWith("render:")).join("|"), "render:1,2,3,4,5,6|render:7,8,9,10,11,12");
 	});
 
+	it("pdf_ocr feeds OCR text into the loop and caps pages at 12 per job", async () => {
+		const headless = fakeHeadless();
+		const ocrCalls: number[][] = [];
+		const engine = fauxEngine([
+			fauxAssistantMessage([fauxToolCall("pdf_ocr", { pages: "1-6" }, { id: "o1" })], { stopReason: "toolUse" }),
+			fauxAssistantMessage([fauxToolCall("pdf_ocr", { pages: "7-12" }, { id: "o2" })], { stopReason: "toolUse" }),
+			// third call must be refused by the hard OCR cap
+			fauxAssistantMessage([fauxToolCall("pdf_ocr", { pages: "13-18" }, { id: "o3" })], { stopReason: "toolUse" }),
+			fauxAssistantMessage([fauxText("Done from OCR text (p. 1).")]),
+		]);
+		const result = await runPdfReaderAgent(
+			{ path: FIXTURE, question: "OCR cap test" },
+			{
+				engine,
+				headless,
+				ocrOptions: { recognize: async (png) => { ocrCalls.push([png[0]!]); return `OCR ${png[0]}`; } },
+			},
+		);
+		assert.equal(ocrCalls.length, 12, "only 12 pages are actually OCR'd");
+		assert.deepEqual(result.pagesRead, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+		assert.match(result.brief, /Done from OCR text/);
+	});
+
+	it("a failed OCR page is not counted as read", async () => {
+		const headless = fakeHeadless();
+		let ocrCalls = 0;
+		const engine = fauxEngine([
+			fauxAssistantMessage([fauxToolCall("pdf_ocr", { pages: "1-3" }, { id: "o1" })], { stopReason: "toolUse" }),
+			fauxAssistantMessage([fauxText("Brief after partial OCR (p. 1, p. 3).")]),
+		]);
+		const result = await runPdfReaderAgent(
+			{ path: FIXTURE, question: "partial OCR" },
+			{
+				engine,
+				headless,
+				ocrOptions: { recognize: async () => { const n = ++ocrCalls; if (n === 2) throw new Error("bad page"); return "ok"; } },
+			},
+		);
+		assert.deepEqual(result.pagesRead, [1, 3], "page 2 failed OCR and is not read");
+	});
 	it("no Chrome: render calls degrade to an error note, text tools still work", async () => {
 		const engine = fauxEngine([
 			fauxAssistantMessage([fauxToolCall("pdf_render", { pages: "1", dpi: 150 }, { id: "r1" })], {

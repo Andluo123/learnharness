@@ -480,7 +480,11 @@ export function AgentSection({
 		// agent section, but this view (the toggles' truth) never re-read —
 		// the settings-saved law (every reader re-reads) was missing this
 		// one reader.
-		if (section === "agent" && !switchingPrompt.current) void readPrompts();
+		// Prompt SOURCE text follows the UI language (settings.general.language):
+		// a language switch is a `general` write, so the cached prompt view must
+		// re-read or "View default" keeps showing the previous language until a
+		// remount — the bug where it only turned Chinese after toggling languages.
+		if ((section === "agent" || section === "general") && !switchingPrompt.current) void readPrompts();
 	});
 
 	useEffect(() => {

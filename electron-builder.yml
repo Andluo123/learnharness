@@ -87,6 +87,10 @@ extraResources:
   # Attribution/license for the bounded local Pi cutoff-selector port.
   - from: docs/compaction-accounting.md
     to: licenses/pi-compaction.md
+  # Full third-party attribution (incl. the bundled offline OCR stack and
+  # PP-OCR model provenance) ships with the app.
+  - from: docs/THIRD-PARTY.md
+    to: licenses/THIRD-PARTY.md
   # Copy from the PARENT dir (.next), not .next/standalone itself:
   # electron-builder hard-excludes a copy's root node_modules and the
   # default no-filter pattern is a literal path match (empirically both
@@ -99,6 +103,11 @@ extraResources:
     to: server
     filter:
       - "standalone/**/*"
+  # Offline OCR models (PP-OCRv6 det/rec + classifier + dictionary, ~30 MB):
+  # ship outside the asar; the Electron shell sets RAPIDOCR_MODEL_DIR to this
+  # directory when spawning the server so first-run OCR needs no download.
+  - from: ocr-models
+    to: ocr-models
 mac:
   # The backend's --require runs before Next loads. Keep this resource
   # outside app.asar so early Node-mode loading needs no ASAR support.

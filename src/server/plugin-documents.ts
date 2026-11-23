@@ -1,6 +1,7 @@
 import { readBoundedFormData, FormBodyLimitError } from "../../lib/bounded-form-data.ts";
 import { convertPdf } from "../agent/subagents/pdf-ops.ts";
 import { joinPages } from "../agent/subagents/pdf-markdown.ts";
+import { recognizePdfBytes } from "../agent/subagents/ocr.ts";
 import { PluginHostError } from "./plugin-host.ts";
 
 export const MAX_DOCUMENT_BODY_BYTES = 26 * 1024 * 1024;
@@ -13,8 +14,12 @@ const CONTROL = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/;
 /** Pure upload conversion only: no learning, provider, or storage services.
  * Compose ONE instance process-wide. The fail-fast slot covers body reading,
  * conversion, and converter teardown, even after the caller has aborted. */
-export function createPluginDocumentConverter(deps: { convertPdf?: typeof convertPdf } = {}) {
+export function createPluginDocumentConverter(deps: {
+	convertPdf?: typeof convertPdf;
+	recognizePdfBytes?: typeof recognizePdfBytes;
+} = {}) {
 	const pdfConverter = deps.convertPdf ?? convertPdf;
+	const ocr = deps.recognizePdfBytes ?? recognizePdfBytes;
 	let busy = false;
 	return {
 		async convert(request: Request, signal: AbortSignal): Promise<{ name: string; markdown: string; notices: string[] }> {
@@ -54,13 +59,28 @@ export function createPluginDocumentConverter(deps: { convertPdf?: typeof conver
 					signal.throwIfAborted();
 					if (pdf.kind === "unreadable") throw new PluginHostError(400, "Could not open this PDF.");
 					if (pdf.kind === "too-long") throw new PluginHostError(400, "Too long. Max 1,000 pages.");
-					const skipped = pdf.pages.filter((page) => page.kind === "image-only").length;
-					if (!pdf.pages.some((page) => page.kind === "text" && page.markdown.trim())) {
-						throw new PluginHostError(400, skipped ? "OCR is not supported. This PDF has no extractable text." : "This PDF is blank or contains no extractable text.");
+					const imageOnly = pdf.pages.filter((page) => page.kind === "image-only").map((page) => page.number);
+					let ocrBlocks = "";
+					let ocrFailed = 0;
+					if (imageOnly.length > 0) {
+						const results = await ocr(bytes, imageOnly);
+						const blocks: string[] = [];
+						for (const r of results) {
+							if (r.failed) { ocrFailed++; continue; }
+							blocks.push(`--- Page ${r.page} (OCR) ---\n\n${r.text}`);
+						}
+						ocrBlocks = blocks.length ? "\n\n" + blocks.join("\n\n") : "";
 					}
-					markdown = joinPages(pdf.pages);
+					markdown = joinPages(pdf.pages) + ocrBlocks;
+					const hasText = pdf.pages.some((page) => page.kind === "text" && page.markdown.trim()) || ocrBlocks.length > 0;
+					if (!hasText) {
+						throw new PluginHostError(400, "This PDF is blank or contains no extractable text.");
+					}
 					notices.push("PDF text extraction may contain errors; check the result against the original.");
-					if (skipped) notices.push(`Skipped ${skipped} image-only ${skipped === 1 ? "page" : "pages"}; OCR is not supported.`);
+					if (imageOnly.length > 0) {
+						const ok = imageOnly.length - ocrFailed;
+						notices.push(`OCR'd ${ok} scanned ${ok === 1 ? "page" : "pages"}.` + (ocrFailed ? ` ${ocrFailed} page(s) could not be OCR'd.` : ""));
+					}
 				} else {
 					try { markdown = new TextDecoder("utf-8", { fatal: true }).decode(bytes); }
 					catch { throw new PluginHostError(400, "This document is not valid UTF-8 text."); }

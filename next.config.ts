@@ -110,6 +110,18 @@ const nextConfig: NextConfig = {
 			"node_modules/gcp-metadata/**/*",
 			"node_modules/json-bigint/**/*",
 			"node_modules/bignumber.js/**/*",
+			// OCR (offline scanned-PDF reading): rapidocr-node loads the ONNX
+			// runtime native binary + opencv-js at runtime through dynamic
+			// requires the tracer cannot see; include the platform binaries.
+			"node_modules/onnxruntime-node/bin/**/*",
+			// License/attribution files are load-bearing for distribution compliance
+			// (Apache-2.0 4(d) / MIT). The tracer only followed dist/ + bin/, which
+			// left these .md LICENSE/NOTICE files out of the standalone payload.
+			"node_modules/rapidocr-node/*.md",
+			"node_modules/onnxruntime-node/README.md",
+			"node_modules/@techstark/opencv-js/**/*",
+			"node_modules/sharp/**/*",
+			"node_modules/rapidocr-node/dist/**/*",
 		],
 	},
 	// Framework-free core lives in src/ (plain TS, imported by routes and CLI alike).
@@ -122,6 +134,9 @@ const nextConfig: NextConfig = {
 		"@napi-rs/canvas", // native binding — bundling breaks the .node require
 		"@silvia-odwyer/photon-node", // CJS loads its adjacent WASM from disk
 		"@resvg/resvg-js", // native binding — same
+		"rapidocr-node", // OCR: native ONNX runtime loaded at runtime
+		"onnxruntime-node", // native .node binary — must stay external
+		"sharp", // native image binding
 	],
 };
 

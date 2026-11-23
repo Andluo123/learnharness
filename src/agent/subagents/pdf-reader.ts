@@ -11,6 +11,7 @@ import { createWorkerRequestScope } from "../worker-request-admission.ts";
 import type { PdfResult, PdfToolInput } from "../../core/contracts.ts";
 import { getHeadless, type HeadlessApi } from "./headless.ts";
 import { pdfExtract, pdfInfo, pdfProbe, pdfSearch, type PdfSearchHit } from "./pdf-ops.ts";
+import { OCR_DPI, recognizePdfPages, type OcrOptions } from "./ocr.ts";
 
 /**
  * The pdf-reader sub-agent (sources v0, 2026-09): reads a learner-provided
@@ -45,14 +46,21 @@ Reading doctrine — always in this order:
    - LONG (> 40 pages): pdf_search for the question's key terms FIRST; extract and render ONLY
      the pages that hit. NEVER read a long document front-to-back, and NEVER render page after
      page in batches — that wastes minutes and floods your context without improving the brief.
-3. TEXT FIRST, RENDER SPARINGLY: pdf_extract preserves equations and prose as Markdown. Use it
-   as your primary reading. RENDER a page ONLY when its extracted text is garbled, or when the
-   question genuinely needs the visual layout (a diagram/figure you must describe). Render at most
-   12 pages in the whole task — this cap is enforced; further pdf_render calls are refused. A
-   textbook question about a theorem is answerable from extracted text plus 1-2 rendered example
-   pages, not from rendering the entire book.
-4. Render DPI guidance: 100 for text-dominant pages, 150 the default, 200 for dense small
-   print (math details, fine diagrams).
+3. SCANNED PAGES → OCR FIRST: if pdf_info shows a page with very low text_length but a high
+   image_count, it is a scanned image with no text layer. When pdf_extract returns empty or garbled
+   text for such a page, call pdf_ocr — it recognizes the page offline and returns searchable text.
+   OCR is a TEXT tool: use its output as your primary reading for scanned pages. Only RENDER a
+   scanned page when the question genuinely needs the visual layout (a geometry figure, diagram,
+   or handwritten content OCR cannot read). OCR at most 12 pages in the whole task — this cap is
+   enforced; further pdf_ocr calls are refused.
+4. TEXT FIRST, RENDER SPARINGLY: pdf_extract preserves equations and prose as Markdown. Use it
+   as your primary reading for pages that HAVE a text layer. RENDER a page ONLY when its extracted
+   text is garbled, or when the question genuinely needs the visual layout (a diagram/figure you
+   must describe). Render at most 12 pages in the whole task — this cap is enforced; further
+   pdf_render calls are refused. A textbook question about a theorem is answerable from extracted
+   text plus 1-2 rendered example pages, not from rendering the entire book.
+5. Render DPI guidance: 100 for text-dominant pages, 150 the default, 200 for dense small
+   print (math details, fine diagrams). pdf_ocr uses 200 DPI internally for accuracy.
 
 Tool outputs may be error strings (file unreadable, invalid regex, no hits). Adapt: narrow the
 page spec, change the query, lower DPI. If the document genuinely cannot answer the question,
@@ -70,8 +78,15 @@ const RENDER_BATCH_CAP = 6;
  *  a reader that keeps rendering page batches is refused after this many, so a single
  *  oversized document cannot monopolize the activity dock for minutes. */
 const RENDER_TOTAL_CAP = 12;
+/** Hard cap on total pages OCR'd in ONE pdf job — scanned textbooks can be
+ *  100+ pages; an unbounded OCR loop would monopolize the activity dock. */
+const OCR_TOTAL_CAP = 12;
+/** Hard cap on pages per single pdf_ocr call. */
+const OCR_BATCH_CAP = 6;
 /** Extract output ceiling — narrow the spec instead of dumping a book. */
 const EXTRACT_CAP = 24_000;
+/** OCR output ceiling per page — a garbled page must not flood the context. */
+const OCR_PAGE_CAP = 8_000;
 
 export interface PdfReaderOptions {
 	engine?: PiEngine;
@@ -79,6 +94,8 @@ export interface PdfReaderOptions {
 	onUsage?: (usage: Usage) => void;
 	onActivity?: (line: string) => void;
 	headless?: HeadlessApi;
+	/** OCR injection seam for tests — forwarded to recognizePdfPages. */
+	ocrOptions?: Pick<OcrOptions, "recognize">;
 	/** Optional assistant-turn cap; omitted = no turn-count limit. */
 	maxIterations?: number;
 	/** Debug: raw provider-event recording key (LH_PROVIDER_EVENTS=1). */
@@ -128,6 +145,14 @@ export function createPdfTools(_pdfPath: string): Record<string, Tool> {
 					Type.Integer({ minimum: 0, maximum: 8, description: "Context lines around each hit (default 3)" }),
 				),
 				literal: Type.Optional(Type.Boolean({ description: "true = treat the query literally (no regex; default false)" })),
+			}),
+		},
+		pdf_ocr: {
+			name: "pdf_ocr",
+			description:
+				"OCR scanned pages (no text layer) to searchable text, entirely offline. Use when pdf_extract returns empty/garbled text for an image-heavy page. Max 6 pages per call, 12 total per job.",
+			parameters: Type.Object({
+				pages: Type.String({ description: "Page spec, e.g. '1', '2-4', '1,3,7'" }),
 			}),
 		},
 	};
@@ -222,6 +247,8 @@ export async function runPdfReaderAgent(
 	const read = new Set<number>();
 /** Pages actually rendered to images this job (hard-capped by RENDER_TOTAL_CAP). */
 	let renderedCount = 0;
+/** Pages OCR'd this job (hard-capped by OCR_TOTAL_CAP). */
+	let ocrCount = 0;
 	let finalText = "";
 	let nudged = false;
 	let captureError: unknown;
@@ -305,6 +332,43 @@ export async function runPdfReaderAgent(
 								: cap.map((h) => `=== Page ${h.page}, line ${h.line} ===\n${h.context}`).join("\n") +
 									(hits.length > cap.length ? `\n\n[${hits.length - cap.length} more hits — narrow the query.]` : "");
 						toolResults.push(toolText(call.id, call.name, body));
+					} else if (call.name === "pdf_ocr") {
+						const spec = String(args.pages ?? "");
+						const wanted = specNumbers(spec, OCR_BATCH_CAP);
+						if (wanted.length === 0) {
+							toolResults.push(toolText(call.id, call.name, "ERROR: no pages selected — give a page spec like '2' or '1-3'."));
+							continue;
+						}
+						if (ocrCount >= OCR_TOTAL_CAP) {
+							toolResults.push(toolText(call.id, call.name,
+								`OCR budget reached (${OCR_TOTAL_CAP} pages already OCR'd). Do NOT OCR more pages — ` +
+								`answer from the text you have already extracted, or render at most 1-2 pages visually if essential.`));
+							continue;
+						}
+						const remaining = OCR_TOTAL_CAP - ocrCount;
+						const pages = wanted.slice(0, remaining);
+						opts.onActivity?.(`pdf_ocr: ${pages.join(",")} @${OCR_DPI}dpi`);
+						const results = await recognizePdfPages(pdfPath, pages, {
+							headless,
+							dpi: OCR_DPI,
+							signal: opts.abortSignal,
+							...opts.ocrOptions,
+						});
+						ocrCount += results.length;
+						const bodies = results.map((r) => {
+							if (r.failed) return `--- Page ${r.page} (OCR FAILED) ---\nNo text recognized.`;
+							const text = r.text.length > OCR_PAGE_CAP
+								? `${r.text.slice(0, OCR_PAGE_CAP)}\n[OCR output truncated — narrow the spec.]`
+								: r.text;
+							return `--- Page ${r.page} (OCR) ---\n${text}`;
+						});
+						for (const r of results) {
+							if (!r.failed) {
+								consulted.add(r.page);
+								read.add(r.page);
+							}
+						}
+						toolResults.push(toolText(call.id, call.name, bodies.join("\n\n")));
 					} else if (call.name === "pdf_render") {
 						const spec = String(args.pages ?? "1");
 						const dpi = numOr(args.dpi, 150);

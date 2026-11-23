@@ -36,3 +36,8 @@ qa/
 
 # x18n CLI scratch dumps (check/keys/doctor --json output) — local only.
 x18n-*.json
+
+# Bundled offline OCR model weights (PP-OCRv6, ~30 MB).
+# Ships in the installer via electron-builder extraResources, NOT in git.
+/ocr-models/*.onnx
+/ocr-models/*-dictionary.txt

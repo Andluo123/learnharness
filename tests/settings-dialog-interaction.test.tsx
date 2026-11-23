@@ -7,6 +7,7 @@ import { HostDialog } from "../components/host-dialog.tsx";
 import { InteractionLayersProvider, useInteractionLayers, type CloseOutcome, type InteractionLayersController } from "../components/interaction-layers.tsx";
 import { SettingsDialogProvider, useSettingsDialog } from "../components/settings/settings-dialog.tsx";
 import { installModalDom } from "./modal-dom.ts";
+import { notifySettingsSaved } from "../components/settings-signal.ts";
 
 let root: Root | undefined;
 let restore: (() => void) | undefined;
@@ -31,13 +32,14 @@ function fixture() {
 		}
 	};
 	let settingsReads = 0;
+	let promptReads = 0;
 	globalThis.fetch = async input => {
 		if (String(input) === "/api/settings") {
 			settingsReads++;
 			return Response.json({ settings: { version: 1 } });
 		}
 		if (String(input) === "/api/keys") return Response.json({ keys: [], providers: [] });
-		if (String(input) === "/api/settings/prompts") return Response.json({ prober: [], teacher: [], practice: [] });
+		if (String(input) === "/api/settings/prompts") { promptReads++; return Response.json({ prober: [], teacher: [], practice: [] }); }
 		if (String(input) === "/api/models") return Response.json({ models: [], slots: {}, providers: [] });
 		if (String(input) === "/api/search") return Response.json({ available: false });
 		return Response.json({});
@@ -64,6 +66,7 @@ function fixture() {
 		controller: () => controller,
 		closeCalls,
 		settingsReads: () => settingsReads,
+		promptReads: () => promptReads,
 		outcome(next: CloseOutcome) { outcome = next; },
 		async mount() {
 			await act(async () => root!.render(<InteractionLayersProvider><SettingsDialogProvider><Harness /></SettingsDialogProvider></InteractionLayersProvider>));
@@ -155,4 +158,16 @@ it("same-instance Settings retarget synchronously invalidates an older pending o
 	await f.open();
 	assert.equal(f.controller().isOpeningCurrent(intent), false);
 	assert.equal(f.settingsReads(), 1);
+});
+
+it("a language (general) change re-reads the prompt view so View default follows the UI locale", async () => {
+	const f = fixture();
+	await f.mount();
+	await f.open("agent");
+	const initial = f.promptReads();
+	assert.ok(initial >= 1, "agent section fetched the prompt view on mount");
+	await act(async () => { notifySettingsSaved("general"); });
+	assert.equal(f.promptReads(), initial + 1, "a general/language save re-reads the prompt source in the new locale");
+	await act(async () => { notifySettingsSaved("keys"); });
+	assert.equal(f.promptReads(), initial + 1, "unrelated sections do not churn the prompt view");
 });

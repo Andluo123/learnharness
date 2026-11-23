@@ -317,7 +317,7 @@ Deepgram 的音频模型不认 LaTeX；它只能读「送过去的文字」。�
 - `tests/settings-write-queue.test.ts` —— 写入队列本身（串行化、单选项竞争被拒、独立开关排队、失败回滚、conflicts/busy 语义）
 - `tests/speech-math.test.ts`（22 例：幂/分数/根号/关系符/希腊字母与函数/求和上下限/未知命令不丢/\text 连词/reader 读公式/mathLocale 决定语言/取整与范数/尖括号/取模语序/不交并与花体）
   - `tests/chatgpt-connection-ui.test.tsx` / `tests/render-settings.test.tsx`（设置页导航新增 speech 段后的断言更新）
-- 真机音质验证需用户自备 Deepgram key：本机 `C:\Users\Admin\AppData\Roaming\LearnHarness\data\auth.json` 不存在，`.env.local` 与 `D:\learnharness\data\auth.json` 均不存在，本机无任何真实 API key。
+- 真机音质验证需用户自备 Deepgram key：开发机上没有应用用户数据目录中的 `auth.json`，也没有 `.env.local` 或仓库 `data/auth.json`，本机无任何真实 API key。
 
 ### 设置段「整段替换」写入契约（重要）
 

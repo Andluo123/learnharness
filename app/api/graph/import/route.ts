@@ -20,7 +20,7 @@
  * healthy. The dock's chips + graph refetch track progress live through
  * /api/graph/status, as with session runs.
  */
-import { convertPdf, extraction, joinPages, NotesImportError, sourceDirectory } from "@/src/server";
+import { convertPdf, extraction, joinPages, NotesImportError, recognizePdfBytes, sourceDirectory } from "@/src/server";
 import { IMPORT_EXTENSIONS, MAX_IMPORT_BODY_BYTES, MAX_IMPORT_BYTES, UNSUPPORTED_TYPE_MESSAGE, validNotesPath } from "@/lib/notes-import-limits.ts";
 import { FormBodyLimitError, readBoundedFormData } from "@/lib/bounded-form-data.ts";
 import {
@@ -72,11 +72,28 @@ async function readNotesFile(file: File): Promise<NotesFile> {
 		case "too-long":
 			return { kind: "refused", error: "Too long. Max 1,000 pages." };
 		case "converted": {
-			const text = joinPages(pdf.pages);
-			if (!text) return { kind: "refused", error: "OCR not supported yet." };
-			const skipped = pdf.pages.filter((page) => page.kind === "image-only").length;
-			const omission = skipped > 0 ? ` Skipped ${skipped} image-only ${skipped === 1 ? "page" : "pages"}; OCR is not supported.` : "";
-			return { kind: "notes", text, notice: `Scanned pages may have errors.${omission}` };
+			// OCR every image-only page (owner ruling: full coverage on import).
+			// Text pages keep their extracted Markdown; OCR text is appended as
+			// its own page-marked block so the extraction pipeline sees it.
+			const imageOnly = pdf.pages.filter((page) => page.kind === "image-only").map((page) => page.number);
+			let ocrBlocks = "";
+			let ocrFailed = 0;
+			if (imageOnly.length > 0) {
+				const results = await recognizePdfBytes(bytes, imageOnly);
+				const blocks: string[] = [];
+				for (const r of results) {
+					if (r.failed) { ocrFailed++; continue; }
+					blocks.push(`--- Page ${r.page} (OCR) ---\n\n${r.text}`);
+				}
+				ocrBlocks = blocks.length ? "\n\n" + blocks.join("\n\n") : "";
+			}
+			const text = joinPages(pdf.pages) + ocrBlocks;
+			if (!text) return { kind: "refused", error: "This PDF has no extractable text." };
+			const ocrNote = imageOnly.length === 0
+				? ""
+				: ` OCR'd ${imageOnly.length - ocrFailed} scanned ${imageOnly.length - ocrFailed === 1 ? "page" : "pages"}.`
+					+ (ocrFailed ? ` ${ocrFailed} page(s) could not be OCR'd.` : "");
+			return { kind: "notes", text, notice: `Scanned pages may have errors.${ocrNote}` };
 		}
 	}
 }

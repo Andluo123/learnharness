@@ -236,6 +236,8 @@ function startServer(port) {
 					LH_AUTH_FILE: AUTH_FILE(),
 					LH_DESKTOP_SERVER: "1",
 					LH_DESKTOP_API_SECRET: desktopAPISecret,
+					// Offline OCR: the bundled PP-OCRv6 model files ship via extraResources.
+					RAPIDOCR_MODEL_DIR: path.join(process.resourcesPath, "ocr-models"),
 				},
 				stdio: ["ignore", "pipe", "pipe", "ipc"],
 			},

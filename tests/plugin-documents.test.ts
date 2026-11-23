@@ -11,6 +11,7 @@ import { joinPages, type PdfPage } from "../src/agent/subagents/pdf-markdown.ts"
 const signal = () => new AbortController().signal;
 const converted = (pages: PdfPage[] = [{ kind: "text", number: 1, markdown: "PDF text" }]): PdfConversion => ({ kind: "converted", pages });
 const stub = (result: PdfConversion = converted()): typeof convertPdf => async () => result;
+const fakeOcr = async (_bytes: Uint8Array, pages: readonly number[]) => pages.map((page) => ({ page, text: `OCR p${page}`, failed: false }));
 function upload(content: string | Uint8Array<ArrayBuffer> = "plain text", name = "notes.md", type = "application/octet-stream") {
 	const form = new FormData();
 	form.append("file", new File([content], name, { type }));
@@ -107,17 +108,19 @@ it("joins mixed PDF pages and gives truthful extraction/skipped-image notices, n
 		{ kind: "image-only", number: 1 }, { kind: "empty", number: 2 },
 		{ kind: "text", number: 3, markdown: "# Text\n\nUnicode 字" }, { kind: "image-only", number: 4 },
 	];
-	const service = createPluginDocumentConverter({ convertPdf: stub(converted(pages)) });
+	const service = createPluginDocumentConverter({ convertPdf: stub(converted(pages)), recognizePdfBytes: fakeOcr as never });
 	assert.deepEqual(await service.convert(upload("%PDF-x", "mixed.pdf"), signal()), {
-		name: "mixed.pdf", markdown: joinPages(pages), notices: [
+		name: "mixed.pdf",
+		markdown: joinPages(pages) + "\n\n--- Page 1 (OCR) ---\n\nOCR p1\n\n--- Page 4 (OCR) ---\n\nOCR p4",
+		notices: [
 			"PDF text extraction may contain errors; check the result against the original.",
-			"Skipped 2 image-only pages; OCR is not supported.",
+			"OCR'd 2 scanned pages.",
 		],
 	});
 	const textOnly = createPluginDocumentConverter({ convertPdf: stub() });
 	assert.equal((await textOnly.convert(upload("%PDF-x"), signal())).notices.length, 1);
-	const oneImage = createPluginDocumentConverter({ convertPdf: stub(converted([...pages.slice(0, 3)])) });
-	assert.match((await oneImage.convert(upload("%PDF-x"), signal())).notices[1]!, /1 image-only page;/);
+	const oneImage = createPluginDocumentConverter({ convertPdf: stub(converted([...pages.slice(0, 3)])), recognizePdfBytes: fakeOcr as never });
+	assert.match((await oneImage.convert(upload("%PDF-x"), signal())).notices[1]!, /1 scanned page/);
 });
 
 it("distinguishes all-image OCR refusal from blank/all-empty PDFs, including empty text pages", async () => {
@@ -126,8 +129,9 @@ it("distinguishes all-image OCR refusal from blank/all-empty PDFs, including emp
 		await assert.rejects(service.convert(upload("%PDF-x"), signal()), refusal(400, /blank/));
 		await recovered(service);
 	}
-	const service = createPluginDocumentConverter({ convertPdf: stub(converted([{ kind: "image-only", number: 1 }, { kind: "empty", number: 2 }])) });
-	await assert.rejects(service.convert(upload("%PDF-x"), signal()), refusal(400, /OCR is not supported/));
+	const service = createPluginDocumentConverter({ convertPdf: stub(converted([{ kind: "image-only", number: 1 }, { kind: "empty", number: 2 }])), recognizePdfBytes: fakeOcr as never });
+	const result = await service.convert(upload("%PDF-x"), signal());
+	assert.match(result.markdown, /OCR p1/);
 	await recovered(service);
 });
 

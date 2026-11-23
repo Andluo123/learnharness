@@ -47,3 +47,46 @@ licenses above. See `docs/speech.md` → 「Microsoft Edge Read Aloud」.
 Users who need documented terms should use Azure Speech instead: it serves the
 **same voice ids** (`zh-CN-XiaoxiaoNeural` names the same voice on both
 services), so switching is a transport change, not a catalog change.
+
+## Offline PDF OCR (`src/agent/subagents/ocr.ts`, `ocr-models/`)
+
+Scanned (image-only) PDF pages are recognized locally with PP-OCRv6 through
+`rapidocr-node`; no network request or API key is involved. The following
+third-party components are used:
+
+- **rapidocr-node** — https://github.com/OSpoon/RapidOCRNode
+  - License: **Apache-2.0** (Copyright (c) 2026 OSpoon; Copyright (c) 2021
+    RapidOCR Authors). Its `LICENSE.md`, `NOTICE.md` and
+    `MODEL-LICENSES.md` ship alongside the traced package.
+  - Used for: the Node OCR pipeline (`RapidOCR.create` / `recognize`).
+- **PP-OCRv6 models** (detection, recognition, classifier, dictionary) —
+  https://github.com/RapidAI/RapidOCR (v3.10.0)
+  - Upstream marks these model assets **Apache-2.0**; the model rights remain
+    with the original model owners and the PaddleOCR rightsholders. The
+    authoritative terms and attribution are the
+    [upstream model licenses](https://rapidai.github.io/RapidOCRDocs/main/en/model_licenses/)
+    and the [v3.10.0 LICENSE](https://github.com/RapidAI/RapidOCR/blob/v3.10.0/LICENSE).
+  - Used for: the ONNX weights and recognition dictionary bundled in
+    `ocr-models/`. **Unlike rapidocr-node's npm package (which does not
+    redistribute models), this application DOES bundle and redistribute them**
+    so first-run OCR works fully offline — the attribution and license
+    obligations for the model assets therefore apply to this distribution.
+- **ONNX Runtime** (`onnxruntime-node`) — https://github.com/microsoft/onnxruntime
+  - License: **MIT** (Copyright (c) Microsoft Corporation).
+  - Used for: CPU inference of the PP-OCRv6 models.
+- **OpenCV.js** (`@techstark/opencv-js`) — https://github.com/techstark/opencv-js
+  - License: **Apache-2.0** (upstream OpenCV license).
+  - Used for: image preprocessing inside rapidocr-node.
+- **sharp** — https://github.com/lovell/sharp
+  - License: **Apache-2.0**. Used for image handling in rapidocr-node.
+- **clipper-lib** — https://github.com/junmer/clipper-lib
+  - License: **BSL (Boost Software License 1.0)**. Used for geometry/contour
+    operations inside rapidocr-node.
+
+Transitive dependencies of rapidocr-node (fastify, @fastify/multipart,
+bidi-js, commander, p-retry, yaml, zod) are MIT / ISC / Apache-2.0; all are
+permissive and retain their own license files in the shipped node_modules.
+
+All of the above licenses are permissive and compatible with AGPL-3.0-only.
+The license/attribution files from the OCR packages are preserved in the
+bundled server, and this document ships in the app under `licenses/`.

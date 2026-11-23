@@ -125,10 +125,10 @@ it("PDF notices and failures survive per-file requests, in selection order", asy
 	globalThis.fetch = async (_url, init) => {
 		const file = (init!.body as FormData).get("files") as File;
 		return Response.json({ results: [{ ...completed(0, file.name), notice: file.name === "c.pdf" ? "Scanned pages may have errors." : undefined,
-			...(file.name === "a.pdf" ? { ok: false, outcome: "failed", error: "OCR not supported yet." } : {}) }] });
+			...(file.name === "a.pdf" ? { ok: false, outcome: "failed", error: "This PDF has no extractable text." } : {}) }] });
 	};
 	await mount(); await submit([new File(["a"], "a.pdf"), new File(["b"], "b.md"), new File(["c"], "c.pdf")]);
-	assert.deepEqual(current.notices, ["c.pdf: Scanned pages may have errors."]); assert.deepEqual(current.errors, ["a.pdf: OCR not supported yet."]);
+	assert.deepEqual(current.notices, ["c.pdf: Scanned pages may have errors."]); assert.deepEqual(current.errors, ["a.pdf: This PDF has no extractable text."]);
 });
 for (const [status, error] of [[413, "Too big. Max 25 MB."], [413, "Import request is too large. Select fewer files."], [400, "Could not read the upload. It may be incomplete; please select the files again."]] as const) it(`server refusal remains readable (${error})`, async () => {
 	globalThis.fetch = async () => Response.json({ results: [], error }, { status });
