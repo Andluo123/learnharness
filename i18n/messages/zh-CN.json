@@ -57,7 +57,8 @@
     "exportMarkdown": "导出为 Markdown…",
     "deleteMenu": "删除…",
     "dismiss": "关闭",
-    "moveOutsideFolders": "移出文件夹"
+    "moveOutsideFolders": "移出文件夹",
+    "addFolder": "添加文件夹"
   },
   "settings": {
     "title": "设置",

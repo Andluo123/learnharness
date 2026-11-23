@@ -975,10 +975,10 @@ function SessionsSidebar() {
 					</span>
 					</Hint>
 					{organization && (
-						<Hint label="Add folder" side="bottom">
+						<Hint label={t("addFolder")} side="bottom">
 							<button
 								type="button"
-								aria-label="Add folder"
+								aria-label={t("addFolder")}
 								data-testid="sidebar-add-folder"
 								onClick={() => setCreatingFolder({ parentId: null })}
 								className="flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"

@@ -57,7 +57,8 @@
     "exportMarkdown": "Export as Markdown…",
     "deleteMenu": "Delete…",
     "dismiss": "Dismiss",
-    "moveOutsideFolders": "Move outside folders"
+    "moveOutsideFolders": "Move outside folders",
+    "addFolder": "Add folder"
   },
   "settings": {
     "title": "Settings",

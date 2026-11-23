@@ -26,6 +26,12 @@ export interface DeleteDialogCopy {
 	heading: string;
 	body: string;
 	traces: { title: string; body: string };
+	/** Optional i18n keys in the dialog namespace; used when present. */
+	labelKey?: string;
+	headingKey?: string;
+	bodyKey?: string;
+	tracesTitleKey?: string;
+	tracesBodyKey?: string;
 }
 
 export const SESSION_DELETE_COPY: DeleteDialogCopy = {
@@ -34,6 +40,11 @@ export const SESSION_DELETE_COPY: DeleteDialogCopy = {
 	heading: "Delete session?",
 	body: "This permanently removes the session — its messages, background jobs, and extraction records. Everything it added to the graph stays unless you check below. This cannot be undone.",
 	traces: TRACES_COPY,
+	labelKey: "deleteSessionAria",
+	headingKey: "deleteSessionTitle",
+	bodyKey: "deleteSessionBody",
+	tracesTitleKey: "tracesTitle",
+	tracesBodyKey: "tracesBody",
 };
 
 const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
@@ -181,16 +192,20 @@ export function DeleteSessionBody({
 	copy?: DeleteDialogCopy;
 }) {
 	const t = useT("dialog");
+	const heading = copy.headingKey ? t(copy.headingKey) : copy.heading;
+	const body = copy.bodyKey ? t(copy.bodyKey) : copy.body;
+	const tracesTitle = copy.tracesTitleKey ? t(copy.tracesTitleKey) : copy.traces.title;
+	const tracesBody = copy.tracesBodyKey ? t(copy.tracesBodyKey) : copy.traces.body;
 	const frame = (
 		<div
 			role="dialog"
 			aria-modal="true"
-			aria-label={copy.label}
+			aria-label={copy.labelKey ? t(copy.labelKey) : copy.label}
 			data-testid={copy.testid}
 			onClick={(e) => e.stopPropagation()}
 			className="w-[32rem] max-w-[calc(100vw-2rem)] rounded-xl border bg-card p-5 shadow-xl"
 		>
-			<h2 className="text-sm font-semibold text-destructive">{copy.heading}</h2>
+			<h2 className="text-sm font-semibold text-destructive">{heading}</h2>
 			{/* The session name below the title in JetBrains Mono (owner,
 			    2026-09-24): no code-block chrome — the font already says
 			    code. Owner, 2026-10-13 polish: normal text-sm size (was
@@ -201,7 +216,7 @@ export function DeleteSessionBody({
 					{chat.title}
 				</code>
 			</div>
-			<p className="mt-2 text-sm text-muted-foreground">{copy.body}</p>
+			<p className="mt-2 text-sm text-muted-foreground">{body}</p>
 			<label
 				data-testid={TRACES_COPY.testid}
 				className="mt-4 flex cursor-pointer items-start gap-2.5 rounded-lg border border-border/60 px-4 py-3"
@@ -215,8 +230,8 @@ export function DeleteSessionBody({
 					className="mt-0.5 size-4 shrink-0 accent-primary"
 				/>
 				<span className="min-w-0">
-					<span className="block text-sm text-foreground">{copy.traces.title}</span>
-					<span className="mt-1 block text-xs text-muted-foreground">{copy.traces.body}</span>
+					<span className="block text-sm text-foreground">{tracesTitle}</span>
+					<span className="mt-1 block text-xs text-muted-foreground">{tracesBody}</span>
 				</span>
 			</label>
 			{failure && (
