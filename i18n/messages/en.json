@@ -74,7 +74,8 @@
       "general": "General",
       "corePlugins": "Core plugins",
       "plugins": "Community plugins",
-      "speech": "Speech"
+      "speech": "Speech",
+      "translation": "Translation"
     },
     "general": {
       "title": "General",
@@ -98,7 +99,15 @@
     "attach": "Attach files",
     "dictation": "Dictation",
     "defaultPlaceholder": "Ask, answer, or steer the lesson…",
-    "nextProblem": "Next problem"
+    "nextProblem": "Next problem",
+    "insertMath": "Insert formula",
+    "mathEditorTitle": "Visual formula editor",
+    "mathInline": "Inline",
+    "mathBlock": "Block",
+    "mathEditorLoading": "Loading formula editor…",
+    "mathCancel": "Cancel",
+    "mathInsert": "Insert",
+    "mathToggleKeyboard": "Show on-screen keyboard"
   },
   "home": {
     "whatDoYouWantToLearn": "What do you want to learn?",
@@ -157,7 +166,10 @@
     "planChip": "Plan",
     "answerRemainingFirst": "Answer or discard the remaining question first.",
     "nextProblem": "Next problem",
-    "setUpModels": "Set up your models"
+    "setUpModels": "Set up your models",
+    "translateThinking": "Translate",
+    "translating": "Translating…",
+    "viewOriginalThinking": "View original"
   },
   "dialog": {
     "deleteNodeAria": "Delete node",
@@ -1271,5 +1283,13 @@
   },
   "startupMessage": {
     "closeAnnouncement": "Close announcement"
+  },
+  "settingsTranslation": {
+    "enable": "Translate thinking",
+    "enableHint": "Show a Translate button on the model's thinking rows. Only translates when clicked.",
+    "language": "Target language",
+    "model": "Translation model",
+    "modelHint": "Choose a configured provider/model. Each click uses this model and incurs token cost.",
+    "saveError": "Could not save translation settings"
   }
 }

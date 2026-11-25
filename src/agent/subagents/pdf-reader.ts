@@ -382,7 +382,7 @@ export async function runPdfReaderAgent(
 						}
 						opts.onActivity?.(`pdf_render: ${spec} @${dpi}dpi`);
 						const remaining = RENDER_TOTAL_CAP - renderedCount;
-						const pages = await headless.renderPdfPages(pdfPath, wanted.slice(0, remaining), { dpi });
+						const pages = await headless.renderPdfPages(pdfPath, wanted.slice(0, remaining), { dpi, signal: opts.abortSignal });
 						renderedCount += pages.length;
 						const processed: { page: number; image: ProcessImageResult }[] = [];
 						for (const p of pages) {

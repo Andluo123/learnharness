@@ -570,6 +570,8 @@ export interface UserSettings {
 	dictation?: DictationSettings;
 	/** The speech (TTS) preferences (speech wave, 2026-11-20). */
 	speech?: SpeechSettingsRecord;
+	/** Display-only reasoning translation (off by default). */
+	translation?: TranslationSettings;
 	/** Explicit app-wide opt-in; absent/invalid is off, including older records. */
 	claudeCode?: { enabled?: boolean };
 	agent?: AgentSettings;
@@ -588,12 +590,22 @@ export interface UserSettings {
  *  all the way down): the chat section and every slot stay empty until the
  *  user picks, and the per-need gates refuse honestly; tools default on;
  *  prompts default off — hence their absence here. */
+export interface TranslationSettings {
+	/** Master switch — no translation until the learner opts in. */
+	enabled?: boolean;
+	/** Target language code (zh-CN, en, ja, ...). */
+	targetLanguage?: string;
+	/** The model used to translate: provider + id, chosen from configured providers. */
+	model?: { provider: string; id: string };
+}
+
 export interface FactorySettings {
 	version: number;
 	agent: Required<Pick<AgentSettings, "workerRequestConcurrency">>;
 	general: Required<GeneralSettings>;
 	dictation: Required<DictationSettings>;
 	speech: Required<SpeechSettingsRecord>;
+	translation: Required<TranslationSettings>;
 	appearance: {
 		theme: string;
 		background: string | null;
@@ -618,6 +630,7 @@ export interface FactorySettings {
 
 export const FACTORY_SETTINGS: FactorySettings = {
 	version: CURRENT_SETTINGS_VERSION,
+	translation: { enabled: false, targetLanguage: "zh-CN", model: { provider: "", id: "" } },
 	agent: { workerRequestConcurrency: 8 },
 	general: { autoUpdate: true, language: DEFAULT_LOCALE },
 	dictation: { language: "en", detectLanguage: false, autoSend: false, continuousReadback: false },
@@ -699,6 +712,19 @@ function sanitizeSpeech(raw: Record<string, unknown>): SpeechSettingsRecord {
 		out.customVoice = raw.customVoice.trim();
 	}
 	if (isSpeechAudioFormat(raw.format)) out.format = raw.format;
+	return out;
+}
+
+function sanitizeTranslation(raw: Record<string, unknown>): TranslationSettings {
+	const out: TranslationSettings = {};
+	if (typeof raw.enabled === "boolean") out.enabled = raw.enabled;
+	if (typeof raw.targetLanguage === "string" && raw.targetLanguage.trim()) out.targetLanguage = raw.targetLanguage.trim();
+	if (raw.model !== null && typeof raw.model === "object" && !Array.isArray(raw.model)) {
+		const m = raw.model as Record<string, unknown>;
+		if (typeof m.provider === "string" && m.provider.trim() && typeof m.id === "string" && m.id.trim()) {
+			out.model = { provider: m.provider.trim(), id: m.id.trim() };
+		}
+	}
 	return out;
 }
 
@@ -1010,6 +1036,11 @@ export function sanitizeUserSettings(raw: unknown): UserSettings | null {
 		out.speech = raw !== null && typeof raw === "object" && !Array.isArray(raw)
 			? sanitizeSpeech(raw as Record<string, unknown>)
 			: {};
+	}
+	if (r.translation !== undefined) {
+		const raw = r.translation;
+		out.translation = raw !== null && typeof raw === "object" && !Array.isArray(raw)
+			? sanitizeTranslation(raw as Record<string, unknown>) : {};
 	}
 	if (r.claudeCode !== undefined) {
 		const raw = r.claudeCode;

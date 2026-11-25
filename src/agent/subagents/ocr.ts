@@ -87,7 +87,7 @@ export async function recognizePdfPages(
   const renderer = options.headless ?? getHeadless();
   const recognize = options.recognize ?? await (recognizerPromise ??= defaultRecognizer());
 
-  const rendered = await renderer.renderPdfPages(pdfPath, [...pages], { dpi });
+  const rendered = await renderer.renderPdfPages(pdfPath, [...pages], { dpi, signal: options.signal });
   const out: OcrPageResult[] = [];
   for (const { page, png } of rendered) {
     options.signal?.throwIfAborted();

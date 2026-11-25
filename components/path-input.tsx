@@ -15,6 +15,9 @@ import {
 export const INSERT_FILE_PATHS_EVENT = "lh:insert-file-paths";
 /** detail: { link, onInserted?(range) } — insert a citation link at the saved caret. */
 export const INSERT_CITATION_EVENT = "lh:insert-citation";
+/** detail: { tex, inline } — insert a MathLive-authored LaTeX formula at the caret. */
+export const INSERT_MATH_EVENT = "lh:insert-math";
+export interface InsertMathDetail { tex: string; inline: boolean }
 /** detail: { start, end, previous, source, spaceBefore?, spaceAfter? } —
  *  replace a citation link (new comment), or remove it when source is null
  *  (with the spaces its insertion added, for a cancelled fresh cite). */
@@ -129,6 +132,16 @@ export const PathInput = React.forwardRef<HTMLDivElement, PathInputProps>(functi
 			root.focus();
 			restorePathSelection(root, saved);
 			detail.onInserted?.(next.inserted);
+		}
+		function insertMathEvent(event: Event) {
+			const detail = (event as CustomEvent<unknown>).detail as Partial<InsertMathDetail> | null;
+			if (!detail || typeof detail.tex !== "string" || !detail.tex.trim()) return;
+			remember();
+			const tex = detail.tex.trim();
+			const formula = detail.inline === false ? `$$\n${tex}\n$$` : `$${tex}$`;
+			change(replacePathSelection(current, saved, formula));
+			root.focus();
+			restorePathSelection(root, saved);
 		}
 		function insertCitationEvent(event: Event) {
 			const detail = (event as CustomEvent<unknown>).detail as Partial<InsertCitationDetail> | null;
@@ -290,6 +303,7 @@ export const PathInput = React.forwardRef<HTMLDivElement, PathInputProps>(functi
 		};
 		paint(saved, false);
 		if (initial.current.autoFocus) { root.focus(); restorePathSelection(root, saved); }
+		root.addEventListener(INSERT_MATH_EVENT, insertMathEvent);
 		root.addEventListener(INSERT_FILE_PATHS_EVENT, insertEvent);
 		root.addEventListener(INSERT_CITATION_EVENT, insertCitationEvent);
 		root.addEventListener(UPDATE_CITATION_EVENT, updateCitationEvent);
@@ -306,6 +320,7 @@ export const PathInput = React.forwardRef<HTMLDivElement, PathInputProps>(functi
 			mounted = false;
 			composing.current = false;
 			controllerRef.current = null;
+			root.removeEventListener(INSERT_MATH_EVENT, insertMathEvent);
 			root.removeEventListener(INSERT_FILE_PATHS_EVENT, insertEvent);
 			root.removeEventListener(INSERT_CITATION_EVENT, insertCitationEvent);
 			root.removeEventListener(UPDATE_CITATION_EVENT, updateCitationEvent);

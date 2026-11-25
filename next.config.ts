@@ -112,8 +112,11 @@ const nextConfig: NextConfig = {
 			"node_modules/bignumber.js/**/*",
 			// OCR (offline scanned-PDF reading): rapidocr-node loads the ONNX
 			// runtime native binary + opencv-js at runtime through dynamic
-			// requires the tracer cannot see; include the platform binaries.
-			"node_modules/onnxruntime-node/bin/**/*",
+			// requires the tracer cannot see. Include ONLY the current platform's
+			// native binaries: onnxruntime ships ~287 MB of .dll/.so for every
+			// OS/arch, but a build runs on exactly one. Each platform builds its
+			// own standalone, so this keeps installers tens of MB smaller.
+			`node_modules/onnxruntime-node/bin/napi-v6/${process.platform}/${process.arch}/**/*`,
 			// License/attribution files are load-bearing for distribution compliance
 			// (Apache-2.0 4(d) / MIT). The tracer only followed dist/ + bin/, which
 			// left these .md LICENSE/NOTICE files out of the standalone payload.

@@ -61,6 +61,7 @@ describe("SettingsDialog (the designed surface, SSR)", () => {
 			["graph", "Graph", "waypoints"],
 			["keyboard", "Keyboard", "keyboard"],
 			["speech", "Speech", "volume-2"],
+			["translation", "Translation", "languages"],
 			["general", "General", "settings"],
 			["core-plugins", "Core plugins", "plug"],
 			["plugins", "Community plugins", "puzzle"],

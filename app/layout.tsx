@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Source_Sans_3 } from "next/font/google";
+import localFont from "next/font/local";
 import { connection } from "next/server";
 import { getLocale, getMessages } from "next-intl/server";
 import "katex/dist/katex.min.css";
+import "mathlive/fonts.css";
 import "./globals.css";
 import { AppShell, SidebarProvider } from "@/components/sidebar";
 import { ActivityProvider } from "@/components/activity-dock";
@@ -17,8 +18,8 @@ import { HTML_LANG, isAppLocale, type AppLocale } from "@/i18n/config.ts";
 
 // Chrome = JetBrains Mono, teaching prose = Source Sans 3, titles = CMU
 // Serif (the bundled lh-cmu @font-face in globals.css — no CDN).
-const ui = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
-const prose = Source_Sans_3({ subsets: ["latin"], variable: "--font-sans3" });
+const ui = localFont({ src: "./fonts/jetbrains-mono-latin.woff2", variable: "--font-jetbrains", display: "swap" });
+const prose = localFont({ src: "./fonts/source-sans-3-latin.woff2", variable: "--font-sans3", display: "swap" });
 
 /** Document metadata. next-intl's getLocale()/getMessages() are NOT
  *  available in generateMetadata (they need the request config, which

@@ -4,6 +4,29 @@ LearnHarness is licensed under **AGPL-3.0-only** (see `LICENSE`). This file
 records the third-party material whose behaviour or code this project draws on,
 and the licenses that apply to it.
 
+
+## Visual math input and KaTeX fonts (`components/math-editor.tsx`)
+
+The chat composer's Σ button opens a what-you-see-is-what-you-get formula
+editor. The finished LaTeX is inserted at the caret as `$...# Attribution and licenses
+
+LearnHarness is licensed under **AGPL-3.0-only** (see `LICENSE`). This file
+records the third-party material whose behaviour or code this project draws on,
+and the licenses that apply to it.
+
+ / `$...$`
+and rendered on output by the app's existing KaTeX pipeline.
+
+- **MathLive** — https://github.com/arnog/mathlive (v0.111.4)
+  - License: **MIT** (Copyright (c) 2019-2026 Arno Gourdol). Its
+    `LICENSE.txt` ships inside the installed package.
+  - Used for: the visual formula editor (`math-field` custom element), loaded
+    lazily on first use; no network or CDN at runtime.
+- **KaTeX fonts** (bundled by MathLive, shared with the output renderer) —
+  https://github.com/KaTeX/KaTeX
+  - License: **MIT** (Copyright (c) 2013-2020 Kahn Academy).
+  - Shipped locally as `woff2`/`woff`/`ttf`; no CDN requests.
+
 ## Edge TTS protocol (`src/server/edge-tts.ts`)
 
 The Microsoft Edge Read Aloud transport reproduces an **unofficial** protocol.

@@ -9,6 +9,7 @@ import { useEnterSubmits } from "@/components/enter-submits";
 import { useOptionalInteractionLayers } from "./interaction-layers";
 import { isInteractionScopeEligible } from "./plugin-input-focus";
 import { PathInput, pathInputClassName } from "@/components/path-input";
+import { MathEditorButton } from "@/components/math-editor.tsx";
 import { MalformedQuestion } from "@/components/malformed-question";
 import { QuizFigureImage } from "@/components/quiz-figure";
 import { resolveQuizFigure, type QuizFigure } from "@/src/core";
@@ -497,6 +498,7 @@ function QuestionDockForm({
 	 * a closure waiting through `await finishDictation()` cannot observe
 	 * in time — submit reads these, kept current at every write site. */
 	const thinkingTextRef = useRef(initialDraft?.thinking ?? "");
+	const answerFieldRef = useRef<HTMLDivElement>(null);
 	const answerTextRef = useRef(initialDraft?.text ?? "");
 	// Confidence (owner, 2026-10-01): an index into CONFIDENCE_STOPS,
 	// resting at 50 — a real coin flip by definition, untouched or
@@ -1175,6 +1177,7 @@ function QuestionDockForm({
 					</div>
 					{qd.mode === "text" ? (
 						<PathInput
+							ref={answerFieldRef}
 							value={text}
 							onValueChange={(value) => {
 								answerTextRef.current = value;
@@ -1243,6 +1246,7 @@ function QuestionDockForm({
 						<span aria-hidden className="pl-1.5 text-xs text-muted-foreground">
 								{compactionRunning ? t("compactingSession") : t("enterSubmits")}
 						</span>
+						<MathEditorButton editorRef={qd.mode === "text" ? answerFieldRef : thinkingRef} />
 						<Button
 							type="submit"
 							disabled={!canSubmit || compactionRunning || preparing}

@@ -915,10 +915,10 @@ describe("researcher agent", () => {
 		researchModelOverride.current = undefined;
 	});
 
-	it("the pdf-reader declares exactly the four skill tools (sources v0)", async () => {
+	it("the pdf-reader declares the four skill tools plus offline pdf_ocr (sources v0 + OCR)", async () => {
 		const { createPdfTools } = await import("../src/agent/subagents/pdf-reader.ts");
 		const tools = createPdfTools(path.join(import.meta.dirname, "fixtures", "sample-3page.pdf"));
-		assert.deepEqual(Object.keys(tools).sort(), ["pdf_extract", "pdf_info", "pdf_render", "pdf_search"]);
+		assert.deepEqual(Object.keys(tools).sort(), ["pdf_extract", "pdf_info", "pdf_ocr", "pdf_render", "pdf_search"]);
 		// reset any accidental global override
 		pdfModelOverride.current = undefined;
 	});

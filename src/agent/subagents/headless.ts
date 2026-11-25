@@ -59,6 +59,10 @@ export interface RenderPdfOptions {
 	/** Scale so the rendered region's longer side is about this many pixels,
 	 *  never above dpi. */
 	fitLongSide?: number;
+	/** Cooperative cancellation — checked before each page is painted.
+	 *  A render batch can take seconds on scanned pages; abort must not wait
+	 *  for the whole batch to finish. */
+	signal?: AbortSignal;
 }
 
 export interface PdfCrop {
@@ -644,6 +648,7 @@ async function renderPdfPages(
 	pages: number[],
 	opts: RenderPdfOptions = {},
 ): Promise<RenderedPdfPage[]> {
+	opts.signal?.throwIfAborted();
 	const renderOpts = pdfRenderOptions(opts);
 	// NATIVE CANVAS (Wave E, owner 2026-10-10): pdfjs paints into
 	// @napi-rs/canvas in this process — no browser involved. pdfjs-dist v6's
@@ -664,6 +669,7 @@ async function renderPdfPages(
 		for (const pageNo of pages) {
 			if (pageNo < 1 || pageNo > doc.numPages) continue;
 			const page = await doc.getPage(pageNo);
+			opts.signal?.throwIfAborted();
 			out.push({ page: pageNo, png: await paintPdfPage(page, renderOpts) });
 		}
 		return out;

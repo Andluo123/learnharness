@@ -74,7 +74,8 @@
       "general": "通用",
       "corePlugins": "核心插件",
       "plugins": "社区插件",
-      "speech": "语音"
+      "speech": "语音",
+      "translation": "翻译"
     },
     "general": {
       "title": "通用",
@@ -98,7 +99,15 @@
     "attach": "附加文件",
     "dictation": "语音输入",
     "defaultPlaceholder": "提问、作答，或引导课程方向…",
-    "nextProblem": "下一题"
+    "nextProblem": "下一题",
+    "insertMath": "插入公式",
+    "mathEditorTitle": "可视化公式编辑器",
+    "mathInline": "行内",
+    "mathBlock": "独立",
+    "mathEditorLoading": "正在加载公式编辑器…",
+    "mathCancel": "取消",
+    "mathInsert": "插入",
+    "mathToggleKeyboard": "显示屏幕键盘"
   },
   "home": {
     "whatDoYouWantToLearn": "你想学习什么？",
@@ -157,7 +166,10 @@
     "planChip": "计划",
     "answerRemainingFirst": "请先回答或忽略剩下的问题。",
     "nextProblem": "下一题",
-    "setUpModels": "设置你的模型"
+    "setUpModels": "设置你的模型",
+    "translateThinking": "翻译",
+    "translating": "翻译中…",
+    "viewOriginalThinking": "查看原文"
   },
   "dialog": {
     "deleteNodeAria": "删除节点",
@@ -1271,5 +1283,13 @@
   },
   "startupMessage": {
     "closeAnnouncement": "关闭公告"
+  },
+  "settingsTranslation": {
+    "enable": "翻译思考内容",
+    "enableHint": "在模型的思考行上显示「翻译」按钮；仅点击时才翻译。",
+    "language": "目标语言",
+    "model": "翻译模型",
+    "modelHint": "从已配置的供应商中选择；每次点击都会使用该模型并消耗 token。",
+    "saveError": "翻译设置保存失败"
   }
 }

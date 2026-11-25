@@ -11,8 +11,8 @@ import { after } from "node:test";
 
 after(() => { ocrOverride.current = undefined; resetOcrRecognizer(); });
 
-function fakeHeadless(pages: number[]): HeadlessApi & { calls: { pages: number[]; dpi?: number }[] } {
-  const calls: { pages: number[]; dpi?: number }[] = [];
+function fakeHeadless(pages: number[]): HeadlessApi & { calls: { pages: number[]; dpi?: number; signal?: AbortSignal }[] } {
+  const calls: { pages: number[]; dpi?: number; signal?: AbortSignal }[] = [];
   return {
     calls,
     available: () => true,
@@ -20,7 +20,7 @@ function fakeHeadless(pages: number[]): HeadlessApi & { calls: { pages: number[]
     runDemo: async () => { throw new Error("unused"); },
     renderSvg: async () => { throw new Error("unused"); },
     renderPdfPages: async (_path, wanted, opts) => {
-      calls.push({ pages: wanted, dpi: opts?.dpi });
+      calls.push({ pages: wanted, dpi: opts?.dpi, ...(opts?.signal ? { signal: opts.signal } : {}) });
       return wanted.map((page) => ({ page, png: Buffer.from([page]) }));
     },
   };
@@ -87,6 +87,12 @@ describe("recognizePdfPages", () => {
     );
   });
 
+  it("forwards the abort signal to the renderer", async () => {
+    const headless = fakeHeadless([1]);
+    const controller = new AbortController();
+    await recognizePdfPages("doc.pdf", [1], { headless, recognize: async () => "x", signal: controller.signal });
+    assert.equal(headless.calls[0]?.signal, controller.signal);
+  });
   it("returns nothing for an empty page list without rendering", async () => {
     const headless = fakeHeadless([]);
     assert.deepEqual(await recognizePdfPages("doc.pdf", [], { headless, recognize: async () => "x" }), []);

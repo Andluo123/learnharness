@@ -32,6 +32,7 @@ import { SpeechAutoRead, latestAssistantAnswer } from "@/components/speech-auto-
 import { SpeechShortcut } from "@/components/speech-shortcuts";
 import { PathText } from "@/components/file-path-chip";
 import { Reasoning, ReasoningContent, ReasoningTrigger } from "@/components/ai-elements/reasoning";
+import { TranslatableReasoning } from "@/components/translatable-reasoning.tsx";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { BrailleSpinner } from "@/components/braille-spinner";
 import { ToolPartRenderer } from "@/components/plugin-renderers";
@@ -1996,10 +1997,7 @@ export function Chat({
 													}
 													case "reasoning":
 														return (
-															<Reasoning key={pi} isStreaming={status === "streaming" && isLastPart} className="mb-2">
-																<ReasoningTrigger />
-																<ReasoningContent>{part.text ?? ""}</ReasoningContent>
-															</Reasoning>
+															<TranslatableReasoning key={pi} text={part.text ?? ""} isStreaming={status === "streaming" && isLastPart} className="mb-2" />
 														);
 													case "step-start":
 														return <Fragment key={`step-${pi}`}>

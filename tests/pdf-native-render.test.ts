@@ -176,6 +176,15 @@ describe("native pdf_render (pdfjs paints, @napi-rs/canvas hosts)", () => {
 		);
 	});
 
+	it("honors a pre-aborted signal without opening the PDF", async () => {
+		const controller = new AbortController();
+		controller.abort();
+		await assert.rejects(
+			realHeadless.renderPdfPages(FIXTURE, [1], { dpi: 72, signal: controller.signal }),
+			(error: unknown) => error instanceof Error && error.name === "AbortError",
+		);
+	});
+
 	it("renders with NO browser present (available() may be false)", async () => {
 		// The whole point of stage 1: rendering must not consult any Chrome.
 		// realHeadless.available() reflects system Chrome only; on this

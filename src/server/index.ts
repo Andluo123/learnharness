@@ -14,6 +14,8 @@ export { NotesImportError } from "../agent/subagents/extraction.ts";
 export { convertPdf } from "../agent/subagents/pdf-ops.ts";
 export { joinPages } from "../agent/subagents/pdf-markdown.ts";
 export { recognizePdfBytes, recognizePdfPages, ocrModelDirectory } from "../agent/subagents/ocr.ts";
+export { translateText, languageName, systemPrompt as translationSystemPrompt, wrapSource as wrapTranslationSource, TRANSLATE_MAX_INPUT_CHARS, TRANSLATE_MAX_OUTPUT_TOKENS, type TranslateRequest, type TranslateResult } from "./translate.ts";
+export type { ResolvedModelSpec } from "../agent/models.ts";
 export * from "./commit-positions.ts";
 export * from "./jobs.ts";
 export { prepareSubmissionImages, prepareSubmissionImageChannels } from "./submission-images.ts";

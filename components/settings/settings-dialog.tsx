@@ -33,7 +33,7 @@ import {
 	type ReactNode,
 	type RefObject,
 } from "react";
-import { BotIcon, KeyIcon, KeyboardIcon, PaletteIcon, PlugIcon, PuzzleIcon, SettingsIcon, Volume2Icon, WaypointsIcon, type LucideIcon } from "lucide-react";
+import { BotIcon, KeyIcon, KeyboardIcon, PaletteIcon, PlugIcon, PuzzleIcon, SettingsIcon, Volume2Icon, LanguagesIcon, WaypointsIcon, type LucideIcon } from "lucide-react";
 import { HostDialog } from "@/components/host-dialog";
 import { useInteractionLayers, type CloseOutcome } from "@/components/interaction-layers";
 import {
@@ -48,6 +48,7 @@ import { SettingsSection } from "./controls.tsx";
 import { UpdateSettings } from "./update-settings.tsx";
 import { LanguageSettings } from "./language-settings.tsx";
 import { SpeechSection } from "./speech-section.tsx";
+import { TranslationSection } from "./translation-section.tsx";
 import { AgentSection, composePromptSwitch } from "./agent-section.tsx";
 import type { ModelsSettings } from "@/src/core";
 import { MENU_CLOSE_EVENT, MENU_OPEN_EVENT } from "@/components/menu-shell";
@@ -69,7 +70,7 @@ import { LOCALE_LABELS, isAppLocale, type AppLocale } from "@/i18n/config.ts";
 /** Owner (2026-09-20): hints earn their place — mechanics-explaining
  *  prose is out; only the keyboard note stays (storage location is a
  *  real question users ask). */
-type CoreSectionId = "keys" | "agent" | "appearance" | "graph" | "keyboard" | "speech" | "general";
+type CoreSectionId = "keys" | "agent" | "appearance" | "graph" | "keyboard" | "speech" | "translation" | "general";
 interface NavSectionSpec {
 	id: CoreSectionId;
 	labelKey: string;
@@ -83,6 +84,7 @@ const SECTIONS: readonly NavSectionSpec[] = [
 	{ id: "graph", labelKey: "sections.graph", icon: WaypointsIcon },
 	{ id: "keyboard", labelKey: "sections.keyboard", icon: KeyboardIcon, hintKey: "keyboardHint" },
 	{ id: "speech", labelKey: "sections.speech", icon: Volume2Icon, hintKey: "speechHint" },
+	{ id: "translation", labelKey: "sections.translation", icon: LanguagesIcon },
 	{ id: "general", labelKey: "sections.general", icon: SettingsIcon },
 ];
 type SectionId = CoreSectionId | "plugins" | "core-plugins" | `plugin:${string}`;
@@ -526,6 +528,11 @@ export function SettingsDialogBody({
 											void write("general", { ...record.general, autoUpdate: on })
 										}
 									/>
+								</SettingsSection>
+							)}
+							{active === "translation" && (
+								<SettingsSection title={t("sections.translation")} testid="section-translation">
+									<TranslationSection />
 								</SettingsSection>
 							)}
 							{active === "keys" && (

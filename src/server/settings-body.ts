@@ -27,6 +27,7 @@ import type {
 	GraphSettings,
 	ModelsSettings,
 	ModelSlot,
+	TranslationSettings,
 	RoleModelOverride,
 	SpeechSettingsRecord,
 } from "../core/settings.ts";
@@ -535,6 +536,29 @@ export function parseSpeechSettingsBody(body: unknown): SettingsBodyResult<Speec
 	return { ok: true, settings };
 }
 
+/** translation: display-only reasoning translation preferences. */
+export function parseTranslationSettingsBody(body: unknown): SettingsBodyResult<TranslationSettings> {
+	const raw = asRecord(body);
+	if (!raw) return { ok: false, error: "Invalid JSON body" };
+	const settings: TranslationSettings = {};
+	if (raw.enabled !== undefined) {
+		if (typeof raw.enabled !== "boolean") return { ok: false, error: "enabled must be a boolean" };
+		settings.enabled = raw.enabled;
+	}
+	if (raw.targetLanguage !== undefined) {
+		if (typeof raw.targetLanguage !== "string" || !raw.targetLanguage.trim()) return { ok: false, error: "targetLanguage must be a non-empty string" };
+		settings.targetLanguage = raw.targetLanguage.trim();
+	}
+	if (raw.model !== undefined) {
+		const m = asRecord(raw.model);
+		if (!m || typeof m.provider !== "string" || !m.provider.trim() || typeof m.id !== "string" || !m.id.trim()) {
+			return { ok: false, error: "model must have a provider and id" };
+		}
+		settings.model = { provider: m.provider.trim(), id: m.id.trim() };
+	}
+	return { ok: true, settings };
+}
+
 /** dictation: { language?, detectLanguage?, autoSend?, continuousReadback? } */
 export function parseDictationSettingsBody(body: unknown): SettingsBodyResult<DictationSettings> {
 	const raw = asRecord(body);
@@ -604,6 +628,7 @@ export const SETTINGS_SECTIONS = {
 	models: parseModelsSettingsBody,
 	dictation: parseDictationSettingsBody,
 	speech: parseSpeechSettingsBody,
+	translation: parseTranslationSettingsBody,
 	claudeCode: parseClaudeCodeSettingsBody,
 } as const;
 
